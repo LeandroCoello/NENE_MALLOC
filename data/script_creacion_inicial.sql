@@ -13,7 +13,7 @@ CREATE TABLE SQL_O.Usuario(
 GO
 
 CREATE TABLE SQL_O.Visibilidad(
-		Vis_Cod numeric(18,0) Primary Key Identity,
+		Vis_Cod numeric(18,0) Primary Key,
 		Vis_Desc nvarchar(255),
 		Vis_Precio numeric(18,2),
 		Vis_Porcentaje numeric(18,2)
@@ -22,7 +22,7 @@ GO
 
 
 CREATE TABLE SQL_O.Rol(
-		Rol_Cod numeric(18,0) Primary Key,
+		Rol_Cod numeric(18,0) Primary Key identity,
 		Rol_Nombre nvarchar(255),
 		Rol_Estado bit,
 		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId) NOT NULL 
@@ -91,11 +91,12 @@ CREATE TABLE SQL_O.Tipo_Pub(
 		Tipo_Id numeric(18,0) Primary Key identity,
 		Tipo char(1),
 		Tipo_Precio numeric(18,2),
+		Tipo_Desc nvarchar(255)
 		)
 GO
 
 CREATE TABLE SQL_O.Publicacion(
-		Pub_Cod numeric(18,0) Primary Key identity,
+		Pub_Cod numeric(18,0) Primary Key,
 		Pub_Desc nvarchar(255),
 		Pub_Stock numeric(18,0),
 		Pub_Fecha_Ini datetime,
@@ -146,7 +147,7 @@ CREATE TABLE SQL_O.Oferta(
 GO
 
 CREATE TABLE SQL_O.Calificacion(
-		Cal_Codigo numeric(18,0) Primary Key identity,
+		Cal_Codigo numeric(18,0) Primary Key,
 		Cal_Cant_Est numeric(18,0),
 		Cal_Desc nvarchar(255),
 		Cal_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL
@@ -167,7 +168,7 @@ CREATE TABLE SQL_O.Pub_Por_Rubro(
 GO
 
 CREATE TABLE SQL_O.Factura (
-	Factura_Nro numeric(18,0) Primary Key Identity, 
+	Factura_Nro numeric(18,0) Primary Key, 
 	Factura_Fecha datetime, 
 	Factura_Total numeric(18,0),
 	Factura_Forma_Pago nvarchar(255)
