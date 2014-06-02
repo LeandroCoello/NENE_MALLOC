@@ -124,14 +124,20 @@ CREATE TABLE SQL_O.Pregunta(
 		)
 GO
 
-
+CREATE TABLE SQL_O.Factura (
+	Factura_Nro numeric(18,0) Primary Key, 
+	Factura_Fecha datetime, 
+	Factura_Total numeric(18,0),
+	Factura_Forma_Pago nvarchar(255)
+	)
+	
 
 CREATE TABLE SQL_O.Compra(
 		Compra_Id numeric(18,0) Primary Key identity,
 		Compra_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
 		Compra_Fecha datetime,
 		Compra_Cantidad numeric(18,0),
-		Compra_Factura numeric(18,0) references SQL_O.Factura(Factura_Nro)
+		Compra_Factura numeric(18,0) references SQL_O.Factura(Factura_Nro),
 		Compra_Comprador numeric(18,0) references SQL_O.Cliente(Cli_Id)
 		)
 GO
@@ -141,7 +147,7 @@ CREATE TABLE SQL_O.Oferta(
 		Oferta_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
 		Oferta_Fecha datetime,
 		Oferta_Monto numeric(18,2),
-		Oferta_Cliente numeric(18,0) references SQL_O.Rol(Rol_Cod) NOT NULL
+		Oferta_Cliente numeric(18,0) references SQL_O.Rol(Rol_Cod) NOT NULL,
 		Oferta_Gano bit
 		)
 GO
@@ -167,13 +173,7 @@ CREATE TABLE SQL_O.Pub_Por_Rubro(
 		)
 GO
 
-CREATE TABLE SQL_O.Factura (
-	Factura_Nro numeric(18,0) Primary Key, 
-	Factura_Fecha datetime, 
-	Factura_Total numeric(18,0),
-	Factura_Forma_Pago nvarchar(255)
-	)
-	
+
 
 /*Notas:
 	En tabla maestra:
