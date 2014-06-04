@@ -24,8 +24,7 @@ GO
 CREATE TABLE SQL_O.Rol(
 		Rol_Cod numeric(18,0) Primary Key identity,
 		Rol_Nombre nvarchar(255),
-		Rol_Estado bit,
-		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId) NOT NULL 
+		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId) 
 	)
 GO
 	
@@ -45,20 +44,20 @@ GO
 		
 
 CREATE TABLE SQL_O.Empresa(
-		Emp_Cod numeric(18,0) Primary Key identity references SQL_O.Rol(Rol_Cod) NOT NULL,
+		Emp_Cod numeric(18,0) Primary Key references SQL_O.Rol(Rol_Cod) NOT NULL,
 		Emp_Razon_Social nvarchar(255) Unique,
 		Emp_Cuit nvarchar(50) Unique,
 		Emp_Fecha_Creacion datetime,
 		Emp_Contacto nvarchar(50),
 		Emp_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Emp_Estado bit,
-		Emp_Reputacion numeric(18,0),	
+		Emp_Estado bit default 0,
+		Emp_Reputacion numeric(18,0) default 0	
 	)
 Go
 
 
 CREATE TABLE SQL_O.Cliente(
-		Cli_Id numeric(18,0) Primary Key identity references SQL_O.Rol(Rol_Cod) NOT NULL,
+		Cli_Id numeric(18,0) Primary Key references SQL_O.Rol(Rol_Cod) NOT NULL,
 		Cli_NroDoc numeric(18,0), 
 		Cli_TipoDoc nvarchar(20), 
 		Cli_Apellido nvarchar(255),
@@ -66,14 +65,14 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_Cuil numeric(18,0) Unique,
 		Cli_Fecha_Nac datetime,
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Cli_Estdo bit,
-		Cli_Reputacion numeric(18)
+		Cli_Estado bit default 0,
+		Cli_Reputacion numeric(18) default 0
 		--Primary Key(Cli_NroDoc,Cli_TipoDoc)
 		)
 GO
 
 CREATE TABLE SQL_O.Administrativo(
-		Admin_Id numeric(18,0) Primary Key identity References SQL_O.Rol(Rol_Cod) NOT NULL,
+		Admin_Id numeric(18,0) Primary Key References SQL_O.Rol(Rol_Cod) NOT NULL,
 		Admin_NroDoc numeric(18,0), 
 		Admin_TipoDoc nvarchar(20), 
 		Admin_Apellido nvarchar(255),
@@ -81,7 +80,7 @@ CREATE TABLE SQL_O.Administrativo(
 		Admin_Cuil numeric(18,0) Unique,
 		Admin_Fecha_Nac datetime,
 		Admin_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Admin_Estdo bit
+		Admin_Estado bit default 0
 		--Primary Key(Admin_NroDoc,Admin_TipoDoc)
 		)
 GO
@@ -185,3 +184,64 @@ GO
 - Los items de las facturas serian las compras.
 - Analizar tipos de datos medios fruta (userpass, entre otros).
 */
+
+--Migracion
+
+Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio)
+	(select distinct Publicacion_Visibilidad_Cod, 
+					 Publicacion_Visibilidad_Desc,
+				     Publicacion_Visibilidad_Porcentaje,
+				     Publicacion_Visibilidad_Precio 
+		from gd_esquema.Maestra)
+GO
+	
+Insert into SQL_O.Rubro(Rubro_Desc)
+	(select distinct Publicacion_Rubro_Descripcion from gd_esquema.Maestra)
+GO	
+
+--recorrer select de empresa con cursor e ir insertando en empresa y datos personales
+Declare 
+@razon_social nvarchar(255),
+@cuit nvarchar(50),
+@fecha_c datetime,
+@mail nvarchar(50),
+@dom_calle nvarchar(100),
+@nro_calle numeric(18,0),
+@piso numeric(18,0),
+@depto nvarchar(50),
+@cod_postal nvarchar(50)
+
+Declare cursor_Migracion cursor 
+     for (select distinct 
+				Publ_Empresa_Razon_Social,
+				Publ_Empresa_Cuit,
+				Publ_Empresa_Fecha_Creacion,
+				Publ_Empresa_Mail,
+				Publ_Empresa_Dom_Calle,
+				Publ_Empresa_Nro_Calle,
+				Publ_Empresa_Piso,
+				Publ_Empresa_Depto,
+				Publ_Empresa_Cod_Postal
+		from gd_esquema.Maestra where Publ_Empresa_Razon_Social is not null)
+Open cursor_Migracion
+fetch cursor_Migracion into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
+							@nro_calle, @piso, @depto, @cod_postal
+while(@@fetch_status=0)
+begin
+
+Insert into SQL_O.Rol(Rol_Nombre) values ('Empresa')
+
+Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
+			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
+			
+Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers ,Emp_Razon_Social, Emp_Cuit, Emp_Fecha_Creacion) 
+			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social, @cuit, @fecha_c)
+
+
+fetch cursor_Migracion into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
+							@nro_calle, @piso, @depto, @cod_postal
+end
+close cursor_Migracion
+deallocate cursor_Migracion
+ 
+GO
