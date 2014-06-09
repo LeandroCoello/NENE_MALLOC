@@ -62,7 +62,7 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_TipoDoc nvarchar(20), 
 		Cli_Apellido nvarchar(255),
 		Cli_Nombre nvarchar(255),
-		Cli_Cuil numeric(18,0) Unique,
+		Cli_Cuil numeric(18,0) ,--Unique
 		Cli_Fecha_Nac datetime,
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		Cli_Estado bit default 0,
@@ -88,7 +88,6 @@ GO
 
 CREATE TABLE SQL_O.Tipo_Pub(
 		Tipo_Id numeric(18,0) Primary Key identity,
-		Tipo char(1),
 		Tipo_Precio numeric(18,2),
 		Tipo_Desc nvarchar(255)
 		)
@@ -196,7 +195,8 @@ Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio)
 GO
 	
 Insert into SQL_O.Rubro(Rubro_Desc)
-	(select distinct Publicacion_Rubro_Descripcion from gd_esquema.Maestra)
+	(select distinct Publicacion_Rubro_Descripcion 
+		from gd_esquema.Maestra)
 GO	
 
 --recorrer select de empresa con cursor e ir insertando en empresa y datos personales
@@ -211,7 +211,7 @@ Declare
 @depto nvarchar(50),
 @cod_postal nvarchar(50)
 
-Declare cursor_Migracion cursor 
+Declare cursor_Migracion_Emp cursor 
      for (select distinct 
 				Publ_Empresa_Razon_Social,
 				Publ_Empresa_Cuit,
@@ -223,8 +223,8 @@ Declare cursor_Migracion cursor
 				Publ_Empresa_Depto,
 				Publ_Empresa_Cod_Postal
 		from gd_esquema.Maestra where Publ_Empresa_Razon_Social is not null)
-Open cursor_Migracion
-fetch cursor_Migracion into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
+Open cursor_Migracion_Emp
+fetch cursor_Migracion_Emp into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
 							@nro_calle, @piso, @depto, @cod_postal
 while(@@fetch_status=0)
 begin
@@ -238,10 +238,150 @@ Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers ,Emp_Razon_Social, Emp_Cuit, Em
 			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social, @cuit, @fecha_c)
 
 
-fetch cursor_Migracion into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
+fetch cursor_Migracion_Emp into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
 							@nro_calle, @piso, @depto, @cod_postal
 end
-close cursor_Migracion
-deallocate cursor_Migracion
+close cursor_Migracion_Emp
+deallocate cursor_Migracion_Emp
  
 GO
+
+Declare 
+@dni numeric(18,0),
+@apellido nvarchar(255),
+@nombre nvarchar(255),
+@fecha_nac datetime,
+@mail nvarchar(255),
+@dom_calle nvarchar(255),
+@nro_calle numeric(18,0),
+@piso numeric(18,0),
+@depto nvarchar(50),
+@cod_postal nvarchar(50)
+
+Declare cursor_Migracion_Cli cursor 
+     for (select Publ_Cli_Dni,
+				Publ_Cli_Apeliido,
+				Publ_Cli_Nombre,
+				Publ_Cli_Fecha_Nac,
+				Publ_Cli_Mail, 
+				Publ_Cli_Dom_Calle, 
+				Publ_Cli_Nro_Calle,
+				Publ_Cli_Piso,
+				Publ_Cli_Depto,
+				Publ_Cli_Cod_Postal 
+		from gd_esquema.Maestra where Publ_Cli_Dni is not null
+		union select Cli_Dni,
+				Cli_Apeliido,
+				Cli_Nombre,
+				Cli_Fecha_Nac,
+				Cli_Mail, 
+				Cli_Dom_Calle, 
+				Cli_Nro_Calle,
+				Cli_Piso,
+				Cli_Depto,
+				Cli_Cod_Postal 
+		from gd_esquema.Maestra where Cli_Dni is not null)
+Open cursor_Migracion_Cli
+fetch cursor_Migracion_Cli into @dni, @apellido, @nombre, @fecha_nac, @mail, @dom_calle,
+							@nro_calle, @piso, @depto, @cod_postal
+while(@@fetch_status=0)
+begin
+
+Insert into SQL_O.Rol(Rol_Nombre) values ('Cliente')
+
+Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
+			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
+			
+Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac) 
+			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @dni, @apellido, @nombre,@fecha_nac)
+
+
+fetch cursor_Migracion_Cli into @dni, @apellido, @nombre, @fecha_nac, @mail, @dom_calle,
+							@nro_calle, @piso, @depto, @cod_postal
+
+end
+close cursor_Migracion_Cli
+deallocate cursor_Migracion_Cli
+ 
+GO
+
+
+Declare 
+@cod numeric(18,0),
+@desc nvarchar(255),
+@stock numeric(18,0),
+@fecha_ini datetime,
+@fecha_vto datetime,
+@precio numeric(18,2),
+@tipo nvarchar(255),
+@visibilidad_cod numeric(18,2),
+@estado nvarchar(255),
+@duenio numeric(18,0),
+@dni_cliente numeric(18,0),
+@cuit_empresa nvarchar(50),
+@rubro nvarchar (255)
+
+Declare cursor_Migracion_Pub cursor 
+     for (select distinct Publicacion_Cod,
+						  Publicacion_Descripcion,
+						  Publicacion_Stock,
+						  Publicacion_Fecha,
+						  Publicacion_Fecha_Venc,
+						  Publicacion_Precio,
+						  Publicacion_Tipo,
+						  Publicacion_Estado,
+						  Publ_Empresa_Cuit,
+						  Publ_Cli_Dni,
+						  Publicacion_Visibilidad_Cod,
+						  Publicacion_Rubro_Descripcion					  
+						  
+		from gd_esquema.Maestra where Publicacion_Cod is not null)
+		
+		
+Open cursor_Migracion_Pub
+fetch cursor_Migracion_Pub into @cod, @desc, @stock, @fecha_ini, @fecha_vto, @precio,
+							@tipo, @estado,@cuit_empresa,@dni_cliente,@visibilidad_cod,@rubro
+while(@@fetch_status=0)
+begin
+
+Insert into SQL_O.Tipo_Pub(Tipo_Desc) values (@tipo)
+
+if(@dni_cliente is not null) 
+	begin
+	set @duenio  = (select Cli_Id from SQL_O.Cliente where @dni_cliente = Cli_NroDoc)
+	end
+else
+	begin
+	set @duenio  = (select Emp_Cod from SQL_O.Empresa where @cuit_empresa = Emp_Cuit)
+	end
+
+Insert into SQL_O.Publicacion(Pub_Cod,Pub_Desc,Pub_Stock,Pub_Fecha_Ini,Pub_Fecha_Vto,Pub_Precio,Pub_Tipo
+							,Pub_Estado,Pub_Duenio,Pub_Visibilidad)
+			values(@cod, @desc, @stock, @fecha_ini, @fecha_vto, @precio,(select MAX (Tipo_Id) from SQL_O.Tipo_Pub),@estado,@duenio,@visibilidad_cod)
+
+Insert into SQL_O.Pub_Por_Rubro(Pub_Cod,Rubro_Cod)
+			values(@cod,(select Rubro_Cod from SQL_O.Rubro where @rubro=Rubro_Desc))
+
+fetch cursor_Migracion_Pub into @cod, @desc, @stock, @fecha_ini, @fecha_vto, @precio,
+							@tipo, @estado,@cuit_empresa,@dni_cliente,@visibilidad_cod,@rubro
+end
+close cursor_Migracion_Pub
+deallocate cursor_Migracion_Pub
+ 
+GO
+
+insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub)
+	(select distinct Calificacion_Codigo,
+					 Calificacion_Cant_Estrellas, 
+					 Calificacion_Descripcion,
+					 Publicacion_Cod
+	 from gd_esquema.Maestra where Calificacion_Codigo is not null)
+	 
+GO
+
+insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago)
+	(select distinct Factura_Nro,
+					Factura_Fecha,
+					Factura_Total,
+					Forma_Pago_Desc
+	from gd_esquema.Maestra where Factura_Nro is not null)
