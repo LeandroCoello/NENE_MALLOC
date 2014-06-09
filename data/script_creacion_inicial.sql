@@ -129,14 +129,19 @@ CREATE TABLE SQL_O.Factura (
 	Factura_Forma_Pago nvarchar(255)
 	)
 	
+CREATE TABLE SQL_O.Item_Factura (
+	Item_Id numeric(18,0) Primary Key Identity,
+	Item_Monto numeric(18,2),
+	Item_Cantidad numeric(18,0),
+	Item_Factura numeric(18,0) references SQL_O.Factura (Factura_Nro)
+	)
 
 CREATE TABLE SQL_O.Compra(
 		Compra_Id numeric(18,0) Primary Key identity,
 		Compra_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
 		Compra_Fecha datetime,
 		Compra_Cantidad numeric(18,0),
-		Compra_Factura numeric(18,0) references SQL_O.Factura(Factura_Nro),
-		Compra_Comprador numeric(18,0) references SQL_O.Cliente(Cli_Id)
+		Compra_Comprador numeric(18,0) references SQL_O.Rol(Rol_Cod)
 		)
 GO
 
@@ -146,7 +151,7 @@ CREATE TABLE SQL_O.Oferta(
 		Oferta_Fecha datetime,
 		Oferta_Monto numeric(18,2),
 		Oferta_Cliente numeric(18,0) references SQL_O.Rol(Rol_Cod) NOT NULL,
-		Oferta_Gano bit
+		Oferta_Gano bit default 0
 		)
 GO
 
@@ -335,7 +340,7 @@ Declare cursor_Migracion_Pub cursor
 						  Publicacion_Visibilidad_Cod,
 						  Publicacion_Rubro_Descripcion					  
 						  
-		from gd_esquema.Maestra where Publicacion_Cod is not null)
+		from gd_esquema.Maestra where Publicacion_Cod is not null and Publicacion_Rubro_Descripcion !='')
 		
 		
 Open cursor_Migracion_Pub
@@ -385,3 +390,32 @@ insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_
 					Factura_Total,
 					Forma_Pago_Desc
 	from gd_esquema.Maestra where Factura_Nro is not null)
+
+GO
+
+insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto)
+	(select Item_Factura_Cantidad,
+			Factura_Nro,
+			Item_Factura_Monto
+	from gd_esquema.Maestra where Item_Factura_Cantidad is not null)
+
+GO
+
+insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
+	(select distinct Publicacion_Cod,
+					 Compra_Fecha,
+					 Compra_Cantidad,
+					 (select c.Cli_Id from SQL_O.Cliente c where Cli_Dni = c.Cli_NroDoc)
+	from gd_esquema.Maestra where Compra_Fecha is not null)
+	
+GO
+
+insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
+	(select distinct Publicacion_Cod,
+					 Oferta_Fecha,
+					 Oferta_Monto,
+					 (select c.Cli_Id from SQL_O.Cliente c where Cli_Dni = c.Cli_NroDoc)
+	from gd_esquema.Maestra where Oferta_Fecha is not null)
+	
+GO
+
