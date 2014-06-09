@@ -1,7 +1,7 @@
 USE [GD1C2014]
 GO
 
-CREATE SCHEMA SQL_O AUTHORIZATION gd
+CREATE SCHEMA  SQL_O AUTHORIZATION gd 
 GO
 
 
@@ -126,6 +126,7 @@ CREATE TABLE SQL_O.Factura (
 	Factura_Nro numeric(18,0) Primary Key, 
 	Factura_Fecha datetime, 
 	Factura_Total numeric(18,0),
+	Factura_Publicacion numeric(18,0) references SQL_O.Publicacion (Pub_Cod),
 	Factura_Forma_Pago nvarchar(255)
 	)
 	
@@ -349,7 +350,7 @@ fetch cursor_Migracion_Pub into @cod, @desc, @stock, @fecha_ini, @fecha_vto, @pr
 while(@@fetch_status=0)
 begin
 
-Insert into SQL_O.Tipo_Pub(Tipo_Desc) values (@tipo)
+Insert into SQL_O.Tipo_Pub(Tipo_Desc, Tipo_Precio) values (@tipo,@precio)
 
 if(@dni_cliente is not null) 
 	begin
@@ -384,11 +385,12 @@ insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub)
 	 
 GO
 
-insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago)
+insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Publicacion)
 	(select distinct Factura_Nro,
 					Factura_Fecha,
 					Factura_Total,
-					Forma_Pago_Desc
+					Forma_Pago_Desc,
+					Publicacion_Cod
 	from gd_esquema.Maestra where Factura_Nro is not null)
 
 GO
