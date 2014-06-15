@@ -63,7 +63,7 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_TipoDoc nvarchar(20), 
 		Cli_Apellido nvarchar(255),
 		Cli_Nombre nvarchar(255),
-		Cli_Cuil numeric(18,0) ,--Unique
+		Cli_Cuil nvarchar(50) ,
 		Cli_Fecha_Nac datetime,
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		Cli_Reputacion numeric(18) default 0
@@ -327,8 +327,8 @@ Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Cliente',(select MAX(User
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
 			
-Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac) 
-			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @dni, @apellido, @nombre,@fecha_nac)
+Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc) 
+			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @dni, @apellido, @nombre,@fecha_nac,'DNI')
 
 
 fetch cursor_Migracion_Cli into @dni, @apellido, @nombre, @fecha_nac, @mail, @dom_calle,
@@ -419,7 +419,7 @@ Declare @datetime datetime = @date
 Insert into SQL_O.Administrativo(Admin_Id,Admin_Datos_Pers ,Admin_NroDoc, Admin_Apellido, Admin_Nombre,Admin_Fecha_Nac) 
 			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), '77777777','Horsehead Bond','James',@datetime)
 
-
+GO
 
 insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub)
 	(select distinct Calificacion_Codigo,
@@ -472,7 +472,7 @@ GO
 
 --Login
 
-create Procedure proc_login @usuario varchar(30),@userpass nvarchar(255),@return bit out
+create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return bit out
 as 
 begin
 set @return=0 
@@ -499,3 +499,59 @@ else
 	raiserror('El usuario y/o la contraseña ingresada no es correcta.',16,1)
 	end
 end
+
+GO
+
+-- Generar usuario
+
+create procedure SQL_O.generar_usuario
+as
+begin 
+	declare @id numeric(18,0)
+	set @id = (select MAX(UserId) from SQL_O.Usuario)+1
+	insert into SQL_O.Usuario(Username,Userpass)
+		values('gdd'+CONVERT(varchar(30),@id),'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
+		
+end 
+GO
+
+-- Alta Cliente
+
+create procedure SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
+							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),@calle nvarchar(100),
+							  @nrocalle numeric(18,0), @piso numeric(18,0),@depto nvarchar(50),@codpost nvarchar(50),@idusuario numeric(18,0)
+as 
+begin transaction
+		if len(@nrodoc)!=8 or exists(select Cli_NroDoc from SQL_O.Cliente where Cli_NroDoc=@nrodoc and Cli_TipoDoc=@tipodoc)
+			begin
+				rollback
+				raiserror('El Numero y Tipo de Documento ya existe o no es valido.',16,1)
+			end
+		else 
+			begin
+				if exists(select Cli_Cuil from SQL_O.Cliente where Cli_Cuil=@cuil)
+					begin
+						rollback
+						raiserror('El Cuil ingresado ya existe.',16,1)
+					end
+				else
+					begin
+						if exists(select Datos_Tel from SQL_O.Cliente,SQL_O.Datos_Pers where Cli_Id=Datos_Id and Datos_Tel=@tel)
+							begin
+								 rollback
+								 raiserror('El Nro de telefono ingresado ya existe.',16,1)
+							end
+					end
+			 end
+			 
+		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Cliente',@idusuario)
+
+		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
+			values(@mail, @calle, @nrocalle, @piso, @depto, @codpost,@tel)
+			
+		Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc,Cli_Cuil) 
+			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @nrodoc, @apellido, @nombre,@fecha_nac,@tipodoc,@cuil)
+
+commit
+
+GO
