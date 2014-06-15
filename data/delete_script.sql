@@ -18,9 +18,11 @@ drop table [SQl_O].[Rol]
 drop table [SQl_O].[Rubro]
 drop table [SQl_O].[Tipo_Pub]
 drop table [SQl_O].[Usuario]
-drop table [SQl_O].[Visibilidad];
+drop table [SQl_O].[Visibilidad]
 go
 drop procedure [SQl_O].[alta_cliente]
+drop procedure [SQl_O].[alta_empresa]
 drop procedure [SQl_O].[generar_usuario]
-drop procedure [SQl_O].[proc_login];
+drop procedure [SQl_O].[proc_login]
+drop procedure [SQl_O].[bloquear_usuario]
 go

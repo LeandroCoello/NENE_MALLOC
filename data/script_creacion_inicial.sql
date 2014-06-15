@@ -8,7 +8,9 @@ GO
 CREATE TABLE SQL_O.Usuario(
 		UserId numeric(18,0) Primary Key Identity,
 		Username varchar(30) Unique,
-		Userpass nvarchar (255)
+		Userpass nvarchar (255),
+		Usuario_Deshabilitado bit default 0,
+		Usuario_Baja bit default 0
 		)
 GO
 
@@ -24,9 +26,7 @@ GO
 CREATE TABLE SQL_O.Rol(
 		Rol_Cod numeric(18,0) Primary Key identity,
 		Rol_Nombre nvarchar(255),
-		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId),
-		Rol_Deshabilitado bit default 0,
-		Rol_Bloqueado bit default 0
+		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId)
 	)
 GO
 	
@@ -52,7 +52,7 @@ CREATE TABLE SQL_O.Empresa(
 		Emp_Fecha_Creacion datetime,
 		Emp_Contacto nvarchar(50),
 		Emp_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Emp_Reputacion numeric(18,0) default 0	
+		Emp_Reputacion numeric(18,0) default 0
 	)
 Go
 
@@ -66,7 +66,7 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_Cuil nvarchar(50) ,
 		Cli_Fecha_Nac datetime,
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Cli_Reputacion numeric(18) default 0
+		Cli_Reputacion numeric(18) default 0,
 		--Primary Key(Cli_NroDoc,Cli_TipoDoc)
 		)
 GO
@@ -112,6 +112,7 @@ CREATE TABLE SQL_O.Respuesta(
 		Res_Fecha datetime
 		)
 GO
+
 CREATE TABLE SQL_O.Pregunta(
 		Pre_Id numeric(18,0) Primary Key identity,
 		Pre_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
@@ -128,13 +129,15 @@ CREATE TABLE SQL_O.Factura (
 	Factura_Publicacion numeric(18,0) references SQL_O.Publicacion (Pub_Cod),
 	Factura_Forma_Pago nvarchar(255)
 	)
-	
+GO	
+
 CREATE TABLE SQL_O.Item_Factura (
 	Item_Id numeric(18,0) Primary Key Identity,
 	Item_Monto numeric(18,2),
 	Item_Cantidad numeric(18,0),
 	Item_Factura numeric(18,0) references SQL_O.Factura (Factura_Nro)
 	)
+GO
 
 CREATE TABLE SQL_O.Compra(
 		Compra_Id numeric(18,0) Primary Key identity,
@@ -478,25 +481,27 @@ begin
 set @return=0 
 if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpass=@userpass)
 	begin 
-	declare @bloqueado bit
 	declare @deshabilitado bit
-	
-	set @bloqueado = (select Rol_Bloqueado from SQL_O.Rol,SQL_O.Usuario where Rol_usuario=UserId and @usuario=Username)
-	set @deshabilitado = (select Rol_Deshabilitado from SQL_O.Rol,SQL_O.Usuario where Rol_usuario=UserId and @usuario=Username)
+	declare @baja bit
+	set @deshabilitado = (select Usuario_Deshabilitado from SQL_O.Usuario where @usuario=Username)
+	set @baja = (select Usuario_Baja from SQL_O.Usuario where @usuario=Username)
 		if (@deshabilitado=1)
 		begin
 		   raiserror('El usuario esta deshabilitado.',16,1)	
+		   return
 		end
 		else
-			if(@bloqueado=1)
+			if(@baja=1)
 			begin
-				raiserror('El usuario esta bloqueado.',16,1)
+				raiserror('El usuario esta dado de baja.',16,1)
+				return
 			end
 	set @return=1
 	end
 else
 	begin
 	raiserror('El usuario y/o la contraseña ingresada no es correcta.',16,1)
+	return
 	end
 end
 
@@ -555,3 +560,56 @@ begin transaction
 commit
 
 GO
+
+-- Alta Empresa
+
+create procedure SQL_O.alta_empresa @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_c datetime, @contacto nvarchar(50),@mail nvarchar(50), 
+									@dom_calle nvarchar(100), @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),@tel numeric(18,0),
+									@cod_postal nvarchar(50),@idusuario numeric(18,0)
+as 
+begin transaction
+		if exists(select Emp_Razon_Social from SQL_O.Empresa  where Emp_Razon_Social=@razon_social)
+			begin
+				rollback
+				raiserror('La razon social ya existe o no es valida.',16,1)
+			end
+		else 
+			begin
+				if exists(select Emp_Cuit from SQL_O.Empresa where Emp_Cuit=@cuit)
+					begin
+						rollback
+						raiserror('El Cuit ingresado ya existe.',16,1)
+					end
+				else
+					begin
+						if exists(select Datos_Tel from SQL_O.Empresa,SQL_O.Datos_Pers where Emp_Cod=Datos_Id and Datos_Tel=@tel)
+							begin
+								 rollback
+								 raiserror('El Nro de telefono ingresado ya existe.',16,1)
+							end
+					end
+			 end
+			 
+		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Empresa',@idusuario)
+
+		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
+			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal,@tel)
+			
+		Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers,Emp_Razon_Social, Emp_Cuit,Emp_Fecha_Creacion,Emp_Contacto) 
+			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social,@cuit,@fecha_c,@contacto)
+
+commit
+
+GO 
+
+-- Deshabilitar usuario
+
+create procedure SQL_O.deshabilitar_usuario @usuario varchar (30)
+as
+	begin
+	
+	update SQL_O.Usuario 
+		set Usuario_Deshabilitado=1
+			where Username=@usuario
+	end
+Go
