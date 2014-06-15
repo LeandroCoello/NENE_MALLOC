@@ -472,15 +472,17 @@ GO
 
 --Login
 
-create Procedure proc_login @usuario varchar(30),@userpass nvarchar(255)
+create Procedure proc_login @usuario varchar(30),@userpass nvarchar(255),@return bit out
 as 
-begin transaction
+begin
+set @return=0 
 if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpass=@userpass)
 	begin 
 	declare @bloqueado bit
 	declare @deshabilitado bit
-	set @bloqueado = (select Rol_Bloqueado from SQL_O.Rol where Rol_usuario=@usuario)
-	set @deshabilitado = (select Rol_Deshabilitado from SQL_O.Rol where Rol_usuario=@usuario)
+	
+	set @bloqueado = (select Rol_Bloqueado from SQL_O.Rol,SQL_O.Usuario where Rol_usuario=UserId and @usuario=Username)
+	set @deshabilitado = (select Rol_Deshabilitado from SQL_O.Rol,SQL_O.Usuario where Rol_usuario=UserId and @usuario=Username)
 		if (@deshabilitado=1)
 		begin
 		   raiserror('El usuario esta deshabilitado.',16,1)	
@@ -490,8 +492,10 @@ if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpa
 			begin
 				raiserror('El usuario esta bloqueado.',16,1)
 			end
+	set @return=1
 	end
 else
 	begin
 	raiserror('El usuario y/o la contraseña ingresada no es correcta.',16,1)
 	end
+end
