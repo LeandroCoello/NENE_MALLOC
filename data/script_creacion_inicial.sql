@@ -8,7 +8,7 @@ GO
 CREATE TABLE SQL_O.Usuario(
 		UserId numeric(18,0) Primary Key Identity,
 		Username varchar(30) Unique,
-		Userpass char(32)
+		Userpass nvarchar (255)
 		)
 GO
 
@@ -50,7 +50,8 @@ CREATE TABLE SQL_O.Empresa(
 		Emp_Fecha_Creacion datetime,
 		Emp_Contacto nvarchar(50),
 		Emp_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Emp_Estado bit default 0,
+		Emp_Deshabilitado bit default 0,
+		Emp_Bloqueado bit default 0,
 		Emp_Reputacion numeric(18,0) default 0	
 	)
 Go
@@ -65,7 +66,8 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_Cuil numeric(18,0) ,--Unique
 		Cli_Fecha_Nac datetime,
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Cli_Estado bit default 0,
+		Cli_Deshabilitado bit default 0,
+		Cli_Bloqueado bit default 0,
 		Cli_Reputacion numeric(18) default 0
 		--Primary Key(Cli_NroDoc,Cli_TipoDoc)
 		)
@@ -80,7 +82,8 @@ CREATE TABLE SQL_O.Administrativo(
 		Admin_Cuil numeric(18,0) Unique,
 		Admin_Fecha_Nac datetime,
 		Admin_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Admin_Estado bit default 0
+		Admin_Deshabilitado bit default 0,
+		Admin_Bloqueado bit default 0
 		--Primary Key(Admin_NroDoc,Admin_TipoDoc)
 		)
 GO
@@ -215,7 +218,8 @@ Declare
 @nro_calle numeric(18,0),
 @piso numeric(18,0),
 @depto nvarchar(50),
-@cod_postal nvarchar(50)
+@cod_postal nvarchar(50),
+@idemp numeric(18,0)
 
 Declare cursor_Migracion_Emp cursor 
      for (select distinct 
@@ -232,10 +236,24 @@ Declare cursor_Migracion_Emp cursor
 Open cursor_Migracion_Emp
 fetch cursor_Migracion_Emp into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
 							@nro_calle, @piso, @depto, @cod_postal
+
 while(@@fetch_status=0)
 begin
 
-Insert into SQL_O.Rol(Rol_Nombre) values ('Empresa')
+set @idemp = (select MAX(UserId)from SQL_O.Usuario)
+if (@idemp is null)
+	begin
+	set @idemp = 1
+	end
+else 
+	begin 
+	set @idemp= @idemp +1
+	end
+	
+--userpass es 123456 con sha256
+Insert into SQL_O.Usuario(Username,Userpass) values (('gdd'+convert(varchar(30),@idemp)),'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
+
+Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Empresa',(select MAX(UserId)from SQL_O.Usuario))
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
@@ -252,6 +270,7 @@ deallocate cursor_Migracion_Emp
  
 GO
 
+--Migracion Cliente
 Declare 
 @dni numeric(18,0),
 @apellido nvarchar(255),
@@ -262,7 +281,8 @@ Declare
 @nro_calle numeric(18,0),
 @piso numeric(18,0),
 @depto nvarchar(50),
-@cod_postal nvarchar(50)
+@cod_postal nvarchar(50),
+@idcli numeric(18,0)
 
 Declare cursor_Migracion_Cli cursor 
      for (select Publ_Cli_Dni,
@@ -293,7 +313,20 @@ fetch cursor_Migracion_Cli into @dni, @apellido, @nombre, @fecha_nac, @mail, @do
 while(@@fetch_status=0)
 begin
 
-Insert into SQL_O.Rol(Rol_Nombre) values ('Cliente')
+set @idcli = (select MAX(UserId)from SQL_O.Usuario)
+if (@idcli is null)
+	begin
+	set @idcli = 1
+	end
+else 
+	begin 
+	set @idcli= @idcli +1
+	end
+
+
+Insert into SQL_O.Usuario(Username,Userpass) values ('gdd'+CONVERT(varchar(30),@idcli),'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
+
+Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Cliente',(select MAX(UserId)from SQL_O.Usuario))
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
@@ -311,7 +344,7 @@ deallocate cursor_Migracion_Cli
  
 GO
 
-
+--Migracion Publicacion
 Declare 
 @cod numeric(18,0),
 @desc nvarchar(255),
