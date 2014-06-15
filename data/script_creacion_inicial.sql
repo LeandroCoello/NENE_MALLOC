@@ -24,7 +24,9 @@ GO
 CREATE TABLE SQL_O.Rol(
 		Rol_Cod numeric(18,0) Primary Key identity,
 		Rol_Nombre nvarchar(255),
-		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId) 
+		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId),
+		Rol_Deshabilitado bit default 0,
+		Rol_Bloqueado bit default 0
 	)
 GO
 	
@@ -50,8 +52,6 @@ CREATE TABLE SQL_O.Empresa(
 		Emp_Fecha_Creacion datetime,
 		Emp_Contacto nvarchar(50),
 		Emp_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Emp_Deshabilitado bit default 0,
-		Emp_Bloqueado bit default 0,
 		Emp_Reputacion numeric(18,0) default 0	
 	)
 Go
@@ -66,8 +66,6 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_Cuil numeric(18,0) ,--Unique
 		Cli_Fecha_Nac datetime,
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Cli_Deshabilitado bit default 0,
-		Cli_Bloqueado bit default 0,
 		Cli_Reputacion numeric(18) default 0
 		--Primary Key(Cli_NroDoc,Cli_TipoDoc)
 		)
@@ -82,8 +80,6 @@ CREATE TABLE SQL_O.Administrativo(
 		Admin_Cuil numeric(18,0) Unique,
 		Admin_Fecha_Nac datetime,
 		Admin_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Admin_Deshabilitado bit default 0,
-		Admin_Bloqueado bit default 0
 		--Primary Key(Admin_NroDoc,Admin_TipoDoc)
 		)
 GO
@@ -409,6 +405,22 @@ deallocate cursor_Migracion_Pub
  
 GO
 
+-- Insert Admin
+
+Insert into SQL_O.Usuario(Username,Userpass) values ('superAdmin','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
+
+Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Admin',(select MAX(UserId)from SQL_O.Usuario))
+
+Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
+			values('sql_o_rulz@gmail.com', 'Medrano','951', 4, 'O','0007',47777777)
+
+Declare @date date = '12-03-1985'
+Declare @datetime datetime = @date
+Insert into SQL_O.Administrativo(Admin_Id,Admin_Datos_Pers ,Admin_NroDoc, Admin_Apellido, Admin_Nombre,Admin_Fecha_Nac) 
+			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), '77777777','Horsehead Bond','James',@datetime)
+
+
+
 insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub)
 	(select distinct Calificacion_Codigo,
 					 Calificacion_Cant_Estrellas, 
@@ -454,3 +466,32 @@ insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
 	
 GO
 
+
+-- Store Procedures
+
+
+--Login
+
+create Procedure proc_login @usuario varchar(30),@userpass nvarchar(255)
+as 
+begin transaction
+if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpass=@userpass)
+	begin 
+	declare @bloqueado bit
+	declare @deshabilitado bit
+	set @bloqueado = (select Rol_Bloqueado from SQL_O.Rol where Rol_usuario=@usuario)
+	set @deshabilitado = (select Rol_Deshabilitado from SQL_O.Rol where Rol_usuario=@usuario)
+		if (@deshabilitado=1)
+		begin
+		   raiserror('El usuario esta deshabilitado.',16,1)	
+		end
+		else
+			if(@bloqueado=1)
+			begin
+				raiserror('El usuario esta bloqueado.',16,1)
+			end
+	end
+else
+	begin
+	raiserror('El usuario y/o la contraseña ingresada no es correcta.',16,1)
+	end
