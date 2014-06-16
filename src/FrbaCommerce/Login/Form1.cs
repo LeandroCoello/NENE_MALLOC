@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaCommerce.Registro_de_Usuario;
 
 namespace FrbaCommerce.Login
 {
@@ -13,6 +14,7 @@ namespace FrbaCommerce.Login
     {
         string usuarioNombre;
         string contraseña;
+        string passHasheada;
         int contadorDeIntentos = 0;
         public Form1()
         {
@@ -24,13 +26,13 @@ namespace FrbaCommerce.Login
         {   
             if(contadorDeIntentos < 3){
                 //enviarle al sql el usuarioNombre y pass para que verificar que sean correctos
-                if (usuarioNombre == "retornoSQL" && contraseña == "passDeSql")
+                if (usuarioNombre == "retornoSQL" && passHasheada == "passDeSql")
                 {
                 //Mostrarse los roles que posee y dps se conecta, si tiene uno solo entra directo al sistema por ese rol
                 }
                 else {//salta cartel de error por: gato no existis registrate primero 
                     lblConfirmacionLog.Text = "Nombre o Usuario incorrectos por favor pruebe nuevamente";
-                    contadorDeIntentos = 1;
+                    contadorDeIntentos += 1;
                 }
             }
             
@@ -40,6 +42,8 @@ namespace FrbaCommerce.Login
         {
             this.txtContraseña.Focus();
             contraseña = this.txtContraseña.Text;
+            Registro_de_Usuario.Encriptador encriptador = new Registro_de_Usuario.Encriptador();
+            passHasheada = encriptador.SHA256Encripta(contraseña);
         }
 
         private void txtUsuario_TextChanged(object sender, EventArgs e)
