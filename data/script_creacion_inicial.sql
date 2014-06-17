@@ -475,7 +475,7 @@ GO
 
 --Login
 
-create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return bit out
+create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
 as 
 begin
 set @return=0 
@@ -488,19 +488,22 @@ if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpa
 		if (@deshabilitado=1)
 		begin
 		   raiserror('El usuario esta deshabilitado.',16,1)	
+				set @return=2
 		   return
 		end
 		else
 			if(@baja=1)
 			begin
 				raiserror('El usuario esta dado de baja.',16,1)
+					set @return=3
 				return
 			end
-	set @return=1
+
 	end
 else
 	begin
 	raiserror('El usuario y/o la contraseña ingresada no es correcta.',16,1)
+		set @return=1
 	return
 	end
 end
