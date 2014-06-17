@@ -1,0 +1,18 @@
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\bin\Release\FrbaCommerce.exe
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\bin\Release\FrbaCommerce.pdb
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.ABM_Rol.Form1.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Login.Form1.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Properties.Resources.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.csproj.GenerateResource.Cache
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.exe
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.pdb
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Form1.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Registro_de_Usuario.Form1.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Abm_Rubro.Form1.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Abm_Cliente.Form1.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Abm_Empresa.Form1.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Registro_de_Usuario.Form2ContinuacionRegistro.resources
+C:\Documents and Settings\Ezequiel\Escritorio\TP Frba Commerce 1.0 - 1C 2014\Aplicacion Desktop\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.Menu_Principal.Form1MenuPrincipal.resources
+C:\Documents and Settings\Ezequiel\Mis documentos\GitHub\SQL_O\src\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.exe
+C:\Documents and Settings\Ezequiel\Mis documentos\GitHub\SQL_O\src\FrbaCommerce\FrbaCommerce\obj\Release\FrbaCommerce.pdb
