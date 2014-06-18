@@ -7,3 +7,8 @@
 **/.project
 **/.metadata
 **/target/**
+*.exe
+*.Cache
+*.pdb
+*.cache
+src/FrbaCommerce.suo
