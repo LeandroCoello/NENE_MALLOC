@@ -1,5 +1,5 @@
-src/bin
-src/obj
+src/FrbaCommerce/bin
+src/FrbaCommerce/obj
 *.exe
 *.Cache
 *.pdb
