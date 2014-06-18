@@ -17,6 +17,12 @@ namespace FrbaCommerce.Abm_Rubro
         public Form1()
         {
             InitializeComponent();
+            txtCodigo.Visible = false;
+            txtDescripcion.Visible = false;
+            lblCodigo.Visible = false;
+            lblDescrip.Visible = false;
+            
+            
         }
 
         private void txtCodigo_TextChanged(object sender, EventArgs e)
@@ -33,8 +39,37 @@ namespace FrbaCommerce.Abm_Rubro
 
         private void btnCrear_Click(object sender, EventArgs e)
         {
-            //Enviar Al sql el nuevo rubro creado
+            txtCodigo.Visible = true;
+            txtDescripcion.Visible = true;
+            lblCodigo.Visible = true;
+            lblDescrip.Visible = true;
             lblAvisaCreacion.Text = "Rubro creado exitosamente";
+        }
+
+        private void lblCodigo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnListo_Click(object sender, EventArgs e)
+        {
+            //Enviar al sql si se creo q agregue el rubro, si se modifico el cambio o si elimina que borre el rubro
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            txtCodigo.Visible = true;
+            txtDescripcion.Visible = true;
+            lblCodigo.Visible = true;
+            lblDescrip.Visible = true;
+            //Perdile al sql todos los rubros disponibles y cagarlos en la listBox
+
+            
+        }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            //Misma logica que el de modificar, solo que ademas se avisa al sql que borre de la lista
         }
 
     }

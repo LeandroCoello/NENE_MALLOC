@@ -36,9 +36,9 @@ namespace FrbaCommerce.Login
             this.btnAceptar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.lblConfirmacionLog = new System.Windows.Forms.Label();
             this.btnAcceso_Sistema = new System.Windows.Forms.Button();
+            this.LBRolesElegir = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // txtUsuario
@@ -85,25 +85,18 @@ namespace FrbaCommerce.Login
             this.label2.TabIndex = 4;
             this.label2.Text = "Ingrese su contraseña:";
             // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(117, 131);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 7;
-            // 
             // lblConfirmacionLog
             // 
-            this.lblConfirmacionLog.Location = new System.Drawing.Point(102, 90);
+            this.lblConfirmacionLog.Location = new System.Drawing.Point(112, 90);
             this.lblConfirmacionLog.Name = "lblConfirmacionLog";
             this.lblConfirmacionLog.Size = new System.Drawing.Size(170, 26);
             this.lblConfirmacionLog.TabIndex = 8;
+            this.lblConfirmacionLog.Text = "Muestra validacion del logeo";
             this.lblConfirmacionLog.Click += new System.EventHandler(this.lblConfirmacionLog_Click);
             // 
             // btnAcceso_Sistema
             // 
-            this.btnAcceso_Sistema.Location = new System.Drawing.Point(117, 181);
+            this.btnAcceso_Sistema.Location = new System.Drawing.Point(126, 181);
             this.btnAcceso_Sistema.Name = "btnAcceso_Sistema";
             this.btnAcceso_Sistema.Size = new System.Drawing.Size(120, 35);
             this.btnAcceso_Sistema.TabIndex = 9;
@@ -111,14 +104,23 @@ namespace FrbaCommerce.Login
             this.btnAcceso_Sistema.UseVisualStyleBackColor = true;
             this.btnAcceso_Sistema.Click += new System.EventHandler(this.btnAcceso_Sistema_Click);
             // 
+            // LBRolesElegir
+            // 
+            this.LBRolesElegir.FormattingEnabled = true;
+            this.LBRolesElegir.Location = new System.Drawing.Point(126, 119);
+            this.LBRolesElegir.Name = "LBRolesElegir";
+            this.LBRolesElegir.Size = new System.Drawing.Size(120, 56);
+            this.LBRolesElegir.TabIndex = 10;
+            this.LBRolesElegir.SelectedIndexChanged += new System.EventHandler(this.LBRolesElegir_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(380, 285);
+            this.Controls.Add(this.LBRolesElegir);
             this.Controls.Add(this.btnAcceso_Sistema);
             this.Controls.Add(this.lblConfirmacionLog);
-            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAceptar);
@@ -139,9 +141,9 @@ namespace FrbaCommerce.Login
         private Button btnAceptar;
         private Label label1;
         private Label label2;
-        private ComboBox comboBox1;
         private Label lblConfirmacionLog;
         private Button btnAcceso_Sistema;
+        private ListBox LBRolesElegir;
 
 
     }  
