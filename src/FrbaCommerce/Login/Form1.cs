@@ -9,18 +9,16 @@ using System.Windows.Forms;
 using FrbaCommerce.Registro_de_Usuario;
 using System.Security.Cryptography;
 
+
 namespace FrbaCommerce.Login
 {
     public partial class Form1 : Form
     {
-        
-        string usuarioNombre;
         string passHasheada;
         int contadorDeIntentos = 0;
         public Form1()
         {
             InitializeComponent();
-            this.LBRolesElegir.Visible = false;
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -28,49 +26,50 @@ namespace FrbaCommerce.Login
 
 
         private void btnAceptar_Click(object sender, EventArgs e)
-        {   
-            if(contadorDeIntentos < 3){
-                //enviarle al sql el usuarioNombre y pass para que verificar que sean correctos
-                if (usuarioNombre == "retornoSQL" && passHasheada == "passDeSql")
-                {
-                //Mostrarse los roles que posee y dps se conecta, si tiene uno solo entra directo al sistema por ese rol
-                 LBRolesElegir.Visible = true;
-                }
-                else {//salta cartel de error por: gato no existis registrate primero 
-                    lblConfirmacionLog.Text = "Usuario o Contraseña incorrectos por favor pruebe nuevamente";
-                    contadorDeIntentos += 1;
-                }
-            }
-            
-        }
-
-        private void txtContraseña_TextChanged(object sender, EventArgs e)
         {
-            txtContraseña.Focus();
             passHasheada = this.SHA256Encripta(txtContraseña.Text);
+            if (txtUsuario.Text !="" && txtContraseña.Text!="")
+            {
+                if (contadorDeIntentos < 3)
+                {
+                    int resultado = FrbaCommerce.Login.LoginDatos.logeoSql(txtUsuario.Text,passHasheada);
+                     switch (resultado) { 
+                         case 0:
+                             List<string> rolesDeUsuario = FrbaCommerce.Login.LoginDatos.cantidadDeRoles(txtUsuario.Text);
+                             if (rolesDeUsuario.Count() == 1) {
+                                  Menu_Principal.Form1MenuPrincipal lanzarMenu = new Menu_Principal.Form1MenuPrincipal(rolesDeUsuario.FirstOrDefault());
+                                  lanzarMenu.ShowDialog();
+                                  this.Close();
+                            }else {Form2EleccionRol lanzarRoles = new Form2EleccionRol (rolesDeUsuario);
+                                    lanzarRoles.ShowDialog();
+                                    this.Close();}
+                        break;
+
+                        case 1:
+                               contadorDeIntentos += 1;
+                             //ACA NO ESTOY TAN DE ACUERDO PARA MI DEBERIA SER PORQUE PUSO MAL LA CONTRASEÑA SOLAMENTE
+                               MessageBox.Show("Usuario o Contraseña incorretos\n cantidad de intentos: {0}" + contadorDeIntentos);
+                        break;
+                        
+                        case 2:
+                            MessageBox.Show("EL usuario se encuentra inhabilitado");
+                        break;
+
+                        case 3:
+                            MessageBox.Show("Usuario dado de baja");
+                        break;
+                        }
+                }
+                else { MessageBox.Show("Se ha alcanazo el maximo de intentos de login, usuario inhabilitado");
+                            btnAceptar.Enabled = false;}
+
+                } else { MessageBox.Show("Por favor complete los campos de usuario y contraseña"); }
         }
-
-        private void txtUsuario_TextChanged(object sender, EventArgs e)
-        {
-            this.txtContraseña.Focus();
-            usuarioNombre = this.txtUsuario.Text;
-        }
-
-        private void lblConfirmacionLog_Click(object sender, EventArgs e)
-        {}
-
-        private void btnAcceso_Sistema_Click(object sender, EventArgs e)
-        {
-            //levanta la form acorde al rol elegido
-        }
-
-        private void LBRolesElegir_SelectedIndexChanged(object sender, EventArgs e)
-        {}
 
 
        public string SHA256Encripta(string input)
             {
-                SHA256CryptoServiceProvider provider = new SHA256CryptoServiceProvider();
+                SHA256Managed provider = new SHA256Managed();
 
                 byte[] inputBytes = Encoding.UTF8.GetBytes(input);
                 byte[] hashedBytes = provider.ComputeHash(inputBytes);

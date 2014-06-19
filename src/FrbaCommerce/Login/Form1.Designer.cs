@@ -36,9 +36,6 @@ namespace FrbaCommerce.Login
             this.btnAceptar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.lblConfirmacionLog = new System.Windows.Forms.Label();
-            this.btnAcceso_Sistema = new System.Windows.Forms.Button();
-            this.LBRolesElegir = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // txtUsuario
@@ -47,7 +44,7 @@ namespace FrbaCommerce.Login
             this.txtUsuario.Name = "txtUsuario";
             this.txtUsuario.Size = new System.Drawing.Size(122, 20);
             this.txtUsuario.TabIndex = 0;
-            this.txtUsuario.TextChanged += new System.EventHandler(this.txtUsuario_TextChanged);
+
             // 
             // txtContraseña
             // 
@@ -55,11 +52,11 @@ namespace FrbaCommerce.Login
             this.txtContraseña.Name = "txtContraseña";
             this.txtContraseña.Size = new System.Drawing.Size(122, 20);
             this.txtContraseña.TabIndex = 1;
-            this.txtContraseña.TextChanged += new System.EventHandler(this.txtContraseña_TextChanged);
+
             // 
             // btnAceptar
             // 
-            this.btnAceptar.Location = new System.Drawing.Point(141, 64);
+            this.btnAceptar.Location = new System.Drawing.Point(96, 64);
             this.btnAceptar.Name = "btnAceptar";
             this.btnAceptar.Size = new System.Drawing.Size(75, 23);
             this.btnAceptar.TabIndex = 2;
@@ -70,57 +67,26 @@ namespace FrbaCommerce.Login
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 15);
+            this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(96, 13);
+            this.label1.Size = new System.Drawing.Size(82, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Ingrese su usuario:";
+            this.label1.Text = "Ingrese usuario:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 41);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(115, 13);
+            this.label2.Size = new System.Drawing.Size(101, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Ingrese su contraseña:";
-            // 
-            // lblConfirmacionLog
-            // 
-            this.lblConfirmacionLog.Location = new System.Drawing.Point(112, 90);
-            this.lblConfirmacionLog.Name = "lblConfirmacionLog";
-            this.lblConfirmacionLog.Size = new System.Drawing.Size(170, 26);
-            this.lblConfirmacionLog.TabIndex = 8;
-            this.lblConfirmacionLog.Text = "Muestra validacion del logeo";
-            this.lblConfirmacionLog.Click += new System.EventHandler(this.lblConfirmacionLog_Click);
-            // 
-            // btnAcceso_Sistema
-            // 
-            this.btnAcceso_Sistema.Location = new System.Drawing.Point(126, 181);
-            this.btnAcceso_Sistema.Name = "btnAcceso_Sistema";
-            this.btnAcceso_Sistema.Size = new System.Drawing.Size(120, 35);
-            this.btnAcceso_Sistema.TabIndex = 9;
-            this.btnAcceso_Sistema.Text = "Ingresar";
-            this.btnAcceso_Sistema.UseVisualStyleBackColor = true;
-            this.btnAcceso_Sistema.Click += new System.EventHandler(this.btnAcceso_Sistema_Click);
-            // 
-            // LBRolesElegir
-            // 
-            this.LBRolesElegir.FormattingEnabled = true;
-            this.LBRolesElegir.Location = new System.Drawing.Point(126, 119);
-            this.LBRolesElegir.Name = "LBRolesElegir";
-            this.LBRolesElegir.Size = new System.Drawing.Size(120, 56);
-            this.LBRolesElegir.TabIndex = 10;
-            this.LBRolesElegir.SelectedIndexChanged += new System.EventHandler(this.LBRolesElegir_SelectedIndexChanged);
+            this.label2.Text = "Ingrese contraseña:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(380, 285);
-            this.Controls.Add(this.LBRolesElegir);
-            this.Controls.Add(this.btnAcceso_Sistema);
-            this.Controls.Add(this.lblConfirmacionLog);
+            this.ClientSize = new System.Drawing.Size(285, 105);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAceptar);
@@ -141,9 +107,6 @@ namespace FrbaCommerce.Login
         private Button btnAceptar;
         private Label label1;
         private Label label2;
-        private Label lblConfirmacionLog;
-        private Button btnAcceso_Sistema;
-        private ListBox LBRolesElegir;
 
 
     }  

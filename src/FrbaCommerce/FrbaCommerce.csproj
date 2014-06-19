@@ -156,6 +156,13 @@
     <Compile Include="Login\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login\Form2EleccionRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login\Form2EleccionRol.Designer.cs">
+      <DependentUpon>Form2EleccionRol.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Login\LoginDatos.cs" />
     <Compile Include="Menu Principal\Form1MenuPrincipal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Login\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\Form2EleccionRol.resx">
+      <DependentUpon>Form2EleccionRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menu Principal\Form1MenuPrincipal.resx">
       <DependentUpon>Form1MenuPrincipal.cs</DependentUpon>
