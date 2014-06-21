@@ -373,7 +373,7 @@ Declare cursor_Migracion_Pub cursor
 						  Publicacion_Visibilidad_Cod,
 						  Publicacion_Rubro_Descripcion					  
 						  
-		from gd_esquema.Maestra where Publicacion_Cod is not null and Publicacion_Rubro_Descripcion !='')
+		from gd_esquema.Maestra where Publicacion_Cod is not null order by Publicacion_Cod ASC)
 		
 		
 Open cursor_Migracion_Pub
@@ -604,6 +604,42 @@ begin transaction
 commit
 
 GO 
+
+--Crear Publicación
+
+create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
+										@fecha_fin datetime, @precio numeric(18,2), 
+										@tipo nvarchar(255), @estado varchar(255),@visibilidad nvarchar(255), 
+										@duenio varchar(30)
+										
+as
+begin transaction	
+
+	if( @stock < 1) 
+	begin
+		rollback
+		raiserror('No se puede tener un stock menor a 1(uno)',16,1)
+	end
+
+	if( @tipo == 'subasta' and @stock > 1) 
+	begin
+		rollback
+		raiserror('En Subastas el stock máximo permitido es 1',16,1)
+	end
+											
+	
+	Insert into SQL_O.Tipo_Pub(Tipo_Precio, Tipo_Desc)values (@precio, @tipo)
+	
+	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_ Tipo,
+								  Pub_Estado,Pub_Visibilidad, Pub_Duenio)
+			values ((select Max(Pub_Cod)+ 1 from SQL_O.Publicacion), @descripcion, @stock, select GETDATE(), 
+			@fecha_fin, @precio,(select Max(Tipo_Id) from SQL_O.Tipo_Pub), @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
+		    (select Rol_Codigo from SQL_O.Rol, SQL_O.Usuario where @duenio = Username and Rol_Usuario = UserID))
+	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
+		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
+commit 
+
+GO		
 
 -- Deshabilitar usuario
 
