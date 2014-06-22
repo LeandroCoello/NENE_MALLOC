@@ -9,6 +9,7 @@ CREATE TABLE SQL_O.Usuario(
 		UserId numeric(18,0) Primary Key Identity,
 		Username varchar(30) Unique,
 		Userpass nvarchar (255),
+		User_Intentos numeric (18,0),
 		Usuario_Deshabilitado bit default 0,
 		Usuario_Baja bit default 0
 		)
@@ -373,7 +374,9 @@ Declare cursor_Migracion_Pub cursor
 						  Publicacion_Visibilidad_Cod,
 						  Publicacion_Rubro_Descripcion					  
 						  
-		from gd_esquema.Maestra where Publicacion_Cod is not null order by Publicacion_Cod ASC)
+		from gd_esquema.Maestra 
+		where Publicacion_Cod is not null 
+		order by Publicacion_Cod asc)
 		
 		
 Open cursor_Migracion_Pub
@@ -605,7 +608,7 @@ commit
 
 GO 
 
---Crear Publicación
+-- Crear Publicación
 
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
 										@fecha_fin datetime, @precio numeric(18,2), 
@@ -621,7 +624,7 @@ begin transaction
 		raiserror('No se puede tener un stock menor a 1(uno)',16,1)
 	end
 
-	if( @tipo == 'subasta' and @stock > 1) 
+	if( @tipo = 'subasta' and @stock > 1) 
 	begin
 		rollback
 		raiserror('En Subastas el stock máximo permitido es 1',16,1)
@@ -630,20 +633,51 @@ begin transaction
 	
 	Insert into SQL_O.Tipo_Pub(Tipo_Precio, Tipo_Desc)values (@precio, @tipo)
 	
-	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_ Tipo,
+	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
 								  Pub_Estado,Pub_Visibilidad, Pub_Duenio)
-			values ((select Max(Pub_Cod)+ 1 from SQL_O.Publicacion), @descripcion, @stock, select GETDATE(), 
+			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, GETDATE(), 
 			@fecha_fin, @precio,(select Max(Tipo_Id) from SQL_O.Tipo_Pub), @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
-		    (select Rol_Codigo from SQL_O.Rol, SQL_O.Usuario where @duenio = Username and Rol_Usuario = UserID))
+		    (select Rol_Cod from SQL_O.Rol, SQL_O.Usuario where @duenio = Username and Rol_Usuario = UserID))
 	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
 		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
 commit 
 
 GO		
 
+-- Login del usuario de Gus
+/*
+create procedure SQL_O.loguear_usuario @usuario varchar(30), @contraseña nvarchar(255)
+as
+begin transaction
+		if exists(select UserId from SQL_O.Usuario where @usuario = Username and @contraseña = UserPass)
+			begin
+				update SQL_O.Usuario set User_Intentos = 0
+				where Username = @usuario;
+				select UserId from SQL_O.Usuario where @usuario = Username and @contraseña = UserPass
+			end
+		else
+			if((select User_Intentos from SQL_O.Usuario where @usuario = Username) = 2)
+				begin
+					rollback
+					raiserror('El usuario o la contraseña ingresadas no son validos y el usuario quedo inhabilitado',16,1)
+					update SQL_O.Usuario set Usuario_Deshabilitado=1
+					where Username = @usuario
+				end
+			else
+				begin
+					rollback
+					raiserror('El usuario o la contraseña ingresadas no son validos',16,1)
+					update SQL_O.Usuario set User_Intentos = User_Intentos + 1
+					where Username = @usuario;
+				end
+			
+commit
+GO
+*/
+
 -- Deshabilitar usuario
 
-create procedure SQL_O.deshabilitar_usuario @usuario varchar (30)
+create procedure SQL_O.deshabilitar_usuario @usuario varchar(30)
 as
 	begin
 	
@@ -652,3 +686,34 @@ as
 			where Username=@usuario
 	end
 Go
+
+-- Alta Rubro
+create procedure SQL_O.alta_rubro @codigo numeric(18,0), @descripcion nvarchar(255)
+as 
+begin transaction
+		if exists(select Rubro_Cod from SQL_O.Rubro  where Rubro_Cod = @codigo)
+			begin
+				rollback
+				raiserror('El rubro ya existe.',16,1)
+			end
+		else 
+			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
+		
+commit		
+GO
+
+
+-- Seleccion de Rol
+
+create procedure SQL_O.seleccion_rol  @rol nvarchar(255)
+as
+begin
+	select Rol_Cod from SQL_O.Rol where Rol_Nombre = @rol	
+end
+
+/*CREATE TABLE SQL_O.Rol(
+		Rol_Cod numeric(18,0) Primary Key identity,
+		Rol_Nombre nvarchar(255),
+		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId)
+	)
+GO*/
