@@ -168,7 +168,7 @@ CREATE TABLE SQL_O.Calificacion(
 GO
 
 CREATE TABLE SQL_O.Rubro(
-		Rubro_Cod numeric(18,0) Primary key identity,
+		Rubro_Cod numeric(18,0) Primary key,
 		Rubro_Desc nvarchar(255)
 		)
 GO
@@ -477,7 +477,6 @@ GO
 
 
 --Login
-
 create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
 as 
 begin
@@ -514,7 +513,6 @@ end
 GO
 
 -- Generar usuario
-
 create procedure SQL_O.generar_usuario
 as
 begin 
@@ -527,7 +525,6 @@ end
 GO
 
 -- Alta Cliente
-
 create procedure SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),@calle nvarchar(100),
 							  @nrocalle numeric(18,0), @piso numeric(18,0),@depto nvarchar(50),@codpost nvarchar(50),@idusuario numeric(18,0)
@@ -568,7 +565,6 @@ commit
 GO
 
 -- Alta Empresa
-
 create procedure SQL_O.alta_empresa @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_c datetime, @contacto nvarchar(50),@mail nvarchar(50), 
 									@dom_calle nvarchar(100), @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),@tel numeric(18,0),
 									@cod_postal nvarchar(50),@idusuario numeric(18,0)
@@ -609,7 +605,6 @@ commit
 GO 
 
 -- Crear Publicación
-
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
 										@fecha_fin datetime, @precio numeric(18,2), 
 										@tipo nvarchar(255), @estado varchar(255),@visibilidad nvarchar(255), 
@@ -672,11 +667,11 @@ begin transaction
 				end
 			
 commit
-GO
-*/
+GO*/
+
+
 
 -- Deshabilitar usuario
-
 create procedure SQL_O.deshabilitar_usuario @usuario varchar(30)
 as
 	begin
@@ -702,18 +697,73 @@ begin transaction
 commit		
 GO
 
-
 -- Seleccion de Rol
-
 create procedure SQL_O.seleccion_rol  @rol nvarchar(255)
 as
 begin
 	select Rol_Cod from SQL_O.Rol where Rol_Nombre = @rol	
 end
+GO
 
-/*CREATE TABLE SQL_O.Rol(
-		Rol_Cod numeric(18,0) Primary Key identity,
-		Rol_Nombre nvarchar(255),
-		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId)
-	)
-GO*/
+-- Modificacion de Cliente
+
+create procedure SQL_O.modificacion_cliente  @id_cliente numeric(18,0), @nombre nvarchar(255) output, 
+											 @apellido nvarchar(255) output,
+											 @tipo_doc nvarchar(20) output,@nro_doc numeric(18,0) output, 
+											 @mail nvarchar(50) output
+											 
+as
+begin transaction
+
+		if exists(select Cli_Id from SQL_O.Cliente where @nro_doc = Cli_NroDoc and @tipo_doc = Cli_TipoDoc and @id_cliente != Cli_Id)
+		begin
+			rollback
+			raiserror('El numero de documento ya pertenece a otro cliente', 16, 1)
+			return
+		end
+		else
+			/*¿QUE DATOS HAY QUE ACTUALIZAR?*/
+			update SQL_O.Cliente
+			set	Cli_Nombre = @nombre, 
+			Cli_Apellido = @apellido,
+			Cli_TipoDoc = @tipo_doc,
+			Cli_NroDoc = @nro_doc
+			where Cli_Id = @id_cliente
+			
+			update SQL_O.Datos_Pers
+			set Datos_Mail = @mail
+			where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
+	
+commit
+GO
+
+-- Modificacion de Empresa
+
+create procedure SQL_O.modificacion_empresa  @id_empresa numeric(18,0), @razon_social nvarchar(255) output, 
+											 @cuit nvarchar(50) output, @mail nvarchar(50) output
+											 
+as
+begin transaction
+
+		if exists(select Emp_Cod from SQL_O.Empresa where @cuit = Emp_Cuit 
+					and @razon_social = Emp_Razon_Social 
+					and @id_empresa != Emp_Cod)
+		begin
+			rollback
+			raiserror('El cuit y la razon social pertenecen a otra empresa', 16, 1)
+			return
+		end
+		else
+			/*¿QUE DATOS HAY QUE ACTUALIZAR?*/
+			update SQL_O.Empresa
+			set	Emp_Razon_Social = @razon_social, 
+			Emp_Cuit = @cuit
+			where Emp_Cod = @id_empresa
+			
+			update SQL_O.Datos_Pers
+			set Datos_Mail = @mail
+			where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
+	
+commit
+GO
+
