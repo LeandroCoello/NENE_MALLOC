@@ -767,3 +767,20 @@ begin transaction
 commit
 GO
 
+-- Creacion de visibilidad
+
+create procedure SQL_O.crear_visibilidad @codigo numeric(18,0), @descripcion nvarchar(255), 
+										 @precio numeric(18,2), @porcentaje numeric(18,2)
+										 
+as
+begin transaction
+	if exists(select Vis_Cod from SQL_O.Visibilidad where Vis_Cod=@codigo)
+		begin
+			rollback
+			raiserror('El codigo de visibilidad ya existe',16,1)
+		end
+		
+	Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Precio,Vis_Porcentaje) values(@codigo,@descripcion,@precio,@porcentaje)
+	
+commit
+GO
