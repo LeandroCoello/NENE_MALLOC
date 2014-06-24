@@ -10,6 +10,7 @@ CREATE TABLE SQL_O.Usuario(
 		Username varchar(30) Unique,
 		Userpass nvarchar (255),
 		User_Intentos numeric (18,0),
+		User_Rol numeric(18,0) references SQL_O.Rol(Rol_Cod),--Agregue esto
 		Usuario_Deshabilitado bit default 0,
 		Usuario_Baja bit default 0
 		)
@@ -19,7 +20,8 @@ CREATE TABLE SQL_O.Visibilidad(
 		Vis_Cod numeric(18,0) Primary Key,
 		Vis_Desc nvarchar(255),
 		Vis_Precio numeric(18,2),
-		Vis_Porcentaje numeric(18,2)
+		Vis_Porcentaje numeric(18,2),
+		Vis_Baja bit default 0
 		)
 GO
 
@@ -27,7 +29,8 @@ GO
 CREATE TABLE SQL_O.Rol(
 		Rol_Cod numeric(18,0) Primary Key identity,
 		Rol_Nombre nvarchar(255),
-		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId)
+		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId),--Yo esto lo sacaría a la mierda
+		Rol_baja bit default 0
 	)
 GO
 	
@@ -53,7 +56,8 @@ CREATE TABLE SQL_O.Empresa(
 		Emp_Fecha_Creacion datetime,
 		Emp_Contacto nvarchar(50),
 		Emp_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		Emp_Reputacion numeric(18,0) default 0
+		Emp_Reputacion numeric(18,0) default 0,
+		Emp_Baja bit default 0
 	)
 Go
 
@@ -68,6 +72,7 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_Fecha_Nac datetime,
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		Cli_Reputacion numeric(18) default 0,
+		Cli_Baja bit default 0
 		--Primary Key(Cli_NroDoc,Cli_TipoDoc)
 		)
 GO
@@ -683,7 +688,7 @@ as
 Go
 
 -- Alta Rubro
-create procedure SQL_O.alta_rubro @codigo numeric(18,0), @descripcion nvarchar(255)
+/*create procedure SQL_O.alta_rubro @codigo numeric(18,0), @descripcion nvarchar(255)
 as 
 begin transaction
 		if exists(select Rubro_Cod from SQL_O.Rubro  where Rubro_Cod = @codigo)
@@ -695,7 +700,7 @@ begin transaction
 			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
 		
 commit		
-GO
+GO*/
 
 -- Seleccion de Rol
 create procedure SQL_O.seleccion_rol  @rol nvarchar(255)
@@ -784,3 +789,78 @@ begin transaction
 	
 commit
 GO
+
+
+-- Baja de Rol
+
+create procedure SQL_O.baja_rol @rol nvarchar(255)
+as
+begin transaction
+	
+	update SQL_O.Rol set Rol_baja = 1
+	where Rol_Nombre = @rol
+	
+	update SQL_O.Usuario set Usuario_Baja = 1
+	where Usuario_Rol = (select r.Rol_Cod from SQL_O.Rol r where r.Rol_Nombre = @rol)
+	
+commit 
+GO 
+
+-- Rehabilitar Rol
+
+create procedure SQL_O.rehabilitacion_rol @rol nvarchar(255)
+as
+begin transaction
+	
+	update SQL_O.Rol set Rol_baja = 0
+	where Rol_Nombre = @rol
+	
+commit 
+GO 
+
+
+-- Baja de Cliente 
+create procedure SQL_O.baja_cliente @nombre nvarchar(255) , @apellido nvarchar(255) ,
+                                    @tipo_doc nvarchar(20) ,@nro_doc numeric(18,0) , @mail nvarchar(50)
+as
+begin transaction
+	
+	update SQL_O.Cliente set Cli_Baja = 1
+	where Cli_Nombre = @nombre
+	  and Cli_Apellido = @apellido
+	  and Cli_TipoDoc = @tipo_doc
+	  and Cli_NroDoc = @nro_doc
+	  and @mail = (select Datos_Mail from Datos_Pers, Cliente c where c.Cli_Datos_Pers = Datos_Id)
+	
+commit 
+GO 
+
+
+-- Baja de Empresa
+
+create procedure SQL_O.baja_empresa  @razon_social nvarchar(255) , 
+											 @cuit nvarchar(50) , @mail nvarchar(50) 
+											 
+as
+begin transaction
+
+	update SQL_O.Empresa set Emp_Baja = 1
+	where Emp_Razon_Social = @razon_social
+	  and Emp_Cuit = @cuit 
+	  and @mail = (select Datos_Mail from Datos_Pers, Empresa e where e.Emp_Datos_Pers = Datos_Id)
+
+commit	  
+GO
+
+
+-- Baja de visibilidad
+
+create procedure SQL_O.baja_visibilidad @visibilidad nvarchar(255)
+as
+begin transaction
+
+	update SQL_O.Visibilidad set Vis_Baja = 1
+	where Vis_Desc = @visibilidad
+	
+commit
+GO 
