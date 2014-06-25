@@ -19,6 +19,7 @@ GO
 CREATE TABLE SQL_O.Visibilidad(
 		Vis_Cod numeric(18,0) Primary Key,
 		Vis_Desc nvarchar(255),
+		Vis_Duracion numeric(18,0),
 		Vis_Precio numeric(18,2),
 		Vis_Porcentaje numeric(18,2),
 		Vis_Baja bit default 0
@@ -34,8 +35,7 @@ CREATE TABLE SQL_O.Rol(
 	)
 GO
 	
-
-
+	
 CREATE TABLE SQL_O.Datos_Pers(
 		Datos_Id numeric(18,0) Primary Key Identity,
 		Datos_Mail nvarchar(50),
@@ -173,7 +173,7 @@ CREATE TABLE SQL_O.Calificacion(
 GO
 
 CREATE TABLE SQL_O.Rubro(
-		Rubro_Cod numeric(18,0) Primary key,
+		Rubro_Cod numeric(18,0) Primary key identity,
 		Rubro_Desc nvarchar(255)
 		)
 GO
@@ -200,12 +200,13 @@ GO
 
 --Migracion
 
-Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio)
+Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio, Vis_Duracion)
 	(select distinct Publicacion_Visibilidad_Cod, 
 					 Publicacion_Visibilidad_Desc,
 				     Publicacion_Visibilidad_Porcentaje,
-				     Publicacion_Visibilidad_Precio 
-		from gd_esquema.Maestra)
+				     Publicacion_Visibilidad_Precio,7 
+	from gd_esquema.Maestra)
+	order by Publicacion_Visibilidad_Cod
 GO
 	
 Insert into SQL_O.Rubro(Rubro_Desc)
@@ -380,8 +381,8 @@ Declare cursor_Migracion_Pub cursor
 						  Publicacion_Rubro_Descripcion					  
 						  
 		from gd_esquema.Maestra 
-		where Publicacion_Cod is not null 
-		order by Publicacion_Cod asc)
+		where Publicacion_Cod is not null )
+		order by Publicacion_Cod asc
 		
 		
 Open cursor_Migracion_Pub
@@ -481,13 +482,15 @@ GO
 -- Store Procedures
 
 
---Login
-create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
+--Login (CORREGIDO)
+create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out, @rol nvarchar(255) out
 as 
 begin
-set @return=0 
+set @return=0 --El usuario ingresa correctamente
 if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpass=@userpass)
 	begin 
+	update SQL_O.Usuario set User_Intentos = 0
+	where Username = @usuario;
 	declare @deshabilitado bit
 	declare @baja bit
 	set @deshabilitado = (select Usuario_Deshabilitado from SQL_O.Usuario where @usuario=Username)
@@ -495,50 +498,82 @@ if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpa
 		if (@deshabilitado=1)
 		begin
 		   raiserror('El usuario esta deshabilitado.',16,1)	
-				set @return=2
+		   set @return=1 --El usuario no ingresa por estar deshabilitado
 		   return
 		end
 		else
 			if(@baja=1)
 			begin
 				raiserror('El usuario esta dado de baja.',16,1)
-					set @return=3
+				set @return=2 --El usuario no ingresa por estar dado de baja
 				return
 			end
+			else 
+				begin
+				set @rol = (select Rol_Nombre from SQL_O.Rol, SQL_O.Usuario where Username = @usuario and Rol_usuario = UserId and Rol_baja = 0)
+				end
 
 	end
 else
 	begin
-	raiserror('El usuario y/o la contraseña ingresada no es correcta.',16,1)
-		set @return=1
-	return
+		if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpass!=@userpass)
+		begin
+			if((select User_Intentos from SQL_O.Usuario where @usuario = Username) = 2)
+			begin
+				rollback
+				raiserror('La contraseña ingresada no es correcta y el usuario quedo inhabilitado',16,1)
+				update SQL_O.Usuario set Usuario_Deshabilitado = 1
+				where Username = @usuario
+				set @return = 1
+			end
+			else
+			begin
+				update SQL_O.Usuario set User_Intentos = User_Intentos + 1
+				where Username = @usuario;
+				raiserror('La contraseña ingresada no es correcta.',16,1)
+				set @return = 3 --El usuario no ingresa por ingresar una contraseña incorrecta
+				return
+			end
+		end
+		else
+		begin
+			raiserror ('El usuario no existe.',16,1)
+			set @return = 4 --El usuario no existe
+		end
 	end
 end
 
 GO
 
--- Generar usuario
-create procedure SQL_O.generar_usuario
+-- Generar usuario (CORREGIDO)
+create procedure SQL_O.generar_usuario @nombreUsuario nvarchar(30) out, @pass nvarchar(255) out
 as
 begin 
 	declare @id numeric(18,0)
 	set @id = (select MAX(UserId) from SQL_O.Usuario)+1
+	set @nombreUsuario = 'Usuario'+CONVERT(varchar(30),@id)
+	set @pass = 123456
 	insert into SQL_O.Usuario(Username,Userpass)
-		values('gdd'+CONVERT(varchar(30),@id),'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
+		values(@nombreUsuario ,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
 		
 end 
 GO
 
--- Alta Cliente
+-- Alta Cliente (CORREGIDO)
 create procedure SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
-							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),@calle nvarchar(100),
-							  @nrocalle numeric(18,0), @piso numeric(18,0),@depto nvarchar(50),@codpost nvarchar(50),@idusuario numeric(18,0)
+							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
+							  @calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
+							  @depto nvarchar(50),@codpost nvarchar(50), @usuario nvarchar(30),
+							  @return numeric(1,0)
+							  
 as 
 begin transaction
-		if len(@nrodoc)!=8 or exists(select Cli_NroDoc from SQL_O.Cliente where Cli_NroDoc=@nrodoc and Cli_TipoDoc=@tipodoc)
+set @return = 0
+		if exists(select Cli_NroDoc from SQL_O.Cliente where Cli_NroDoc=@nrodoc and Cli_TipoDoc=@tipodoc)
 			begin
 				rollback
-				raiserror('El Numero y Tipo de Documento ya existe o no es valido.',16,1)
+				raiserror('El Numero y Tipo de Documento ya existe.',16,1)
+				set @return = 1 --DNI ya existente
 			end
 		else 
 			begin
@@ -546,6 +581,7 @@ begin transaction
 					begin
 						rollback
 						raiserror('El Cuil ingresado ya existe.',16,1)
+						set @return = 2 --Cuil ya existente
 					end
 				else
 					begin
@@ -553,11 +589,12 @@ begin transaction
 							begin
 								 rollback
 								 raiserror('El Nro de telefono ingresado ya existe.',16,1)
+								 set @return = 3 --Telefono ya existente
 							end
 					end
 			 end
 			 
-		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Cliente',@idusuario)
+		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Cliente',(select UserId from SQL_O.Usuario where Username = @usuario))
 
 		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
 			values(@mail, @calle, @nrocalle, @piso, @depto, @codpost,@tel)
@@ -569,16 +606,22 @@ commit
 
 GO
 
--- Alta Empresa
-create procedure SQL_O.alta_empresa @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_c datetime, @contacto nvarchar(50),@mail nvarchar(50), 
-									@dom_calle nvarchar(100), @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),@tel numeric(18,0),
-									@cod_postal nvarchar(50),@idusuario numeric(18,0)
+-- Alta Empresa (CORREGIDO)
+create procedure SQL_O.alta_empresa @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_c datetime,
+								    @contacto nvarchar(50),@mail nvarchar(50), @dom_calle nvarchar(100),
+								    @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
+								    @tel numeric(18,0), @cod_postal nvarchar(50),@usuario nvarchar(30),
+								    @return numeric (1,0) out
 as 
 begin transaction
+
+set @return = 0
+
 		if exists(select Emp_Razon_Social from SQL_O.Empresa  where Emp_Razon_Social=@razon_social)
 			begin
 				rollback
-				raiserror('La razon social ya existe o no es valida.',16,1)
+				raiserror('La razon social ya existe o no es valida.',16,1)				
+				set @return = 1 --Razon Social ya existente
 			end
 		else 
 			begin
@@ -586,6 +629,7 @@ begin transaction
 					begin
 						rollback
 						raiserror('El Cuit ingresado ya existe.',16,1)
+						set @return = 2 --CUIT ya existente
 					end
 				else
 					begin
@@ -593,11 +637,12 @@ begin transaction
 							begin
 								 rollback
 								 raiserror('El Nro de telefono ingresado ya existe.',16,1)
+								 set @return = 3 --Nro de telefono ya existente
 							end
 					end
 			 end
 			 
-		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Empresa',@idusuario)
+		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Empresa',(select UserId from SQL_O.Usuario where Username = @usuario))
 
 		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal,@tel)
@@ -609,25 +654,28 @@ commit
 
 GO 
 
--- Crear Publicación
+-- Crear Publicación (CORREGIDO)
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
-										@fecha_fin datetime, @precio numeric(18,2), 
-										@tipo nvarchar(255), @estado varchar(255),@visibilidad nvarchar(255), 
-										@duenio varchar(30)
+										@precio numeric(18,2), @tipo nvarchar(255), 
+										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
+										@return numeric(1,0)
 										
 as
 begin transaction	
 
+	set @return = 0
 	if( @stock < 1) 
 	begin
 		rollback
 		raiserror('No se puede tener un stock menor a 1(uno)',16,1)
+		set @return = 1
 	end
 
 	if( @tipo = 'subasta' and @stock > 1) 
 	begin
 		rollback
 		raiserror('En Subastas el stock máximo permitido es 1',16,1)
+		set @return = 2
 	end
 											
 	
@@ -636,7 +684,8 @@ begin transaction
 	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
 								  Pub_Estado,Pub_Visibilidad, Pub_Duenio)
 			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, GETDATE(), 
-			@fecha_fin, @precio,(select Max(Tipo_Id) from SQL_O.Tipo_Pub), @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
+			 GETDATE() + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
+			@precio,(select Max(Tipo_Id) from SQL_O.Tipo_Pub), @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
 		    (select Rol_Cod from SQL_O.Rol, SQL_O.Usuario where @duenio = Username and Rol_Usuario = UserID))
 	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
 		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
@@ -644,50 +693,27 @@ commit
 
 GO		
 
--- Login del usuario de Gus
-/*
-create procedure SQL_O.loguear_usuario @usuario varchar(30), @contraseña nvarchar(255)
+
+-- Alta de visibilidad(CORREGIDO)
+
+create procedure SQL_O.alta_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0),
+										 @precio numeric(18,2), @porcentaje numeric(18,2)
+										 
 as
 begin transaction
-		if exists(select UserId from SQL_O.Usuario where @usuario = Username and @contraseña = UserPass)
-			begin
-				update SQL_O.Usuario set User_Intentos = 0
-				where Username = @usuario;
-				select UserId from SQL_O.Usuario where @usuario = Username and @contraseña = UserPass
-			end
-		else
-			if((select User_Intentos from SQL_O.Usuario where @usuario = Username) = 2)
-				begin
-					rollback
-					raiserror('El usuario o la contraseña ingresadas no son validos y el usuario quedo inhabilitado',16,1)
-					update SQL_O.Usuario set Usuario_Deshabilitado=1
-					where Username = @usuario
-				end
-			else
-				begin
-					rollback
-					raiserror('El usuario o la contraseña ingresadas no son validos',16,1)
-					update SQL_O.Usuario set User_Intentos = User_Intentos + 1
-					where Username = @usuario;
-				end
-			
-commit
-GO*/
-
-
-
--- Deshabilitar usuario
-create procedure SQL_O.deshabilitar_usuario @usuario varchar(30)
-as
-	begin
+	if exists(select Vis_Desc from SQL_O.Visibilidad where Vis_Desc = @descripcion)
+		begin
+			rollback
+			raiserror('La visibilidad ya existe',16,1)
+		end
+		
+	Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Duracion,Vis_Precio,Vis_Porcentaje) 
+	values((select Max(Vis_Cod) from SQL_O.Visibilidad)+1 ,@descripcion,@duracion,@precio,@porcentaje)
 	
-	update SQL_O.Usuario 
-		set Usuario_Deshabilitado=1
-			where Username=@usuario
-	end
-Go
+commit
+GO
 
--- Alta Rubro
+-- Alta Rubro(NO HACE FALTA)
 /*create procedure SQL_O.alta_rubro @codigo numeric(18,0), @descripcion nvarchar(255)
 as 
 begin transaction
@@ -699,23 +725,16 @@ begin transaction
 		else 
 			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
 		
-commit		
-GO*/
-
--- Seleccion de Rol
-create procedure SQL_O.seleccion_rol  @rol nvarchar(255)
-as
-begin
-	select Rol_Cod from SQL_O.Rol where Rol_Nombre = @rol	
-end
+commit	*/	
 GO
 
 -- Modificacion de Cliente
 
-create procedure SQL_O.modificacion_cliente  @id_cliente numeric(18,0), @nombre nvarchar(255) output, 
-											 @apellido nvarchar(255) output,
-											 @tipo_doc nvarchar(20) output,@nro_doc numeric(18,0) output, 
-											 @mail nvarchar(50) output
+create procedure SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
+											@cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
+											@calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
+											@depto nvarchar(50),@codpost nvarchar(50), @idusuario numeric(18,0),
+											@return numeric(1,0)
 											 
 as
 begin transaction
@@ -772,26 +791,8 @@ begin transaction
 commit
 GO
 
--- Creacion de visibilidad
 
-create procedure SQL_O.crear_visibilidad @codigo numeric(18,0), @descripcion nvarchar(255), 
-										 @precio numeric(18,2), @porcentaje numeric(18,2)
-										 
-as
-begin transaction
-	if exists(select Vis_Cod from SQL_O.Visibilidad where Vis_Cod=@codigo)
-		begin
-			rollback
-			raiserror('El codigo de visibilidad ya existe',16,1)
-		end
-		
-	Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Precio,Vis_Porcentaje) values(@codigo,@descripcion,@precio,@porcentaje)
-	
-commit
-GO
-
-
--- Baja de Rol
+-- Baja de Rol(CORREGIDO)
 
 create procedure SQL_O.baja_rol @rol nvarchar(255)
 as
@@ -800,13 +801,10 @@ begin transaction
 	update SQL_O.Rol set Rol_baja = 1
 	where Rol_Nombre = @rol
 	
-	update SQL_O.Usuario set Usuario_Baja = 1
-	where Usuario_Rol = (select r.Rol_Cod from SQL_O.Rol r where r.Rol_Nombre = @rol)
-	
 commit 
 GO 
 
--- Rehabilitar Rol
+-- Rehabilitar Rol(CORREGIDO)
 
 create procedure SQL_O.rehabilitacion_rol @rol nvarchar(255)
 as
@@ -818,6 +816,17 @@ begin transaction
 commit 
 GO 
 
+-- Baja de visibilidad(CORREGIDO)
+
+create procedure SQL_O.baja_visibilidad @visibilidad nvarchar(255)
+as
+begin transaction
+
+	update SQL_O.Visibilidad set Vis_Baja = 1
+	where Vis_Desc = @visibilidad
+	
+commit
+GO 
 
 -- Baja de Cliente 
 create procedure SQL_O.baja_cliente @nombre nvarchar(255) , @apellido nvarchar(255) ,
@@ -852,15 +861,3 @@ begin transaction
 commit	  
 GO
 
-
--- Baja de visibilidad
-
-create procedure SQL_O.baja_visibilidad @visibilidad nvarchar(255)
-as
-begin transaction
-
-	update SQL_O.Visibilidad set Vis_Baja = 1
-	where Vis_Desc = @visibilidad
-	
-commit
-GO 
