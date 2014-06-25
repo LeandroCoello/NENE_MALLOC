@@ -203,8 +203,11 @@
     <EmbeddedResource Include="Registro de Usuario\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Registro de Usuario\Form2ContinuacionRegistro.resx">
-      <DependentUpon>Form2ContinuacionRegistro.cs</DependentUpon>
+    <EmbeddedResource Include="Registro de Usuario\Form2RegistroCliente.resx">
+      <DependentUpon>Form2RegistroCliente.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Registro de Usuario\Form2RegistroEmpresa.resx">
+      <DependentUpon>Form2RegistroEmpresa.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -225,12 +228,23 @@
     <Compile Include="Registro de Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Registro de Usuario\Form2ContinuacionRegistro.cs">
+    <Compile Include="Registro de Usuario\Form2RegistroCliente.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Registro de Usuario\Form2ContinuacionRegistro.Designer.cs">
-      <DependentUpon>Form2ContinuacionRegistro.cs</DependentUpon>
+    <Compile Include="Registro de Usuario\Form2RegistroCliente.Designer.cs">
+      <DependentUpon>Form2RegistroCliente.cs</DependentUpon>
     </Compile>
+    <Compile Include="Registro de Usuario\Form2RegistroEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Registro de Usuario\Form2RegistroEmpresa.Designer.cs">
+      <DependentUpon>Form2RegistroEmpresa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sistema\Login.cs" />
+    <Compile Include="Sistema\Registro.cs" />
+    <Compile Include="Sistema\Sistema.cs" />
+    <Compile Include="Sistema\SQLConnector.cs" />
+    <Compile Include="Sistema\UsuarioLogueado.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

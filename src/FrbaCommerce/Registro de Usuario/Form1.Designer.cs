@@ -38,7 +38,7 @@
             // 
             // btnContinuar
             // 
-            this.btnContinuar.Location = new System.Drawing.Point(108, 147);
+            this.btnContinuar.Location = new System.Drawing.Point(117, 212);
             this.btnContinuar.Name = "btnContinuar";
             this.btnContinuar.Size = new System.Drawing.Size(75, 23);
             this.btnContinuar.TabIndex = 0;
@@ -58,7 +58,7 @@
             // LBEleccionDeRol
             // 
             this.LBEleccionDeRol.FormattingEnabled = true;
-            this.LBEleccionDeRol.Location = new System.Drawing.Point(94, 9);
+            this.LBEleccionDeRol.Location = new System.Drawing.Point(92, 39);
             this.LBEleccionDeRol.Name = "LBEleccionDeRol";
             this.LBEleccionDeRol.Size = new System.Drawing.Size(122, 43);
             this.LBEleccionDeRol.TabIndex = 6;
@@ -66,7 +66,7 @@
             // 
             // btnConfirmacion
             // 
-            this.btnConfirmacion.Location = new System.Drawing.Point(94, 58);
+            this.btnConfirmacion.Location = new System.Drawing.Point(107, 105);
             this.btnConfirmacion.Name = "btnConfirmacion";
             this.btnConfirmacion.Size = new System.Drawing.Size(98, 23);
             this.btnConfirmacion.TabIndex = 8;
@@ -77,7 +77,7 @@
             // lblMostrarUsuario
             // 
             this.lblMostrarUsuario.AutoSize = true;
-            this.lblMostrarUsuario.Location = new System.Drawing.Point(42, 84);
+            this.lblMostrarUsuario.Location = new System.Drawing.Point(63, 144);
             this.lblMostrarUsuario.Name = "lblMostrarUsuario";
             this.lblMostrarUsuario.Size = new System.Drawing.Size(209, 13);
             this.lblMostrarUsuario.TabIndex = 9;
@@ -86,7 +86,7 @@
             // lblMostrarContraseña
             // 
             this.lblMostrarContraseña.AutoSize = true;
-            this.lblMostrarContraseña.Location = new System.Drawing.Point(42, 111);
+            this.lblMostrarContraseña.Location = new System.Drawing.Point(63, 183);
             this.lblMostrarContraseña.Name = "lblMostrarContraseña";
             this.lblMostrarContraseña.Size = new System.Drawing.Size(188, 13);
             this.lblMostrarContraseña.TabIndex = 10;
@@ -96,7 +96,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(282, 213);
+            this.ClientSize = new System.Drawing.Size(316, 262);
             this.Controls.Add(this.lblMostrarContraseña);
             this.Controls.Add(this.lblMostrarUsuario);
             this.Controls.Add(this.btnConfirmacion);

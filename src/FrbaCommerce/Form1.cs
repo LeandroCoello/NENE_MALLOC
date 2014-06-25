@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using FrbaCommerce.Login;
 using FrbaCommerce.Registro_de_Usuario;
+using FrbaCommerce.Sistema;
 
 
 namespace FrbaCommerce
@@ -48,6 +49,7 @@ namespace FrbaCommerce
             FrbaCommerce.Registro_de_Usuario.Form1 registracion = new FrbaCommerce.Registro_de_Usuario.Form1();
             this.Hide();
             registracion.ShowDialog();
+            FrbaCommerce.Login.Form1 logearse = new FrbaCommerce.Login.Form1();
             this.Show();
             
         }

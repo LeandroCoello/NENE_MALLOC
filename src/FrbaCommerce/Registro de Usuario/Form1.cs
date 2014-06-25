@@ -42,16 +42,17 @@ namespace FrbaCommerce.Registro_de_Usuario
             {
                 case "Cliente":
                     this.Hide();
-                    Form2ContinuacionRegistro registrarCliente = new Form2ContinuacionRegistro(selected);
+                    Form2RegistroCliente registrarCliente = new Form2RegistroCliente();
                     registrarCliente.ShowDialog();
                     break;
                 case "Empresa":
                     this.Hide();
-                    Form2ContinuacionRegistro registrarEmpresa = new Form2ContinuacionRegistro(selected);
+                    Form2RegistroEmpresa registrarEmpresa = new Form2RegistroEmpresa();
                     registrarEmpresa.ShowDialog();
                     break;
             }
-            }else{ MessageBox.Show("Por favor primero seleccione un item");
+            }
+        else{ MessageBox.Show("Por favor primero seleccione un item");
             }
             
         }
