@@ -10,7 +10,6 @@ CREATE TABLE SQL_O.Usuario(
 		Username varchar(30) Unique,
 		Userpass nvarchar (255),
 		User_Intentos numeric (18,0),
-		User_Rol numeric(18,0) references SQL_O.Rol(Rol_Cod),--Agregue esto
 		Usuario_Deshabilitado bit default 0,
 		Usuario_Baja bit default 0
 		)
@@ -30,7 +29,7 @@ GO
 CREATE TABLE SQL_O.Rol(
 		Rol_Cod numeric(18,0) Primary Key identity,
 		Rol_Nombre nvarchar(255),
-		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId),--Yo esto lo sacaría a la mierda
+		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId),
 		Rol_baja bit default 0
 	)
 GO
@@ -73,7 +72,6 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		Cli_Reputacion numeric(18) default 0,
 		Cli_Baja bit default 0
-		--Primary Key(Cli_NroDoc,Cli_TipoDoc)
 		)
 GO
 
@@ -86,7 +84,6 @@ CREATE TABLE SQL_O.Administrativo(
 		Admin_Cuil numeric(18,0) Unique,
 		Admin_Fecha_Nac datetime,
 		Admin_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
-		--Primary Key(Admin_NroDoc,Admin_TipoDoc)
 		)
 GO
 		
