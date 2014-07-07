@@ -9,7 +9,7 @@ CREATE TABLE SQL_O.Usuario(
 		UserId numeric(18,0) Primary Key Identity,
 		Username varchar(30) Unique,
 		Userpass nvarchar (255),
-		User_Intentos numeric (18,0),
+		User_Intentos numeric (18,0) default 0,
 		Usuario_Deshabilitado bit default 0,
 		Usuario_Baja bit default 0
 		)
@@ -517,7 +517,7 @@ else
 		begin
 			if((select User_Intentos from SQL_O.Usuario where @usuario = Username) = 2)
 			begin
-				rollback
+				
 				raiserror('La contraseña ingresada no es correcta y el usuario quedo inhabilitado',16,1)
 				update SQL_O.Usuario set Usuario_Deshabilitado = 1
 				where Username = @usuario
@@ -726,7 +726,7 @@ commit	*/
 GO
 
 -- Modificacion de Cliente
-
+/*
 create procedure SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 											@cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
 											@calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
@@ -755,11 +755,11 @@ begin transaction
 			set Datos_Mail = @mail
 			where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
 	
-commit
+commit*/
 GO
 
 -- Modificacion de Empresa
-
+/*
 create procedure SQL_O.modificacion_empresa  @id_empresa numeric(18,0), @razon_social nvarchar(255) output, 
 											 @cuit nvarchar(50) output, @mail nvarchar(50) output
 											 
@@ -786,6 +786,7 @@ begin transaction
 			where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
 	
 commit
+*/
 GO
 
 
