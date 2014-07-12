@@ -218,7 +218,7 @@ GO
 
 Insert into SQL_O.Rol(Rol_Desc) values('Empresa')
 Insert into SQL_O.Rol(Rol_Desc) values('Cliente')
-Insert into SQL_O.Rol(Rol_Desc) values('Administrativo')
+Insert into SQL_O.Rol(Rol_Desc) values('Admin')
 GO
 
 
@@ -301,7 +301,7 @@ deallocate cursor_Migracion_Emp
 GO
 
 
---ARREGLADO HASTA ACA
+
 go
 
 --Migracion Cliente
@@ -358,15 +358,20 @@ else
 	end
 
 
-Insert into SQL_O.Usuario(Username,Userpass) values ('gdd'+CONVERT(varchar(30),@idcli),'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
+Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Cliente',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Cliente'))
 
-Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Cliente',(select MAX(UserId)from SQL_O.Usuario))
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
 			
 Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc) 
-			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @dni, @apellido, @nombre,@fecha_nac,'DNI')
+			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @dni, @apellido, @nombre,@fecha_nac,'DNI')
+
+
+Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('gdd'+CONVERT(varchar(30),@idcli),
+															   '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
+															   (select MAX(Tipo_Cod) from SQL_O.Tipo))
+
 
 
 fetch cursor_Migracion_Cli into @dni, @apellido, @nombre, @fecha_nac, @mail, @dom_calle,
@@ -419,20 +424,20 @@ fetch cursor_Migracion_Pub into @cod, @desc, @stock, @fecha_ini, @fecha_vto, @pr
 while(@@fetch_status=0)
 begin
 
-Insert into SQL_O.Tipo_Pub(Tipo_Desc, Tipo_Precio) values (@tipo,@precio)
+
 
 if(@dni_cliente is not null) 
 	begin
-	set @duenio  = (select Cli_Id from SQL_O.Cliente where @dni_cliente = Cli_NroDoc)
+	set @duenio  = (select UserId from SQL_O.Cliente,SQL_O.Tipo,SQL_O.Usuario where @dni_cliente = Cli_NroDoc and Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
 	end
 else
 	begin
-	set @duenio  = (select Emp_Cod from SQL_O.Empresa where @cuit_empresa = Emp_Cuit)
+	set @duenio  = (select UserId from SQL_O.Empresa,SQL_O.Tipo,SQL_O.Usuario where @cuit_empresa = Emp_Cuit and Emp_Cod=Tipo_Cod and User_Tipo=Tipo_Cod)
 	end
 
 Insert into SQL_O.Publicacion(Pub_Cod,Pub_Desc,Pub_Stock,Pub_Fecha_Ini,Pub_Fecha_Vto,Pub_Precio,Pub_Tipo
 							,Pub_Estado,Pub_Duenio,Pub_Visibilidad)
-			values(@cod, @desc, @stock, @fecha_ini, @fecha_vto, @precio,(select MAX (Tipo_Id) from SQL_O.Tipo_Pub),@estado,@duenio,@visibilidad_cod)
+			values(@cod, @desc, @stock, @fecha_ini, @fecha_vto, @precio,@tipo,@estado,@duenio,@visibilidad_cod)
 
 Insert into SQL_O.Pub_Por_Rubro(Pub_Cod,Rubro_Cod)
 			values(@cod,(select Rubro_Cod from SQL_O.Rubro where @rubro=Rubro_Desc))
@@ -445,11 +450,10 @@ deallocate cursor_Migracion_Pub
  
 GO
 
+
 -- Insert Admin
 
-Insert into SQL_O.Usuario(Username,Userpass) values ('superAdmin','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
-
-Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Admin',(select MAX(UserId)from SQL_O.Usuario))
+Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Admin',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Admin'))
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
 			values('sql_o_rulz@gmail.com', 'Medrano','951', 4, 'O','0007',47777777)
@@ -457,18 +461,26 @@ Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos
 Declare @date date = '12-03-1985'
 Declare @datetime datetime = @date
 Insert into SQL_O.Administrativo(Admin_Id,Admin_Datos_Pers ,Admin_NroDoc, Admin_Apellido, Admin_Nombre,Admin_Fecha_Nac) 
-			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), '77777777','Horsehead Bond','James',@datetime)
+			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), '77777777','Horsehead Bond','James',@datetime)
+
+Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('superAdmin','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',(select MAX(Tipo_Cod) from SQL_O.Tipo))
 
 GO
 
-insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub)
+
+insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
 	(select distinct Calificacion_Codigo,
 					 Calificacion_Cant_Estrellas, 
 					 Calificacion_Descripcion,
-					 Publicacion_Cod
+					 Publicacion_Cod,
+					 (select UserId from SQL_O.Cliente,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni=Cli_NroDoc and Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
 	 from gd_esquema.Maestra where Calificacion_Codigo is not null)
 	 
 GO
+
+--ARREGLADO HASTA ACA
+--factura sin corregir
+/*
 
 insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Publicacion)
 	(select distinct Factura_Nro,
@@ -479,29 +491,30 @@ insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_
 	from gd_esquema.Maestra where Factura_Nro is not null)
 
 GO
-
+--item factura sin corregir
 insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto)
 	(select Item_Factura_Cantidad,
 			Factura_Nro,
 			Item_Factura_Monto
 	from gd_esquema.Maestra where Item_Factura_Cantidad is not null)
-
+*/
 GO
-
+--ACA SEGUI CON LA CORRECCION
+--compra corregido
 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
 	(select distinct Publicacion_Cod,
 					 Compra_Fecha,
 					 Compra_Cantidad,
-					 (select c.Cli_Id from SQL_O.Cliente c where Cli_Dni = c.Cli_NroDoc)
+					 (select UserId from SQL_O.Cliente c,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni = c.Cli_NroDoc and c.Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
 	from gd_esquema.Maestra where Compra_Fecha is not null)
 	
 GO
-
+--oferta corregido
 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
 	(select distinct Publicacion_Cod,
 					 Oferta_Fecha,
 					 Oferta_Monto,
-					 (select c.Cli_Id from SQL_O.Cliente c where Cli_Dni = c.Cli_NroDoc)
+					 (select UserId from SQL_O.Cliente c,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni = c.Cli_NroDoc and c.Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
 	from gd_esquema.Maestra where Oferta_Fecha is not null)
 	
 GO
