@@ -4,37 +4,29 @@ GO
 CREATE SCHEMA  SQL_O AUTHORIZATION gd 
 GO
 
+CREATE TABLE SQL_O.Funcionalidad(
 
-CREATE TABLE SQL_O.Usuario(
-		UserId numeric(18,0) Primary Key Identity,
-		Username varchar(30) Unique,
-		Userpass nvarchar (255),
-		User_Intentos numeric (18,0) default 0,
-		Usuario_Deshabilitado bit default 0,
-		Usuario_Baja bit default 0
+		Func_Cod numeric(18,0) Primary Key Identity,
+		Func_Desc nvarchar(255)		
 		)
 GO
-
-CREATE TABLE SQL_O.Visibilidad(
-		Vis_Cod numeric(18,0) Primary Key,
-		Vis_Desc nvarchar(255),
-		Vis_Duracion numeric(18,0),
-		Vis_Precio numeric(18,2),
-		Vis_Porcentaje numeric(18,2),
-		Vis_Baja bit default 0
-		)
-GO
-
 
 CREATE TABLE SQL_O.Rol(
-		Rol_Cod numeric(18,0) Primary Key identity,
-		Rol_Nombre nvarchar(255),
-		Rol_usuario numeric(18,0) references SQL_O.Usuario(UserId),
-		Rol_baja bit default 0
-	)
+
+		Rol_Cod numeric(18,0) Primary Key Identity,
+		Rol_Desc nvarchar(255),
+		Rol_baja bit default 0		
+		)
 GO
-	
-	
+
+CREATE TABLE SQL_O.Func_Por_Rol(
+
+		Rol_Cod numeric(18,0)references SQL_O.Rol(Rol_Cod),
+		Func_Cod numeric(18,0) references SQL_O.Funcionalidad(Func_Cod),	
+		Primary Key (Rol_Cod,Func_Cod)
+		)
+GO
+
 CREATE TABLE SQL_O.Datos_Pers(
 		Datos_Id numeric(18,0) Primary Key Identity,
 		Datos_Mail nvarchar(50),
@@ -48,8 +40,16 @@ CREATE TABLE SQL_O.Datos_Pers(
 GO	
 		
 
+CREATE TABLE SQL_O.Tipo(
+		Tipo_Cod numeric(18,0) Primary Key identity,
+		Tipo_Nombre nvarchar(255),
+		Tipo_Rol numeric(18,0) references SQL_O.Rol(Rol_Cod)
+	)
+GO
+
+
 CREATE TABLE SQL_O.Empresa(
-		Emp_Cod numeric(18,0) Primary Key references SQL_O.Rol(Rol_Cod) NOT NULL,
+		Emp_Cod numeric(18,0) Primary Key references SQL_O.Tipo(Tipo_Cod) NOT NULL,
 		Emp_Razon_Social nvarchar(255) Unique,
 		Emp_Cuit nvarchar(50) Unique,
 		Emp_Fecha_Creacion datetime,
@@ -62,7 +62,7 @@ Go
 
 
 CREATE TABLE SQL_O.Cliente(
-		Cli_Id numeric(18,0) Primary Key references SQL_O.Rol(Rol_Cod) NOT NULL,
+		Cli_Id numeric(18,0) Primary Key references SQL_O.Tipo(Tipo_Cod) NOT NULL,
 		Cli_NroDoc numeric(18,0), 
 		Cli_TipoDoc nvarchar(20), 
 		Cli_Apellido nvarchar(255),
@@ -76,7 +76,7 @@ CREATE TABLE SQL_O.Cliente(
 GO
 
 CREATE TABLE SQL_O.Administrativo(
-		Admin_Id numeric(18,0) Primary Key References SQL_O.Rol(Rol_Cod) NOT NULL,
+		Admin_Id numeric(18,0) Primary Key References SQL_O.Tipo(Tipo_Cod) NOT NULL,
 		Admin_NroDoc numeric(18,0), 
 		Admin_TipoDoc nvarchar(20), 
 		Admin_Apellido nvarchar(255),
@@ -86,14 +86,31 @@ CREATE TABLE SQL_O.Administrativo(
 		Admin_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		)
 GO
-		
 
-CREATE TABLE SQL_O.Tipo_Pub(
-		Tipo_Id numeric(18,0) Primary Key identity,
-		Tipo_Precio numeric(18,2),
-		Tipo_Desc nvarchar(255)
+
+
+CREATE TABLE SQL_O.Usuario(
+		UserId numeric(18,0) Primary Key Identity,
+		Username varchar(30) Unique,
+		Userpass nvarchar (255),
+		User_Intentos numeric (18,0) default 0,
+		User_Deshabilitado bit default 0,
+		User_Baja bit default 0,
+		User_Tipo numeric(18,0) references SQL_O.Tipo(Tipo_Cod)
 		)
 GO
+
+CREATE TABLE SQL_O.Visibilidad(
+		Vis_Cod numeric(18,0) Primary Key,
+		Vis_Desc nvarchar(255),
+		Vis_Duracion numeric(18,0),
+		Vis_Precio numeric(18,2),
+		Vis_Porcentaje numeric(18,2),
+		Vis_Baja bit default 0
+		)
+GO
+
+		
 
 CREATE TABLE SQL_O.Publicacion(
 		Pub_Cod numeric(18,0) Primary Key,
@@ -102,10 +119,10 @@ CREATE TABLE SQL_O.Publicacion(
 		Pub_Fecha_Ini datetime,
 		Pub_Fecha_Vto datetime,
 		Pub_Precio numeric(18,2),
-		Pub_Tipo numeric(18,0) references SQL_O.Tipo_Pub(Tipo_Id) NOT NULL,
+		Pub_Tipo nvarchar(100),
 		Pub_Estado nvarchar(255),
 		Pub_Visibilidad numeric(18,0) references SQL_O.Visibilidad(Vis_Cod) NOT NULL,
-		Pub_Duenio numeric (18,0) references SQL_O.Rol(Rol_Cod) NOT NULL
+		Pub_Duenio numeric (18,0) references SQL_O.Usuario(UserId) NOT NULL
 		)
 GO
 
@@ -121,7 +138,8 @@ CREATE TABLE SQL_O.Pregunta(
 		Pre_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
 		Pre_Res numeric(18,0) references SQL_O.Respuesta(Res_Cod) NOT NULL,
 		Pre_Texto nvarchar(255),
-		Pre_Fecha datetime
+		Pre_Fecha datetime,
+		Pre_User numeric(18,0) references SQL_O.Usuario(UserID)
 		)
 GO
 
@@ -138,7 +156,7 @@ CREATE TABLE SQL_O.Item_Factura (
 	Item_Id numeric(18,0) Primary Key Identity,
 	Item_Monto numeric(18,2),
 	Item_Cantidad numeric(18,0),
-	Item_Factura numeric(18,0) references SQL_O.Factura (Factura_Nro)
+	Item_Publicacion numeric(18,0) references SQL_O.Publicacion(Pub_Cod)
 	)
 GO
 
@@ -147,16 +165,16 @@ CREATE TABLE SQL_O.Compra(
 		Compra_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
 		Compra_Fecha datetime,
 		Compra_Cantidad numeric(18,0),
-		Compra_Comprador numeric(18,0) references SQL_O.Rol(Rol_Cod)
+		Compra_Comprador numeric(18,0) references SQL_O.Usuario(UserId)
 		)
 GO
 
 CREATE TABLE SQL_O.Oferta(
 		Oferta_Id numeric(18,0) Primary Key identity,
-		Oferta_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
+		Oferta_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod),
 		Oferta_Fecha datetime,
 		Oferta_Monto numeric(18,2),
-		Oferta_Cliente numeric(18,0) references SQL_O.Rol(Rol_Cod) NOT NULL,
+		Oferta_Cliente numeric(18,0) references SQL_O.Usuario(UserId),
 		Oferta_Gano bit default 0
 		)
 GO
@@ -165,7 +183,8 @@ CREATE TABLE SQL_O.Calificacion(
 		Cal_Codigo numeric(18,0) Primary Key,
 		Cal_Cant_Est numeric(18,0),
 		Cal_Desc nvarchar(255),
-		Cal_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL
+		Cal_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
+		Cal_User numeric(18,0) references SQL_O.Usuario(UserId)
 		)
 GO
 
@@ -196,6 +215,12 @@ GO
 */
 
 --Migracion
+
+Insert into SQL_O.Rol(Rol_Desc) values('Empresa')
+Insert into SQL_O.Rol(Rol_Desc) values('Cliente')
+Insert into SQL_O.Rol(Rol_Desc) values('Administrativo')
+GO
+
 
 Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio, Vis_Duracion)
 	(select distinct Publicacion_Visibilidad_Cod, 
@@ -254,15 +279,17 @@ else
 	end
 	
 --userpass es 123456 con sha256
-Insert into SQL_O.Usuario(Username,Userpass) values (('gdd'+convert(varchar(30),@idemp)),'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
-
-Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Empresa',(select MAX(UserId)from SQL_O.Usuario))
+Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Empresa',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Empresa'))
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
 			
 Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers ,Emp_Razon_Social, Emp_Cuit, Emp_Fecha_Creacion) 
-			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social, @cuit, @fecha_c)
+			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social, @cuit, @fecha_c)
+
+Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values (('gdd'+convert(varchar(30),@idemp)),
+																'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
+																(select MAX(Tipo_Cod) from SQL_O.Tipo))
 
 
 fetch cursor_Migracion_Emp into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
@@ -272,6 +299,10 @@ close cursor_Migracion_Emp
 deallocate cursor_Migracion_Emp
  
 GO
+
+
+--ARREGLADO HASTA ACA
+go
 
 --Migracion Cliente
 Declare 
