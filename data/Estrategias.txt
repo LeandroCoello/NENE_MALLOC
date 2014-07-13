@@ -1,0 +1,25 @@
+
+--Tablas
+
+Por cada usuario va a haber una fila de datos de su tipo(en la tabla empresa o cliente o administrativo) y los campos mail, teléfono y datos del domicilio, ya que se repetían en los tres tipos de usuario, se decidió normalizarlos en otra tabla llamada Datos_Pers.
+
+Para tratar polimorficamente el tipo, es decir para facilitar la determinación de la tabla en la que se encuentra su tipo, creamos la tabla intermedia Tipo(aplicando la forma de herencia -Joined Table-), por eso es necesario que cada fila de empresa, cliente y administrativo tenga su fila asociada en la tabla Tipo(implementacion de joined table). 
+
+A su vez existen tres roles fijos(se pueden agregar mas) asociados a sus funcionalidades. Cada fila de tipo tiene una fk a rol, esto significa que dependiendo el tipo se le asocia un rol con sus respectivas funcionalidades. 
+
+(Algo de factura e item factura)
+
+-- Migracion
+
+La mayoría de las tablas se migraron realizando inserts masivos.
+
+Para el caso de Empresa, Cliente y Publicación, debido a la normalización, por cada fila de Empresa y Cliente tenemos que insertar en cuatro tablas(Tipo,Datos_Pers,Empresa o Cliente y Usuario) y para Publicación en dos(Publicación y Pub_Por_Rubro -ésta última porque se supone que una publicación puede tener varios rubros-) . Por este tema decidimos migrar las tres tablas implementando cursores, aceptando la penalización de tiempo que nos trae su utilización.
+
+Tanto en los inserts masivos como en los cursores los campos fk los completamos con subconsultas.
+
+(algo de factura e item factura)
+
+
+-- Stores Procedures
+
+Las operaciones de login, alta, baja y modificación de usuarios cliente, usuarios empresa, visibilidades y publicaciónes, para facilitar la comunicación con la aplicación (y algo de fruta mas podemos tirar que ahora no se me ocurre :p) implementamos store procedures.

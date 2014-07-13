@@ -110,7 +110,6 @@ CREATE TABLE SQL_O.Visibilidad(
 		)
 GO
 
-		
 
 CREATE TABLE SQL_O.Publicacion(
 		Pub_Cod numeric(18,0) Primary Key,
@@ -147,7 +146,6 @@ CREATE TABLE SQL_O.Factura (
 	Factura_Nro numeric(18,0) Primary Key, 
 	Factura_Fecha datetime, 
 	Factura_Total numeric(18,0),
-	Factura_Publicacion numeric(18,0) references SQL_O.Publicacion (Pub_Cod),
 	Factura_Forma_Pago nvarchar(255)
 	)
 GO	
@@ -156,7 +154,8 @@ CREATE TABLE SQL_O.Item_Factura (
 	Item_Id numeric(18,0) Primary Key Identity,
 	Item_Monto numeric(18,2),
 	Item_Cantidad numeric(18,0),
-	Item_Publicacion numeric(18,0) references SQL_O.Publicacion(Pub_Cod)
+	Item_Publicacion numeric(18,0) references SQL_O.Publicacion(Pub_Cod),
+	Item_Factura numeric(18,0) references SQL_O.Factura(Factura_Nro)
 	)
 GO
 
@@ -300,9 +299,6 @@ deallocate cursor_Migracion_Emp
  
 GO
 
-
-
-go
 
 --Migracion Cliente
 Declare 
