@@ -146,7 +146,8 @@ CREATE TABLE SQL_O.Factura (
 	Factura_Nro numeric(18,0) Primary Key, 
 	Factura_Fecha datetime, 
 	Factura_Total numeric(18,0),
-	Factura_Forma_Pago nvarchar(255)
+	Factura_Forma_Pago nvarchar(255),
+	Factura_Usuario numeric(18,0) references SQL_O.Usuario(UserId)
 	)
 GO	
 
@@ -206,11 +207,6 @@ GO
 	En tabla maestra:
 		~ Las columnas que empiezan con Publ_ se refieren a dueños de publicaciones.
 		~ Las columnas que empiezan con Cli siempre estan "unidas" a ofertas o compras, o sea son clientes que ofertaron o compraron algo.
-
-- Tipos de usuario donde carajo iria.
-- Cuando se finaliza una subasta la misma pasa a ser una compra con el ultimo que oferto como comprador.
-- Los items de las facturas serian las compras.
-- Analizar tipos de datos medios fruta (userpass, entre otros).
 */
 
 --Migracion
@@ -474,29 +470,27 @@ insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User
 	 
 GO
 
---ARREGLADO HASTA ACA
---factura sin corregir
-/*
-
-insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Publicacion)
+insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Usuario)
 	(select distinct Factura_Nro,
 					Factura_Fecha,
 					Factura_Total,
 					Forma_Pago_Desc,
-					Publicacion_Cod
+					(select Pub_Duenio from SQL_O.Publicacion where Pub_Cod = Publicacion_Cod)
 	from gd_esquema.Maestra where Factura_Nro is not null)
+	order by Factura_Nro
 
 GO
---item factura sin corregir
-insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto)
+
+insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto,Item_Publicacion)
 	(select Item_Factura_Cantidad,
 			Factura_Nro,
-			Item_Factura_Monto
+			Item_Factura_Monto,
+			Publicacion_Cod
 	from gd_esquema.Maestra where Item_Factura_Cantidad is not null)
-*/
+
 GO
---ACA SEGUI CON LA CORRECCION
---compra corregido
+
+
 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
 	(select distinct Publicacion_Cod,
 					 Compra_Fecha,
@@ -505,7 +499,7 @@ insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprado
 	from gd_esquema.Maestra where Compra_Fecha is not null)
 	
 GO
---oferta corregido
+
 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
 	(select distinct Publicacion_Cod,
 					 Oferta_Fecha,
@@ -515,6 +509,8 @@ insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
 	
 GO
 
+--Migración corregida
+go
 
 -- Store Procedures
 
