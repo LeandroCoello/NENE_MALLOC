@@ -15,5 +15,29 @@ namespace FrbaCommerce.Abm_Empresa
         {
             InitializeComponent();
         }
+
+        private void btnAlta_Click(object sender, EventArgs e)
+        {
+            AltaEmpresa levantarAlta = new AltaEmpresa();
+            levantarAlta.ShowDialog();
+            this.Hide();
+        }
+        private void btnBaja_Click(object sender, EventArgs e)
+        {
+            FiltradoEmpresa levantarFiltro = new FiltradoEmpresa();
+            levantarFiltro.ShowDialog();
+            this.Hide();
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            FiltradoEmpresa levantarFiltro = new FiltradoEmpresa();
+            levantarFiltro.ShowDialog();
+            this.Hide();
+        }
+
+
+
+
     }
 }
