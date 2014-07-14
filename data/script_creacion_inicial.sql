@@ -515,7 +515,7 @@ go
 -- Store Procedures
 
 
---Login (CORREGIDO)
+--Login //corregido//
 create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out, @rol nvarchar(255) out
 as 
 begin
@@ -526,8 +526,8 @@ if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpa
 	where Username = @usuario;
 	declare @deshabilitado bit
 	declare @baja bit
-	set @deshabilitado = (select Usuario_Deshabilitado from SQL_O.Usuario where @usuario=Username)
-	set @baja = (select Usuario_Baja from SQL_O.Usuario where @usuario=Username)
+	set @deshabilitado = (select User_Deshabilitado from SQL_O.Usuario where @usuario=Username)
+	set @baja = (select User_Baja from SQL_O.Usuario where @usuario=Username)
 		if (@deshabilitado=1)
 		begin
 		   raiserror('El usuario esta deshabilitado.',16,1)	
@@ -543,7 +543,7 @@ if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpa
 			end
 			else 
 				begin
-				set @rol = (select Rol_Nombre from SQL_O.Rol, SQL_O.Usuario where Username = @usuario and Rol_usuario = UserId and Rol_baja = 0)
+				set @rol = (select Rol_Desc from SQL_O.Tipo, SQL_O.Usuario,SQL_O.Rol where Username = @usuario and User_Tipo=Tipo_Cod and Tipo_Rol=Rol_Cod and Rol_baja = 0)
 				end
 
 	end
@@ -555,7 +555,7 @@ else
 			begin
 				
 				raiserror('La contraseña ingresada no es correcta y el usuario quedo inhabilitado',16,1)
-				update SQL_O.Usuario set Usuario_Deshabilitado = 1
+				update SQL_O.Usuario set User_Deshabilitado = 1
 				where Username = @usuario
 				set @return = 1
 			end
@@ -578,7 +578,7 @@ end
 
 GO
 
--- Generar usuario (CORREGIDO)
+-- Generar usuario (CORREGIDO) revisado
 create procedure SQL_O.generar_usuario @nombreUsuario nvarchar(30) out, @pass nvarchar(255) out
 as
 begin 
@@ -592,7 +592,7 @@ begin
 end 
 GO
 
--- Alta Cliente (CORREGIDO)
+-- Alta Cliente //corregido//
 create procedure SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
 							  @calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
@@ -627,19 +627,23 @@ set @return = 0
 					end
 			 end
 			 
-		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Cliente',(select UserId from SQL_O.Usuario where Username = @usuario))
-
+		Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Cliente',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Cliente'))
+		
+		update SQL_O.Usuario 
+			set User_Tipo=(select max(Tipo_Cod) from SQL_O.Tipo)
+				where Username=@usuario
+		
 		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
 			values(@mail, @calle, @nrocalle, @piso, @depto, @codpost,@tel)
 			
 		Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc,Cli_Cuil) 
-			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @nrodoc, @apellido, @nombre,@fecha_nac,@tipodoc,@cuil)
+			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @nrodoc, @apellido, @nombre,@fecha_nac,@tipodoc,@cuil)
 
 commit
 
 GO
 
--- Alta Empresa (CORREGIDO)
+-- Alta Empresa //corregido//
 create procedure SQL_O.alta_empresa @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_c datetime,
 								    @contacto nvarchar(50),@mail nvarchar(50), @dom_calle nvarchar(100),
 								    @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
@@ -674,20 +678,20 @@ set @return = 0
 							end
 					end
 			 end
-			 
-		Insert into SQL_O.Rol(Rol_Nombre,Rol_usuario) values ('Empresa',(select UserId from SQL_O.Usuario where Username = @usuario))
-
+		
+		Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Empresa',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Empresa'))
+	 
 		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal,@tel)
 			
 		Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers,Emp_Razon_Social, Emp_Cuit,Emp_Fecha_Creacion,Emp_Contacto) 
-			values((select Max(Rol_Cod) from SQL_O.Rol),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social,@cuit,@fecha_c,@contacto)
+			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social,@cuit,@fecha_c,@contacto)
 
 commit
 
 GO 
 
--- Crear Publicación (CORREGIDO)
+-- Crear Publicación //corregido//
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
 										@precio numeric(18,2), @tipo nvarchar(255), 
 										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
@@ -712,14 +716,13 @@ begin transaction
 	end
 											
 	
-	Insert into SQL_O.Tipo_Pub(Tipo_Precio, Tipo_Desc)values (@precio, @tipo)
 	
 	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
 								  Pub_Estado,Pub_Visibilidad, Pub_Duenio)
 			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, GETDATE(), 
 			 GETDATE() + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
-			@precio,(select Max(Tipo_Id) from SQL_O.Tipo_Pub), @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
-		    (select Rol_Cod from SQL_O.Rol, SQL_O.Usuario where @duenio = Username and Rol_Usuario = UserID))
+			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
+		    (select UserId from SQL_O.Usuario where @duenio = Username))
 	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
 		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
 commit 
@@ -727,7 +730,7 @@ commit
 GO		
 
 
--- Alta de visibilidad(CORREGIDO)
+-- Alta de visibilidad(CORREGIDO) //revisado//
 
 create procedure SQL_O.alta_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0),
 										 @precio numeric(18,2), @porcentaje numeric(18,2)
@@ -826,31 +829,31 @@ commit
 GO
 
 
--- Baja de Rol(CORREGIDO)
+-- Baja de Rol //corregido//
 
 create procedure SQL_O.baja_rol @rol nvarchar(255)
 as
 begin transaction
 	
 	update SQL_O.Rol set Rol_baja = 1
-	where Rol_Nombre = @rol
+	where Rol_Desc = @rol
 	
 commit 
 GO 
 
--- Rehabilitar Rol(CORREGIDO)
+-- Rehabilitar Rol //corregido//
 
 create procedure SQL_O.rehabilitacion_rol @rol nvarchar(255)
 as
 begin transaction
 	
 	update SQL_O.Rol set Rol_baja = 0
-	where Rol_Nombre = @rol
+	where Rol_Desc= @rol
 	
 commit 
 GO 
 
--- Baja de visibilidad(CORREGIDO)
+-- Baja de visibilidad(CORREGIDO) //revisado//
 
 create procedure SQL_O.baja_visibilidad @visibilidad nvarchar(255)
 as
