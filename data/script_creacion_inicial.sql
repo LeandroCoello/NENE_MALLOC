@@ -760,6 +760,20 @@ begin transaction
 		raiserror('En Subastas el stock máximo permitido es 1',16,1)
 		set @return = 2
 	end
+	
+	if(@visibilidad = 'Gratis' and 
+	  ((select COUNT(p.Pub_Cod) 
+	    from SQL_O.Publicacion p, SQL_O.Usuario u, SQL_O.Visibilidad v
+	    where p.Pub_Visibilidad = v.Vis_Cod
+	      and v.Vis_Desc = 'Gratis'
+	      and u.Username = @duenio
+	      and p.Pub_Duenio = u.UserId
+	      and p.Pub_Estado = 'Publicada')=3))
+	begin
+		rollback
+		raiserror('No se pueden tener más de 3 publicaciones gratuitas al mismo tiempo',16,1)
+		set @return = 3
+	end
 											
 	
 	
