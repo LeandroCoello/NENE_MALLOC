@@ -13,7 +13,7 @@ GO
 
 CREATE TABLE SQL_O.Rol(
 
-		Rol_Cod numeric(18,0) Primary Key Identity,
+		Rol_Cod numeric(18,0) Primary Key,
 		Rol_Desc nvarchar(255),
 		Rol_baja bit default 0		
 		)
@@ -211,10 +211,32 @@ GO
 
 --Migracion
 
-Insert into SQL_O.Rol(Rol_Desc) values('Empresa')
-Insert into SQL_O.Rol(Rol_Desc) values('Cliente')
-Insert into SQL_O.Rol(Rol_Desc) values('Admin')
+Insert into SQL_O.Rol(Rol_Desc,Rol_Cod) values('Empresa',1)
+Insert into SQL_O.Rol(Rol_Desc,Rol_Cod) values('Cliente',2)
+Insert into SQL_O.Rol(Rol_Desc,Rol_Cod) values('Admin',3)
 GO
+
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('ABM de Rol')--Administrativo
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Modificación de password')--Todos
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Baja de usuario')--Administrativo
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('ABM de Clientes')--Administrativo
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Compra de productos')--Cliente
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Venta de productos')--Cliente, Empresa
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('ABM de Empresa')--Administrativo
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Habilitacion Cliente')
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Habilitaion Empresa')
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Habilitacion Rol')
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('ABM de Rubro')--Administrativo
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('ABM de Visibilidad')--Administrativo
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Editar publicación')--Cliente,Empresa
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Realizar preguntas')--Cliente
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Responder preguntas')--Cliente,Empresa
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Calificar vendedores')--Cliente
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Conocer historial de publicaciones')--Cliente, Empresa
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Generar facturaciones de compras')--Admin
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Pagar facturaciones pendientes')--Cliente,Empresa
+Insert into SQL_O.Funcionalidad(Func_Desc) values ('Obtener Listado estadístico')--Admin
+
 
 
 Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio, Vis_Duracion)
