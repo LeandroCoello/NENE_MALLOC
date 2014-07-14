@@ -331,10 +331,14 @@
       <DependentUpon>Form2RegistroEmpresa.cs</DependentUpon>
     </Compile>
     <Compile Include="Sistema\Login.cs" />
-    <Compile Include="Sistema\QueryWhere\And.cs" />
-    <Compile Include="Sistema\QueryWhere\Condition.cs" />
-    <Compile Include="Sistema\QueryWhere\Or.cs" />
-    <Compile Include="Sistema\QueryWhere\Rule.cs" />
+    <Compile Include="Sistema\QueryFields\Field.cs" />
+    <Compile Include="Sistema\QueryHaving\Having.cs" />
+    <Compile Include="Sistema\QueryOrderBy\OrderBy.cs" />
+    <Compile Include="Sistema\QueryConditions\And.cs" />
+    <Compile Include="Sistema\QueryConditions\Condition.cs" />
+    <Compile Include="Sistema\QueryConditions\Or.cs" />
+    <Compile Include="Sistema\QueryConditions\Rule.cs" />
+    <Compile Include="Sistema\QueryWhere\Where.cs" />
     <Compile Include="Sistema\Registro.cs" />
     <Compile Include="Sistema\Sistema.cs" />
     <Compile Include="Sistema\SQLConnector.cs" />
@@ -369,6 +373,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Sistema\Auxiliares\" />
+    <Folder Include="Sistema\QueryBuilder\" />
+    <Folder Include="Sistema\QueryGroupBy\" />
+    <Folder Include="Sistema\QueryTables\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
