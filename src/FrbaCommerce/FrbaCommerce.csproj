@@ -66,11 +66,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abm Cliente\Alta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Cliente\Alta.Designer.cs">
+      <DependentUpon>Alta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Cliente\BAJA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Cliente\BAJA.Designer.cs">
+      <DependentUpon>BAJA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Cliente\Filtrado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Cliente\Filtrado.Designer.cs">
+      <DependentUpon>Filtrado.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Cliente\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Abm Cliente\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Empresa\AltaEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Empresa\AltaEmpresa.Designer.cs">
+      <DependentUpon>AltaEmpresa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Empresa\BajaEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Empresa\BajaEmpresa.Designer.cs">
+      <DependentUpon>BajaEmpresa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Empresa\FiltradoEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Empresa\FiltradoEmpresa.Designer.cs">
+      <DependentUpon>FiltradoEmpresa.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Empresa\Form1.cs">
       <SubType>Form</SubType>
@@ -88,6 +124,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Abm Rubro\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Visibilidad\Calificar Vendedor\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Visibilidad\Calificar Vendedor\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Visibilidad\Form1.cs">
@@ -126,11 +168,23 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Generar Publicacion\CompraInmediata.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generar Publicacion\CompraInmediata.Designer.cs">
+      <DependentUpon>CompraInmediata.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generar Publicacion\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Generar Publicacion\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generar Publicacion\Subasta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generar Publicacion\Subasta.Designer.cs">
+      <DependentUpon>Subasta.cs</DependentUpon>
     </Compile>
     <Compile Include="Gestion de Preguntas\Form1.cs">
       <SubType>Form</SubType>
@@ -171,8 +225,20 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Abm Cliente\Alta.resx">
+      <DependentUpon>Alta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Cliente\Filtrado.resx">
+      <DependentUpon>Filtrado.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Abm Cliente\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Empresa\AltaEmpresa.resx">
+      <DependentUpon>AltaEmpresa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Empresa\FiltradoEmpresa.resx">
+      <DependentUpon>FiltradoEmpresa.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Empresa\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -185,6 +251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generar Publicacion\CompraInmediata.resx">
+      <DependentUpon>CompraInmediata.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -202,6 +271,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Registro de Usuario\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Registro de Usuario\Form2ParaCliente.resx">
+      <DependentUpon>Form2ParaCliente.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Registro de Usuario\Form2RegistroCliente.resx">
       <DependentUpon>Form2RegistroCliente.cs</DependentUpon>
@@ -228,6 +300,24 @@
     <Compile Include="Registro de Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Registro de Usuario\Form2ParaAdministrador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Registro de Usuario\Form2ParaAdministrador.Designer.cs">
+      <DependentUpon>Form2ParaAdministrador.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Registro de Usuario\Form2ParaCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Registro de Usuario\Form2ParaCliente.Designer.cs">
+      <DependentUpon>Form2ParaCliente.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Registro de Usuario\Form2ParaEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Registro de Usuario\Form2ParaEmpresa.Designer.cs">
+      <DependentUpon>Form2ParaEmpresa.cs</DependentUpon>
+    </Compile>
     <Compile Include="Registro de Usuario\Form2RegistroCliente.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -241,6 +331,10 @@
       <DependentUpon>Form2RegistroEmpresa.cs</DependentUpon>
     </Compile>
     <Compile Include="Sistema\Login.cs" />
+    <Compile Include="Sistema\QueryWhere\And.cs" />
+    <Compile Include="Sistema\QueryWhere\Condition.cs" />
+    <Compile Include="Sistema\QueryWhere\Or.cs" />
+    <Compile Include="Sistema\QueryWhere\Rule.cs" />
     <Compile Include="Sistema\Registro.cs" />
     <Compile Include="Sistema\Sistema.cs" />
     <Compile Include="Sistema\SQLConnector.cs" />
@@ -272,6 +366,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sistema\Auxiliares\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
