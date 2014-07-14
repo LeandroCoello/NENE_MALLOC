@@ -764,68 +764,101 @@ begin transaction
 commit	*/	
 GO
 
--- Modificacion de Cliente
-/*
+-- Modificacion de Cliente //corregido//
 create procedure SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 											@cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
 											@calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
-											@depto nvarchar(50),@codpost nvarchar(50), @idusuario numeric(18,0),
-											@return numeric(1,0)
+											@depto nvarchar(50),@codpost nvarchar(50), @usuario nvarchar(30),
+											@return numeric(1,0) out
 											 
 as
 begin transaction
-
-		if exists(select Cli_Id from SQL_O.Cliente where @nro_doc = Cli_NroDoc and @tipo_doc = Cli_TipoDoc and @id_cliente != Cli_Id)
-		begin
-			rollback
-			raiserror('El numero de documento ya pertenece a otro cliente', 16, 1)
-			return
-		end
+		set @return=0
+		declare @id_cliente numeric(18,0)
+		set @id_cliente= (select Tipo_Cod from SQL_O.Tipo,SQL_O.Usuario where Username=@usuario and User_Tipo=Tipo_Cod)
+		
+		if exists(select Cli_Id from SQL_O.Cliente where @nrodoc = Cli_NroDoc and @tipodoc = Cli_TipoDoc and @id_cliente!=Cli_Id)
+			begin
+				rollback
+				raiserror('El tipo y numero de documento ya pertenece a otro cliente', 16, 1)
+				set @return=1 --ya hay alguien con el mismo tipo y nro de documento
+				return
+			end
 		else
-			/*¿QUE DATOS HAY QUE ACTUALIZAR?*/
-			update SQL_O.Cliente
-			set	Cli_Nombre = @nombre, 
-			Cli_Apellido = @apellido,
-			Cli_TipoDoc = @tipo_doc,
-			Cli_NroDoc = @nro_doc
-			where Cli_Id = @id_cliente
 			
-			update SQL_O.Datos_Pers
-			set Datos_Mail = @mail
-			where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
-	
-commit*/
+				if	exists(select Cli_Id from SQL_O.Cliente where @cuil=Cli_Cuil and @id_cliente!=Cli_Id)	
+					begin
+						rollback
+						raiserror('El numero de cuil ya pertenece a otro cliente', 16, 1)
+						set @return=2 --ya hay alguien con el mismo cuil
+						return 
+					end	
+				else
+					/*¿QUE DATOS HAY QUE ACTUALIZAR?*/ --pisamos todo :D
+					update SQL_O.Cliente
+					set	Cli_Nombre = @nombre, 
+					Cli_Apellido = @apellido,
+					Cli_TipoDoc = @tipodoc,
+					Cli_NroDoc = @nrodoc,
+					Cli_Cuil=@cuil,
+					Cli_Fecha_Nac=@fecha_nac
+					where Cli_Id = @id_cliente
+						
+					update SQL_O.Datos_Pers
+					set Datos_Mail = @mail,
+					Datos_Tel=@tel,
+					Datos_Dom_Calle=@calle,
+					Datos_Nro_Calle=@nrocalle,
+					Datos_Dom_Piso=@piso,
+					Datos_Depto=@depto,
+					Datos_Cod_Postal=@codpost
+					where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
+					
+commit 
 GO
 
--- Modificacion de Empresa
-/*
-create procedure SQL_O.modificacion_empresa  @id_empresa numeric(18,0), @razon_social nvarchar(255) output, 
-											 @cuit nvarchar(50) output, @mail nvarchar(50) output
-											 
+-- Modificacion de Empresa //corregido//
+
+create procedure SQL_O.modificacion_empresa  @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_creacion datetime, @contacto nvarchar(50), 
+											 @mail nvarchar(50), @tel numeric(18,0), @calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
+											 @dpto nvarchar(50), @cod_post nvarchar(50), @usuario nvarchar(30), @return numeric(1,0) out					 
 as
 begin transaction
-
-		if exists(select Emp_Cod from SQL_O.Empresa where @cuit = Emp_Cuit 
-					and @razon_social = Emp_Razon_Social 
-					and @id_empresa != Emp_Cod)
+		
+		set @return=0
+		declare @id_empresa numeric(18,0)
+		set @id_empresa=(select Tipo_Cod from SQL_O.Usuario,SQL_O.Tipo where Username=@usuario and User_Tipo=Tipo_Cod)
+		
+		if exists(select Emp_Cod from SQL_O.Empresa where (@cuit = Emp_Cuit and @id_empresa!=Emp_Cod) or
+					(@razon_social = Emp_Razon_Social 
+					and @id_empresa != Emp_Cod))
 		begin
 			rollback
-			raiserror('El cuit y la razon social pertenecen a otra empresa', 16, 1)
+			raiserror('El cuit o la razon social pertenecen a otra empresa', 16, 1)
+			set @return=1 -- el cuit o la razon social ya estan registrados 
 			return
 		end
 		else
-			/*¿QUE DATOS HAY QUE ACTUALIZAR?*/
+			/*¿QUE DATOS HAY QUE ACTUALIZAR?*/ --pisamos todo :D
 			update SQL_O.Empresa
 			set	Emp_Razon_Social = @razon_social, 
-			Emp_Cuit = @cuit
+			Emp_Cuit = @cuit,
+			Emp_Fecha_Creacion=@fecha_creacion,
+			Emp_Contacto=@contacto
 			where Emp_Cod = @id_empresa
 			
 			update SQL_O.Datos_Pers
-			set Datos_Mail = @mail
-			where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
+			set Datos_Mail = @mail,
+			Datos_Tel=@tel,
+			Datos_Dom_Calle=@calle,
+			Datos_Nro_Calle=@nrocalle,
+			Datos_Dom_Piso=@piso,
+			Datos_Depto=@dpto,
+			Datos_Cod_Postal=@cod_post
+			where Datos_Id = (select Emp_Datos_Pers from SQL_O.Empresa where Emp_Cod = @id_empresa)
 	
 commit
-*/
+
 GO
 
 
