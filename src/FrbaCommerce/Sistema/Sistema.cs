@@ -8,7 +8,7 @@ namespace FrbaCommerce.Sistema
     class SistemaPrincipal
     {
         public SQLConnector connectionSQL;
-        public Sistema(string stringDeConexion)
+        public SistemaPrincipal(string stringDeConexion)
         {
            this.conectar(stringDeConexion);
         }
