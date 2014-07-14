@@ -770,7 +770,7 @@ begin transaction
 	      and v.Vis_Desc = 'Gratis'
 	      and u.Username = @duenio
 	      and p.Pub_Duenio = u.UserId
-	      and p.Pub_Estado = 'Publicada')=3))
+	      and p.Pub_Estado = 'Publicada')>=3))
 	begin
 		rollback
 		raiserror('No se pueden tener más de 3 publicaciones gratuitas al mismo tiempo',16,1)
@@ -825,6 +825,32 @@ begin transaction
 		
 commit	*/	
 GO
+
+-- Formular Pregunta
+
+create procedure SQL_O.crear_pregunta 
+
+-- Responder Pregunta
+
+/*
+CREATE TABLE SQL_O.Respuesta(
+		Res_Cod numeric(18,0) Primary key identity,
+		Res_Texto nvarchar(255),
+		Res_Fecha datetime
+		)
+GO
+
+CREATE TABLE SQL_O.Pregunta(
+		Pre_Id numeric(18,0) Primary Key identity,
+		Pre_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
+		Pre_Res numeric(18,0) references SQL_O.Respuesta(Res_Cod) NOT NULL,
+		Pre_Texto nvarchar(255),
+		Pre_Fecha datetime,
+		Pre_User numeric(18,0) references SQL_O.Usuario(UserID)
+		)
+GO
+*/
+
 
 -- Modificacion de Cliente //corregido//
 create procedure SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
@@ -993,6 +1019,23 @@ begin transaction
 commit	  
 GO
 
+-- Ganador De Una Subasta
+
+create procedure SQL_O.setear_ganador 
+as 
+begin 
+	
+	update SQL_O.Oferta set Oferta_Gano = 1
+	where (select p.Pub_Estado 
+		   from Publicacion p 
+		   where Oferta_Pub = p.Pub_Cod
+		   and 	Oferta_Id = (select TOP 1 o2.Oferta_Id 
+							from Oferta o2 
+							where o2.Oferta_Pub = p.Pub_Cod
+							order by o2.Oferta_Fecha Desc)) = 'Terminado'	   
+end
+exec SQL_O.setear_ganador
+GO
 
 --Funciones
 
