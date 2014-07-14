@@ -40,3 +40,6 @@ drop function [SQL_O].[historial_compras]
 drop function [SQL_O].[historial_ofertas]
 drop function [SQL_O].[historial_calif]
 go
+
+drop schema SQL_O
+go

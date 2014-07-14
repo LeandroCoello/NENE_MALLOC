@@ -234,6 +234,7 @@ Insert into SQL_O.Funcionalidad(Func_Desc) values ('Conocer historial de publica
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Generar facturaciones de compras')--Admin
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Pagar facturaciones pendientes')--Cliente,Empresa
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Obtener Listado estadístico')--Admin
+go
 
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (1,3)
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (2,1)
@@ -262,6 +263,7 @@ Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (18,3)
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (19,1)
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (19,2)
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (20,3)
+go
 
 Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio, Vis_Duracion)
 	(select distinct Publicacion_Visibilidad_Cod, 
