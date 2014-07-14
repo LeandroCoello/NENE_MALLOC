@@ -977,3 +977,92 @@ begin transaction
 commit	  
 GO
 
+
+--Funciones
+
+-- para llamar a las funciones por ej: select * from SQL_O.historial_compras('gdd1')
+
+create function SQL_O.historial_compras (@usuario nvarchar(30))
+returns @tabla TABLE (Usuario nvarchar(30),
+					  Comprador nvarchar(30),
+					  Vendedor nvarchar(30),
+					  Descripcion nvarchar(255),
+					  Rubro_desc nvarchar(255),
+					  Cant numeric(18,0),
+					  Fecha datetime)
+					  
+as 
+	begin
+	declare @id numeric(18,0)
+	set @id= (select UserId from SQL_O.Usuario where Username=@usuario)
+	
+	insert into @tabla(usuario,comprador,vendedor,descripcion,rubro_desc,cant,fecha)
+			(select @usuario,
+					(select Username from SQL_O.Usuario u where u.UserId=Compra_Comprador) ,
+					(select Username from SQL_O.Publicacion p1,SQL_O.Usuario u3 where Compra_Pub=p1.Pub_Cod and p1.Pub_Duenio=u3.UserId) ,
+					(select Pub_Desc from SQL_O.Publicacion p2 where p2.Pub_Cod=Compra_Pub) ,
+					(select Rubro_Desc from SQL_O.Publicacion pub ,SQL_O.Rubro r,SQL_O.Pub_Por_Rubro p where pub.Pub_Cod=Compra_Pub and p.Pub_Cod=pub.Pub_Cod and p.Rubro_Cod=r.Rubro_Cod) ,
+					Compra_Cantidad ,
+					Compra_Fecha 
+				from SQL_O.Compra
+					where Compra_Comprador=@id or 
+						  (select Pub_Duenio from SQL_O.Publicacion where Compra_Pub=Pub_Cod)=@id)
+
+	
+		return
+	end
+go
+
+create function SQL_O.historial_calif(@usuario nvarchar(30))
+returns @tabla table (Usuario nvarchar(30),
+					  Comprador nvarchar(30),
+					  Vendedor nvarchar(30),
+					  Cant_estrellas numeric(18,0),
+					  Cal_desc nvarchar(255))
+					  
+as 
+	begin
+		declare @id numeric(18,0)
+		set @id= (select UserId from SQL_O.Usuario where Username=@usuario)
+		
+		insert into @tabla (usuario,comprador,vendedor, cant_estrellas,cal_desc)
+			(select @usuario,
+					(select Username from SQL_O.Usuario u where u.UserId=Cal_User) ,
+					(select Username from SQL_O.Publicacion p1,SQL_O.Usuario u3 where Cal_Pub=p1.Pub_Cod and p1.Pub_Duenio=u3.UserId) ,
+					Cal_Cant_Est cant_estrellas,
+					Cal_Desc descripcion
+						from SQL_O.Calificacion
+								where Cal_User=@id or
+									(select Pub_Duenio from SQL_O.Publicacion where Cal_Pub=Pub_Cod)=@id)
+		return
+	end
+go
+
+create function SQL_O.historial_ofertas(@usuario nvarchar(30))
+returns @tabla table (Usuario nvarchar(30),
+					  Comprador nvarchar(30),
+					  Vendedor nvarchar(30),
+					  Fecha datetime,
+					  Monto numeric(18,2),
+					  Ganador varchar(2))
+as 
+	begin
+	declare @id numeric(18,0)
+	set @id= (select UserId from SQL_O.Usuario where Username=@usuario)
+	
+	insert into @tabla (usuario,comprador,vendedor,fecha,monto,Ganador)
+			(select @usuario,
+					(select Username from SQL_O.Usuario u where u.UserId=Oferta_Cliente),
+					(select Username from SQL_O.Publicacion p1,SQL_O.Usuario u3 where Oferta_Pub=p1.Pub_Cod and p1.Pub_Duenio=u3.UserId),
+					Oferta_Fecha,
+					Oferta_Monto,
+					case when Oferta_Gano=0 then 'No'
+						else 'Si' end 
+					from SQL_O.Oferta
+							where Oferta_Cliente=@id or
+								(select Pub_Duenio from SQL_O.Publicacion where Oferta_Pub=Pub_Cod)=@id)
+		return
+	end
+go
+
+
