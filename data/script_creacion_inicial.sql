@@ -201,8 +201,6 @@ CREATE TABLE SQL_O.Pub_Por_Rubro(
 		)
 GO
 
-
-
 /*Notas:
 	En tabla maestra:
 		~ Las columnas que empiezan con Publ_ se refieren a dueños de publicaciones.
@@ -237,7 +235,33 @@ Insert into SQL_O.Funcionalidad(Func_Desc) values ('Generar facturaciones de com
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Pagar facturaciones pendientes')--Cliente,Empresa
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Obtener Listado estadístico')--Admin
 
-
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (1,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (2,1)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (2,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (2,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (3,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (4,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (5,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (6,1)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (6,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (7,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (8,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (9,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (10,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (11,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (12,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (13,1)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (13,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (14,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (15,1)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (15,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (16,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (17,1)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (17,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (18,3)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (19,1)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (19,2)
+Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (20,3)
 
 Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio, Vis_Duracion)
 	(select distinct Publicacion_Visibilidad_Cod, 
