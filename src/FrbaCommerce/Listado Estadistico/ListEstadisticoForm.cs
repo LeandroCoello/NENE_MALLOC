@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaCommerce.Calificar_Vendedor
+namespace FrbaCommerce.Listado_Estadistico
 {
-    public partial class CalifVendForm : Form
+    public partial class ListEstadisticoForm : Form
     {
-        public CalifVendForm()
+        public ListEstadisticoForm()
         {
             InitializeComponent();
         }

@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaCommerce.Calificar_Vendedor
+namespace FrbaCommerce.Abm_Visibilidad
 {
-    public partial class CalifVendForm : Form
+    public partial class AbmVisibilidadForm : Form
     {
-        public CalifVendForm()
+        public AbmVisibilidadForm()
         {
             InitializeComponent();
         }

@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaCommerce.Calificar_Vendedor
+namespace FrbaCommerce.Editar_Publicacion
 {
-    public partial class CalifVendForm : Form
+    public partial class EditPubForm : Form
     {
-        public CalifVendForm()
+        public EditPubForm()
         {
             InitializeComponent();
         }

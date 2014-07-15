@@ -1,6 +1,6 @@
-﻿namespace FrbaCommerce.Calificar_Vendedor
+﻿namespace FrbaCommerce.Editar_Publicacion
 {
-    partial class CalifVendForm
+    partial class EditPubForm
     {
         /// <summary>
         /// Required designer variable.

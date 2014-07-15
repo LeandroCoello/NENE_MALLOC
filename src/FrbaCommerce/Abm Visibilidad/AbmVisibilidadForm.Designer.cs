@@ -1,6 +1,6 @@
-﻿namespace FrbaCommerce.Calificar_Vendedor
+﻿namespace FrbaCommerce.Abm_Visibilidad
 {
-    partial class CalifVendForm
+    partial class AbmVisibilidadForm
     {
         /// <summary>
         /// Required designer variable.

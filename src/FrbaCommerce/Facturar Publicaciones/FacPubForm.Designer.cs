@@ -1,6 +1,6 @@
-﻿namespace FrbaCommerce.Calificar_Vendedor
+﻿namespace FrbaCommerce.Facturar_Publicaciones
 {
-    partial class CalifVendForm
+    partial class FacPubForm
     {
         /// <summary>
         /// Required designer variable.

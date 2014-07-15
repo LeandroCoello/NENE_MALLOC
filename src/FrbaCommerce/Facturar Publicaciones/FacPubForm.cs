@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaCommerce.Calificar_Vendedor
+namespace FrbaCommerce.Facturar_Publicaciones
 {
-    public partial class CalifVendForm : Form
+    public partial class FacPubForm : Form
     {
-        public CalifVendForm()
+        public FacPubForm()
         {
             InitializeComponent();
         }

@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaCommerce.Calificar_Vendedor
+namespace FrbaCommerce.Comprar_Ofertar
 {
-    public partial class CalifVendForm : Form
+    public partial class CompOferForm : Form
     {
-        public CalifVendForm()
+        public CompOferForm()
         {
             InitializeComponent();
         }

@@ -7,13 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaCommerce.Calificar_Vendedor
+
+namespace FrbaCommerce.ABM_Rol
 {
-    public partial class CalifVendForm : Form
+
+    public partial class AbmRolForm : Form
     {
-        public CalifVendForm()
+        public AbmRolForm()
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+
+      
+
     }
 }

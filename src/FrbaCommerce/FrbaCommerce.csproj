@@ -47,6 +47,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -84,11 +85,11 @@
     <Compile Include="Abm Cliente\Filtrado.Designer.cs">
       <DependentUpon>Filtrado.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Cliente\Form1.cs">
+    <Compile Include="Abm Cliente\AbmClienteForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Cliente\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Cliente\AbmClienteForm.Designer.cs">
+      <DependentUpon>AbmClienteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Empresa\AltaEmpresa.cs">
       <SubType>Form</SubType>
@@ -243,8 +244,8 @@
     <EmbeddedResource Include="Abm Cliente\Filtrado.resx">
       <DependentUpon>Filtrado.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Abm Cliente\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Abm Cliente\AbmClienteForm.resx">
+      <DependentUpon>AbmClienteForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Empresa\AltaEmpresa.resx">
       <DependentUpon>AltaEmpresa.cs</DependentUpon>
