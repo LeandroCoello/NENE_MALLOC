@@ -27,43 +27,56 @@ namespace FrbaCommerce.Login
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            passHasheada = this.SHA256Encripta(txtContraseña.Text);
-            if (txtUsuario.Text !="" && txtContraseña.Text!="")
+            if (txtUsuario.Text == "" || txtContraseña.Text == "")
             {
-                if (contadorDeIntentos < 3)
+                MessageBox.Show("Por favor complete los campos de usuario y contraseña");
+                return;
+            }
+
+
+            if (contadorDeIntentos < 3)
+            {
+                int resultado = FrbaCommerce.Login.LoginDatos.logeoSql(txtUsuario.Text, passHasheada);
+                switch (resultado)
                 {
-                    int resultado = FrbaCommerce.Login.LoginDatos.logeoSql(txtUsuario.Text,passHasheada);
-                     switch (resultado) { 
-                         case 0:
-                             List<string> rolesDeUsuario = FrbaCommerce.Login.LoginDatos.cantidadDeRoles(txtUsuario.Text);
-                             if (rolesDeUsuario.Count() == 1) {
-                                  Menu_Principal.Form1MenuPrincipal lanzarMenu = new Menu_Principal.Form1MenuPrincipal(rolesDeUsuario.FirstOrDefault());
-                                  lanzarMenu.ShowDialog();
-                                  this.Close();
-                            }else {Form2EleccionRol lanzarRoles = new Form2EleccionRol (rolesDeUsuario);
-                                    lanzarRoles.ShowDialog();
-                                    this.Close();}
-                        break;
-
-                        case 1:
-                               contadorDeIntentos += 1;
-                             //ACA NO ESTOY TAN DE ACUERDO PARA MI DEBERIA SER PORQUE PUSO MAL LA CONTRASEÑA SOLAMENTE
-                               MessageBox.Show("Usuario o Contraseña incorretos\n cantidad de intentos: {0}" + contadorDeIntentos);
-                        break;
-                        
-                        case 2:
-                            MessageBox.Show("EL usuario se encuentra inhabilitado");
-                        break;
-
-                        case 3:
-                            MessageBox.Show("Usuario dado de baja");
-                        break;
+                    case 0:
+                        List<string> rolesDeUsuario = FrbaCommerce.Login.LoginDatos.cantidadDeRoles(txtUsuario.Text);
+                        if (rolesDeUsuario.Count() == 1)
+                        {
+                            Menu_Principal.Form1MenuPrincipal lanzarMenu = new Menu_Principal.Form1MenuPrincipal(rolesDeUsuario.FirstOrDefault());
+                            lanzarMenu.ShowDialog();
+                            this.Close();
                         }
-                }
-                else { MessageBox.Show("Se ha alcanazo el maximo de intentos de login, usuario inhabilitado");
-                            btnAceptar.Enabled = false;}
+                        else
+                        {
+                            Form2EleccionRol lanzarRoles = new Form2EleccionRol(rolesDeUsuario);
+                            lanzarRoles.ShowDialog();
+                            this.Close();
+                        }
+                        break;
 
-                } else { MessageBox.Show("Por favor complete los campos de usuario y contraseña"); }
+                    case 1:
+                        contadorDeIntentos += 1;
+                        //ACA NO ESTOY TAN DE ACUERDO PARA MI DEBERIA SER PORQUE PUSO MAL LA CONTRASEÑA SOLAMENTE
+                        MessageBox.Show("Usuario o Contraseña incorretos\n cantidad de intentos: {0}" + contadorDeIntentos);
+                        break;
+
+                    case 2:
+                        MessageBox.Show("EL usuario se encuentra inhabilitado");
+                        break;
+
+                    case 3:
+                        MessageBox.Show("Usuario dado de baja");
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Se ha alcanazo el maximo de intentos de login, usuario inhabilitado");
+                btnAceptar.Enabled = false;
+            }
+
+
         }
 
 

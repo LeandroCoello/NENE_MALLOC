@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Configuration;
 using System.Windows.Forms;
 
+
 namespace FrbaCommerce.Sistema
 {
     class SQLConnector
@@ -17,10 +18,9 @@ namespace FrbaCommerce.Sistema
         private SqlConnection connection;
 
         private SQLConnector() {
-            string strConexion = ConfigurationManager.ConnectionStrings["StringConexion"].ToString();
             try
             {
-                connection = new SqlConnection(strConexion);
+                connection = new SqlConnection("Data Source=localhost/SQLSERVER2008;Initial Catalog=GD1C2014;user=gd;password=gd2014");
                 connection.Open();
             }
             catch (Exception) {
