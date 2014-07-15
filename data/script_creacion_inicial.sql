@@ -1009,8 +1009,8 @@ as
 	begin transaction
 	declare @userid numeric(18,0)
 	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
-	--validar que el monto es entero, wtf
-		if(@monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub
+	
+		if( @monto=FLOOR(@monto) and @monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub
 						order by Oferta_Fecha desc) )
 			begin
 				 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
