@@ -517,6 +517,7 @@ insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User
 					 Publicacion_Cod,
 					 (select UserId from SQL_O.Cliente,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni=Cli_NroDoc and Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
 	 from gd_esquema.Maestra where Calificacion_Codigo is not null)
+	 order by Calificacion_Codigo
 	 
 GO
 
@@ -607,7 +608,7 @@ go
 
 
 -- Actualizar reputacion (se supone que cada vez que se califica a alguien se debe actualizar la reputacion de ese alguien)
-create procedure SQL_O.actualizar_reputacion @tipo numeric(18,0), @bit bit
+create procedure SQL_O.actualizar_reputacion @tipo numeric(18,0), @bit bit -- el bit es para saber si es cliente o empresa
 as 
 	begin
 		if(@bit=0)
@@ -964,6 +965,40 @@ begin transaction
 commit	*/
 GO
 	
+
+-- Calificar
+create procedure SQL_O.calificar @pub numeric(18,0), @user numeric(18,0), @cant_estrellas numeric(18,0),@des nvarchar(255)
+as 
+	begin transaction
+	if (@cant_estrellas not between 0 and 10)
+		begin
+			rollback
+			raiserror('La cantidad de estrellas debe estar entre 0 y 10',16,1)
+			end
+	else
+	insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
+			values( (select MAX(Cal_Codigo) from SQL_O.Calificacion)+1,
+					@cant_estrellas, @des, @pub, @user)
+	
+	declare @tipo_duenio numeric(18,0)
+	set @tipo_duenio = (select User_Tipo from SQL_O.Publicacion,SQL_O.Usuario where Pub_Cod=@pub and Pub_Duenio=UserId)
+	
+	declare @bit bit
+	if(exists(select Cli_Id from SQL_O.Cliente where Cli_Id=@tipo_duenio))
+		begin
+		set @bit =0
+		end
+	else
+		if(exists(select Emp_Cod from SQL_O.Empresa where Emp_Cod=@tipo_duenio))
+			begin
+			set @bit=1
+			end
+	exec SQL_O.actualizar_reputacion @tipo=@tipo_duenio, @bit=@bit
+	
+	commit
+
+
+go
 
 
 -- Formular Pregunta.
