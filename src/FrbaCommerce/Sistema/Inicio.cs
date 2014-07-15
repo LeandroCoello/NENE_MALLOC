@@ -13,12 +13,15 @@ namespace FrbaCommerce.Sistema
         {
             this.connection = connectionInstance;
         }
-        public UsuarioLogueado registrarse()
+        public UsuarioLogueado registrarse(String nombreDeUruario)
         {
+            
             return null;
         }
-        public UsuarioLogueado login()
+        public UsuarioLogueado login(String nombreDeUsuario, String contraseña)
         {
+            
+            connection.logearse("exec SQL_O.proc_login User_Id,Userpass FROM SQL_O.Usuario where (User_Id ='" +nombreDeUsuario+"')and (Userpass = '" +contraseña+"')");
             return null;
         }
     }
