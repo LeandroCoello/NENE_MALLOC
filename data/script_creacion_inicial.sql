@@ -789,6 +789,104 @@ commit
 
 GO		
 
+-- Editar Publicacion
+create procedure SQL_O.editar_publicacion @nro_pub numeric(18,0),@estado nvarchar(255), @descripcion nvarchar(255),
+										  @stock numeric(18,0), @precio numeric(18,2), @visibilidad nvarchar(255),
+										  @duenio nvarchar(30), @permite_preg bit, @return numeric(1,0) out
+as
+begin transaction
+	declare @vis_cod numeric(18,0)
+	declare @duenio_cod numeric(18,0)
+	
+	set @return = 0
+	set @vis_cod = (select Vis_Cod from SQL_O.Visibilidad where Vis_Desc = @visibilidad)
+	set @duenio_cod = (select UserId from SQL_O.Usuario where Username = @duenio)
+	if(exists(select Pub_Cod
+			  from SQL_O.Publicacion 
+			  where @nro_pub = Pub_Cod
+			    and Pub_Estado = 'Publicada'
+			    and (@precio != Pub_Precio 
+			         or @vis_cod != Pub_Visibilidad 
+			         or @permite_preg != Pub_Permite_Preguntas
+			         or @estado = 'Borrada')))
+	begin 
+		rollback
+		raiserror('No puedo cambiar esos campos en una publicacion Activa',16,1)
+		set @return = 1
+		return
+	end	
+	
+	if((select Pub_Stock 
+		from SQL_O.Publicacion
+		where @nro_pub = Pub_Cod
+		  and Pub_Estado = 'Publicada'
+		  and Pub_Tipo = 'Compra Inmediata') > @stock)
+	begin 
+		rollback
+		raiserror('No se puede decrementar el stock',16,1)
+		set @return = 2
+		return
+	end
+	
+	if(exists(select Pub_Cod 
+	          from SQL_O.Publicacion 
+	          where @nro_pub = Pub_Cod
+	            and Pub_Tipo = 'Subasta'
+	            and Pub_Estado = 'Publicada'
+	            and @stock != Pub_Stock))
+	begin 
+		rollback
+		raiserror('No se puede cambiar el stock de una subasta',16,1)
+		set @return = 3
+		return
+	end	
+	
+	if(exists(select Pub_Cod
+			  from SQL_O.Publicacion 
+			  where @nro_pub = Pub_Cod
+			    and Pub_Estado = 'Pausada'
+			    and (@precio != Pub_Precio 
+				  or @stock != Pub_Stock
+			      or @vis_cod != Pub_Visibilidad 
+			      or @permite_preg != Pub_Permite_Preguntas
+			      or @descripcion != Pub_Desc
+			      or @estado != 'Publicada')))
+	begin 
+		rollback
+		raiserror('No puedo cambiar esos campos en una publicacion Pausada',16,1)
+		set @return = 4
+		return
+	end
+	
+	if(exists(select Pub_Cod
+			  from SQL_O.Publicacion 
+			  where @nro_pub = Pub_Cod
+			    and Pub_Estado = 'Finalizada'
+			    and (@precio != Pub_Precio 
+				  or @stock != Pub_Stock
+			      or @vis_cod != Pub_Visibilidad 
+			      or @permite_preg != Pub_Permite_Preguntas
+			      or @descripcion != Pub_Desc
+			      or @estado != Pub_Estado)))
+	begin 
+		rollback
+		raiserror('No puedo cambiar esos campos en una publicacion Finalizada',16,1)
+		set @return = 5
+		return
+	end
+	
+	update SQL_O.Publicacion
+	set Pub_Desc = @descripcion,
+	    Pub_Estado = @estado,
+	    Pub_Permite_Preguntas = @permite_preg,
+	    Pub_Precio = @precio,
+	    Pub_Stock = @stock,
+	    Pub_Visibilidad = @vis_cod,
+	    Pub_Fecha_Vto = Pub_Fecha_Ini + (select Vis_Duracion from SQL_O.Visibilidad where @vis_cod = Vis_Cod)
+	where Pub_Cod = @nro_pub
+commit	
+GO
+
 -- Alta Cliente. //corregido//
 create procedure SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
@@ -1009,26 +1107,38 @@ as
 	begin transaction
 	declare @userid numeric(18,0)
 	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
-	
-	if((select u.Username 
-		from SQL_O.Publicacion p, SQL_O.Usuario u 
-		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub)='Publicada')
+	begin
+		if((select u.Username 
+			from SQL_O.Publicacion p, SQL_O.Usuario u 
+			where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+		begin
+			rollback
+			raiserror('Un usuario no puede ofertar en su publicacion',16,1)
+		end
+		
+			if( @monto=FLOOR(@monto) and @monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub
+							order by Oferta_Fecha desc) )
+				begin
+					 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
+							values (@pub,GETDATE(), @monto, @userid) 
+				end
+			else
+			begin
+				rollback
+				raiserror('El monto debe ser entero y mayor a la ultima oferta.',16,1)
+				return
+			end
+	end
+	else 
 	begin
 		rollback
-		raiserror('Un usuario no puede ofertar en su publicacion',16,1)
-	end
-	
-		if( @monto=FLOOR(@monto) and @monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub
-						order by Oferta_Fecha desc) )
-			begin
-				 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
-						values (@pub,GETDATE(), @monto, @userid) 
-			end
-		else
-			rollback
-			raiserror('El monto debe ser entero y mayor a la ultima oferta.',16,1)
-			return	
-	commit
+		raiserror('No se puede ofertar en un publicacion que no está activa',16,1)
+		return
+	end		
+			
+			
+commit
 GO
 
 
@@ -1039,31 +1149,40 @@ as
 	begin transaction
 		declare @userid numeric(18,0)
 		set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
+	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub)='Publicada')
+	begin
+		if((select u.Username 
+			from SQL_O.Publicacion p, SQL_O.Usuario u 
+			where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+		begin
+			rollback
+			raiserror('Un usuario no puede "auto comprarse"',16,1)
+		end
 		
-	if((select u.Username 
-		from SQL_O.Publicacion p, SQL_O.Usuario u 
-		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+		if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub = Pub_Cod))
+			begin
+				 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
+						values (@pub,GETDATE(),@cant,@userid)
+						
+				 update SQL_O.Publicacion
+				 set Pub_Stock= Pub_Stock-@cant
+					 where Pub_Cod=@pub	
+			
+			end
+		else
+		begin
+			rollback
+			raiserror('La cantidad debe ser menor que el stock.',16,1)
+			return	
+		end
+	end
+	else 
 	begin
 		rollback
-		raiserror('Un usuario no puede "auto comprarse"',16,1)
-	end
-	
-	if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub = Pub_Cod))
-		begin
-			 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
-					values (@pub,GETDATE(),@cant,@userid)
-					
-			 update SQL_O.Publicacion
-			 set Pub_Stock= Pub_Stock-@cant
-				 where Pub_Cod=@pub	
-		
-		end
-	else
-		rollback
-		raiserror('La cantidad debe ser menor que el stock.',16,1)
-		return	
-			
-	commit
+		raiserror('No se puede comprar en un publicacion que no está activa',16,1)
+		return
+	end	
+commit		
 GO
 
 -- Formular Pregunta.
@@ -1079,6 +1198,14 @@ begin transaction
 	begin
 		rollback
 		raiserror('Un usuario no puede "auto preguntarse"',16,1)
+		return
+	end
+	
+	if((select Pub_Permite_Preguntas from SQL_O.Publicacion where Pub_Cod = @publicacion) = 0)
+	begin
+		rollback
+		raiserror('Esta publicacion no admite preguntas',16,1)
+		return
 	end
 
 	Insert into SQL_O.Pregunta(Pre_Fecha,Pre_Pub,Pre_Texto,Pre_User) 
@@ -1308,8 +1435,7 @@ GO
 
 -- Baja de Empresa.
 
-create procedure SQL_O.baja_empresa  @razon_social nvarchar(255) , 
-											 @cuit nvarchar(50) , @mail nvarchar(50) 
+create procedure SQL_O.baja_empresa  @razon_social nvarchar(255) , @cuit nvarchar(50) , @mail nvarchar(50) 
 											 
 as
 begin transaction
@@ -1351,9 +1477,9 @@ GO
 
 
 -- para llamar a las funciones por ej: select * from SQL_O.historial_compras('gdd1')
-GO
 
 --Historial de compras de un usuario.
+
 create function SQL_O.historial_compras (@usuario nvarchar(30))
 returns @tabla TABLE (Codigo_Publicacion numeric(18,0),
 					  Descripcion_Publicacion nvarchar(255),
