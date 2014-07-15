@@ -16,7 +16,7 @@ namespace FrbaCommerce.Sistema
     {
         private SqlConnection connection;
 
-        private SQLConnector() {
+        public SQLConnector() {
             try
             {
                 connection = new SqlConnection("Data Source=localhost/SQLSERVER2008;Initial Catalog=GD1C2014;user=gd;password=gd2014");
@@ -33,11 +33,11 @@ namespace FrbaCommerce.Sistema
         }
 
 
-        public object logearse(string query)
+        public int executeProcedure(string query)
         {
             SqlCommand queryCommand = new SqlCommand(query, connection);
             queryCommand.CommandType = CommandType.StoredProcedure;
-            return queryCommand.ExecuteScalar();
+            return (int)queryCommand.ExecuteScalar();
        
         }        
         public void consulta(string consulta)

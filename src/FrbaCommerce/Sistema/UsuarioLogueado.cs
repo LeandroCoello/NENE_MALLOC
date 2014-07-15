@@ -20,5 +20,10 @@ namespace FrbaCommerce.Sistema
         {
             return nombreUsuario;
         }
+
+        public List<String> conseguirRoles()
+        {
+            return null;
+        }
     }
 }

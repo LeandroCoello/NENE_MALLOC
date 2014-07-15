@@ -11,7 +11,7 @@ namespace FrbaCommerce.Sistema.QueryWhere
                 private Condition exp;
         public String toString()
         {
-            return "WHERE" + exp.ToString();
+            return "WHERE" + exp.toString();
         }
         public Where(Condition expression)
         {

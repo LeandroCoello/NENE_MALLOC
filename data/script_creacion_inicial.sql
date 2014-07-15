@@ -564,10 +564,8 @@ insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
 	
 GO
 
-
-
 -- STORE PROCEDURES --
-go
+GO
 
 
 -- Setear reputación (la reputacion es el promedio entre total de estrellas recibidas y operaciones realizadas- entiendo  como operaciones realizadas a las ventas que tuvo+las subastas terminadas-)
@@ -605,7 +603,7 @@ as
 	end
 go
 exec SQL_O.setear_reputacion
-go
+GO
 
 
 -- Actualizar reputacion (se supone que cada vez que se califica a alguien se debe actualizar la reputacion de ese alguien)
@@ -645,7 +643,7 @@ as
 			
 	end
 
-go
+GO
 
 -- Ganador De Una Subasta.
 
@@ -737,6 +735,136 @@ begin
 		values(@nombreUsuario ,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
 		
 end 
+GO
+
+-- Crear Publicación. //corregido//
+create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
+										@precio numeric(18,2), @tipo nvarchar(255), 
+										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
+										@admite_preguntas bit, @return numeric(1,0)
+										
+as
+begin transaction	
+
+	set @return = 0
+	if( @stock < 1) 
+	begin
+		rollback
+		raiserror('No se puede tener un stock menor a 1(uno)',16,1)
+		set @return = 1
+	end
+
+	if( @tipo = 'Subasta' and @stock > 1) 
+	begin
+		rollback
+		raiserror('En Subastas el stock máximo permitido es 1',16,1)
+		set @return = 2
+	end
+	
+	if(@visibilidad = 'Gratis' and 
+	  ((select COUNT(p.Pub_Cod) 
+	    from SQL_O.Publicacion p, SQL_O.Usuario u, SQL_O.Visibilidad v
+	    where p.Pub_Visibilidad = v.Vis_Cod
+	      and v.Vis_Desc = 'Gratis'
+	      and u.Username = @duenio
+	      and p.Pub_Duenio = u.UserId
+	      and p.Pub_Estado = 'Publicada')>=3))
+	begin
+		rollback
+		raiserror('No se pueden tener más de 3 publicaciones gratuitas al mismo tiempo',16,1)
+		set @return = 3
+	end
+											
+	
+	
+	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
+								  Pub_Estado,Pub_Visibilidad, Pub_Duenio,Pub_Permite_Preguntas)
+			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, GETDATE(), 
+			 GETDATE() + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
+			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
+		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
+	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
+		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
+commit 
+
+GO		
+
+-- Calificar
+create procedure SQL_O.calificar @pub numeric(18,0), @user numeric(18,0), @cant_estrellas numeric(18,0),
+								 @des nvarchar(255)
+as 
+	begin transaction
+	if (@cant_estrellas not between 0 and 10)
+		begin
+			rollback
+			raiserror('La cantidad de estrellas debe estar entre 0 y 10',16,1)
+			end
+	else
+	insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
+			values( (select MAX(Cal_Codigo) from SQL_O.Calificacion)+1,
+					@cant_estrellas, @des, @pub, @user)
+	
+	declare @tipo_duenio numeric(18,0)
+	set @tipo_duenio = (select User_Tipo from SQL_O.Publicacion,SQL_O.Usuario where Pub_Cod=@pub and Pub_Duenio=UserId)
+	
+	declare @bit bit
+	if(exists(select Cli_Id from SQL_O.Cliente where Cli_Id=@tipo_duenio))
+		begin
+		set @bit =0
+		end
+	else
+		if(exists(select Emp_Cod from SQL_O.Empresa where Emp_Cod=@tipo_duenio))
+			begin
+			set @bit=1
+			end
+	exec SQL_O.actualizar_reputacion @tipo=@tipo_duenio, @bit=@bit
+	
+	commit
+
+
+GO
+
+
+-- Formular Pregunta.
+
+create procedure SQL_O.crear_pregunta @publicacion numeric(18,0), @pregunta nvarchar(255), 
+									  @autor nvarchar(255)
+
+as 
+begin transaction
+	if((select u.Username 
+		from SQL_O.Publicacion p, SQL_O.Usuario u 
+		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @publicacion)=@autor)
+	begin
+		rollback
+		raiserror('Un usuario no puede "auto preguntarse"',16,1)
+	end
+
+	Insert into SQL_O.Pregunta(Pre_Fecha,Pre_Pub,Pre_Texto,Pre_User) 
+	values (GETDATE(),@publicacion,
+			@pregunta,(select u.UserId from SQL_O.Usuario u where u.Username = @autor))
+commit
+GO
+
+-- Responder Pregunta.
+
+create procedure SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nvarchar(255)
+
+as
+begin transaction
+	
+	if((select Pre_Respondida from SQL_O.Pregunta where Pre_Id = @pregunta)=1)
+	begin
+		rollback
+		raiserror('La pregunta ya fue respondida',16,1)
+	end
+	Insert into SQL_O.Respuesta(Res_Texto,Res_Fecha) values (@respuesta,GETDATE())
+	update SQL_O.Pregunta
+	set Pre_Res = (select Max(Res_Cod) from SQL_O.Respuesta),
+	    Pre_Respondida = 1
+	where Pre_Id = @pregunta
+
+commit
 GO
 
 -- Alta Cliente. //corregido//
@@ -838,59 +966,6 @@ commit
 
 GO 
 
--- Crear Publicación. //corregido//
-create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
-										@precio numeric(18,2), @tipo nvarchar(255), 
-										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
-										@admite_preguntas bit, @return numeric(1,0)
-										
-as
-begin transaction	
-
-	set @return = 0
-	if( @stock < 1) 
-	begin
-		rollback
-		raiserror('No se puede tener un stock menor a 1(uno)',16,1)
-		set @return = 1
-	end
-
-	if( @tipo = 'Subasta' and @stock > 1) 
-	begin
-		rollback
-		raiserror('En Subastas el stock máximo permitido es 1',16,1)
-		set @return = 2
-	end
-	
-	if(@visibilidad = 'Gratis' and 
-	  ((select COUNT(p.Pub_Cod) 
-	    from SQL_O.Publicacion p, SQL_O.Usuario u, SQL_O.Visibilidad v
-	    where p.Pub_Visibilidad = v.Vis_Cod
-	      and v.Vis_Desc = 'Gratis'
-	      and u.Username = @duenio
-	      and p.Pub_Duenio = u.UserId
-	      and p.Pub_Estado = 'Publicada')>=3))
-	begin
-		rollback
-		raiserror('No se pueden tener más de 3 publicaciones gratuitas al mismo tiempo',16,1)
-		set @return = 3
-	end
-											
-	
-	
-	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
-								  Pub_Estado,Pub_Visibilidad, Pub_Duenio,Pub_Permite_Preguntas)
-			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, GETDATE(), 
-			 GETDATE() + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
-			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
-		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
-	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
-		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
-commit 
-
-GO		
-
-
 -- Alta de visibilidad.(CORREGIDO) //revisado//
 
 create procedure SQL_O.alta_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0),
@@ -963,6 +1038,7 @@ begin transaction
 		else 
 			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
 		
+<<<<<<< HEAD
 commit	*/
 GO
 	
@@ -1075,9 +1151,13 @@ begin transaction
 	where Pre_Id = @pregunta
 
 commit
+=======
+commit*/
+>>>>>>> origin/master
 GO
 
 -- Modificacion de Cliente. //corregido//
+
 create procedure SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 											@cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
 											@calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
@@ -1182,32 +1262,49 @@ commit
 
 GO
 
+-- Modificacion de Rol
 
--- Baja de Rol. //corregido//
+/*CREATE TABLE SQL_O.Rol(
 
-create procedure SQL_O.baja_rol @rol nvarchar(255)
+		Rol_Cod numeric(18,0) Primary Key,
+		Rol_Desc nvarchar(255),
+		Rol_baja bit default 0		
+		)
+GO
+
+CREATE TABLE SQL_O.Func_Por_Rol(
+
+		Rol_Cod numeric(18,0)references SQL_O.Rol(Rol_Cod),
+		Func_Cod numeric(18,0) references SQL_O.Funcionalidad(Func_Cod),	
+		Primary Key (Rol_Cod,Func_Cod)
+		)
+GO*/
+
+-- Modificacion de Visibilidad
+
+create procedure SQL_O.modificacion_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0), @precio numeric(18,2),
+												@porcentaje numeric(18,2), @return numeric(1,0) out
 as
 begin transaction
+	set @return=0
+	if(not(exists(select Vis_Cod from SQL_O.Visibilidad where @descripcion = Vis_Desc)))
+	begin
+		rollback
+		raiserror('La visibilidad que se intenta modificar no existe', 16, 1)
+		set @return = 1
+		return
+	end
 	
-	update SQL_O.Rol set Rol_baja = 1
-	where Rol_Desc = @rol
+	update SQL_O.Visibilidad
+	set	Vis_Duracion = @duracion,
+	Vis_Precio = @precio,
+	Vis_Porcentaje = @porcentaje
+	where Vis_Desc = @descripcion
 	
-commit 
-GO 
+commit
+GO
 
--- Rehabilitar Rol. //corregido//
-
-create procedure SQL_O.rehabilitacion_rol @rol nvarchar(255)
-as
-begin transaction
-	
-	update SQL_O.Rol set Rol_baja = 0
-	where Rol_Desc= @rol
-	
-commit 
-GO 
-
--- Baja de visibilidad.(CORREGIDO) //revisado//
+-- Baja de visibilidad. //revisado//
 
 create procedure SQL_O.baja_visibilidad @visibilidad nvarchar(255)
 as
@@ -1251,6 +1348,30 @@ begin transaction
 
 commit	  
 GO
+
+-- Baja de Rol. //corregido//
+
+create procedure SQL_O.baja_rol @rol nvarchar(255)
+as
+begin transaction
+	
+	update SQL_O.Rol set Rol_baja = 1
+	where Rol_Desc = @rol
+	
+commit 
+GO 
+
+-- Rehabilitar Rol. //corregido//
+
+create procedure SQL_O.rehabilitacion_rol @rol nvarchar(255)
+as
+begin transaction
+	
+	update SQL_O.Rol set Rol_baja = 0
+	where Rol_Desc= @rol
+	
+commit 
+GO 
 
 
 -- FUNCIONES --

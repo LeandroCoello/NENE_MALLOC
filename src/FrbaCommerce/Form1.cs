@@ -15,14 +15,17 @@ namespace FrbaCommerce
 {
     public partial class Form1 : Form
     {
+        private SQLConnector connection;
         public Form1()
         {
 
             InitializeComponent();
+            connection = new SQLConnector();
+
         }
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            FrbaCommerce.Login.Form1 logearse = new FrbaCommerce.Login.Form1();
+            FrbaCommerce.Login.Form1 logearse = new FrbaCommerce.Login.Form1(connection);
             this.Hide();
             logearse.ShowDialog();
             this.Show();
@@ -34,7 +37,7 @@ namespace FrbaCommerce
             FrbaCommerce.Registro_de_Usuario.Form1 registracion = new FrbaCommerce.Registro_de_Usuario.Form1();
             this.Hide();
             registracion.ShowDialog();
-            FrbaCommerce.Login.Form1 logearse = new FrbaCommerce.Login.Form1();
+            FrbaCommerce.Login.Form1 logearse = new FrbaCommerce.Login.Form1(connection);
             this.Show();
             
         }
