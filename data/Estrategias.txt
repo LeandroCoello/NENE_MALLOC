@@ -7,7 +7,20 @@ Para tratar polimorficamente el tipo, es decir para facilitar la determinación d
 
 A su vez existen tres roles fijos(se pueden agregar mas) asociados a sus funcionalidades. Cada fila de tipo tiene una fk a rol, esto significa que dependiendo el tipo se le asocia un rol con sus respectivas funcionalidades. 
 
-(Algo de factura e item factura)
+Luego para publicación creamos una tabla con ese nombre y sus respectivos campos, definiendo una fk a la tabla Visibilidad(cuyos campos son la descripción,duración,precio,porcentaje y un bit para la baja lógica) y otra a la tabla Usuario(o sea dueño de la publicación).
+Debido a que por enunciado se supone que una publicación puede tener varios rubros, implementamos una relación muchos a muchos entre la tabla Rubro y Publicación(con la respectiva tabla intermedia Pub_Por_Rubro).
+
+Las preguntas y respuestas las normalizamos tratándolas en tablas separadas (Pregunta y Respuesta respectivamente) donde la primera conoce a la publicación a la cual pertenece, al usuario que la realizó, a su respuesta (cuando el dueño de la publicación responda), su fecha y el texto. La respuesta contiene el texto y la fecha en la cual se creó.
+
+En la tabla Calificación ubicamos al usuario que calificó y a la publicación(dos fk, una a Usuario y la otra a Publicación), la cantidad de estrellas otorgadas y la descripción optativa.
+
+Utilizamos la tabla Compra para almacenar las compras justamente de las publicaciones cuyo tipo es 'Compra Inmediata', relacionándola mediante un campo fk a Publicación y otro a Usuario(siendo éste el comprador). Tambien la tabla contiene la fecha y cantidad.
+
+Luego para las ofertas de subastas creamos la tabla Oferta que conoce a su publicación y al usuario que ofertó (con fk a Publicación y Usuario), su fecha, monto y un booleano para determinar si fue el ganador de la subasta luego de que ésta finalice.
+
+El objetivo de que los datos de calificación, compra y oferta estén ubicados en esas tablas es, aparte de la normalización, utilizar las mismas para la obtención del historial, explicado mas adelante.
+
+(acá va factura e item factura)
 
 -- Migracion
 
@@ -17,9 +30,20 @@ Para el caso de Empresa, Cliente y Publicación, debido a la normalización, por c
 
 Tanto en los inserts masivos como en los cursores los campos fk los completamos con subconsultas.
 
+Utilizamos Ids autoincrementales en aquellas tablas cuyo código no estaba determinado en la tabla maestra, particularmente en Funcionalidad, Datos_Pers, Tipo, Usuario, Pregunta, Respuesta, Item_Factura, Compra, Oferta y Rubro. El objetivo es delegar el tratamiento de Ids(las pks de las tablas) al motor de base de datos.
+
 (algo de factura e item factura)
 
 
 -- Stores Procedures
 
 Las operaciones de login, alta, baja y modificación de usuarios cliente, usuarios empresa, visibilidades y publicaciónes, para facilitar la comunicación con la aplicación (y algo de fruta mas podemos tirar que ahora no se me ocurre :p) implementamos store procedures.
+En cada store procedure se valida que la entrada sea la correcta dentro de los valores que maneja el modelo de datos, es decir por ejemplo, validación de uniques.
+
+-- Funciones Historial
+
+Para el historial decidimos utilizar consultas separadas, implementando funciones y aprovechando la normalización de los datos en las tablas de compras,ofertas y calificaciones. 
+Cada función recibe un usuario y muestra las compras, ofertas o calificaciones(dependiendo de la función) en las cuales intervino este usuario sumado a datos de cada operación.
+Para compra se muestra el comprador y el vendedor, la descripción de la publicación, el rubro de ésta, la cantidad y la fecha.
+Para calificación, comprador, vendedor, cantidad de estrellas y descripción.
+Por último para las ofertas se muesta el vendedor, copmrador, la fecha, el monto y si ganó o nó la subasta (de la forma 'Si','No').

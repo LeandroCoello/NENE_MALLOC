@@ -203,14 +203,18 @@ GO
 		~ Las columnas que empiezan con Publ_ se refieren a dueños de publicaciones.
 		~ Las columnas que empiezan con Cli siempre estan "unidas" a ofertas o compras, o sea son clientes que ofertaron o compraron algo.
 */
+go
 
---Migracion
+-- MIGRACIÓN --
+go
 
+--Inserts de rol.
 Insert into SQL_O.Rol(Rol_Desc,Rol_Cod) values('Empresa',1)
 Insert into SQL_O.Rol(Rol_Desc,Rol_Cod) values('Cliente',2)
 Insert into SQL_O.Rol(Rol_Desc,Rol_Cod) values('Admin',3)
 GO
 
+--Inserts de funcionalidad.
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('ABM de Rol')--Administrativo
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Modificación de password')--Todos
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Baja de usuario')--Administrativo
@@ -233,6 +237,7 @@ Insert into SQL_O.Funcionalidad(Func_Desc) values ('Pagar facturaciones pendient
 Insert into SQL_O.Funcionalidad(Func_Desc) values ('Obtener Listado estadístico')--Admin
 go
 
+--Inserts de funcionalidad por rol.
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (1,3)
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (2,1)
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (2,2)
@@ -262,6 +267,7 @@ Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (19,2)
 Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) values (20,3)
 go
 
+--Migración tabla Visibilidad.
 Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio, Vis_Duracion)
 	(select distinct Publicacion_Visibilidad_Cod, 
 					 Publicacion_Visibilidad_Desc,
@@ -270,13 +276,14 @@ Insert into SQL_O.Visibilidad(Vis_Cod,Vis_Desc,Vis_Porcentaje,Vis_Precio, Vis_Du
 	from gd_esquema.Maestra)
 	order by Publicacion_Visibilidad_Cod
 GO
-	
+
+--Migración tabla Rubro.	
 Insert into SQL_O.Rubro(Rubro_Desc)
 	(select distinct Publicacion_Rubro_Descripcion 
 		from gd_esquema.Maestra)
 GO	
 
---recorrer select de empresa con cursor e ir insertando en empresa y datos personales
+--Migración tabla Tipo, Datos_Pers, Empresa, Usuario.
 Declare 
 @razon_social nvarchar(255),
 @cuit nvarchar(50),
@@ -340,8 +347,7 @@ deallocate cursor_Migracion_Emp
  
 GO
 
-
---Migracion Cliente
+--Migración tabla Tipo, Datos_Pers, Cliente, Usuario.
 Declare 
 @dni numeric(18,0),
 @apellido nvarchar(255),
@@ -420,7 +426,7 @@ deallocate cursor_Migracion_Cli
  
 GO
 
---Migracion Publicacion
+--Migración tabla Publicación, Pub_Por_Rubro.
 Declare 
 @cod numeric(18,0),
 @desc nvarchar(255),
@@ -487,9 +493,7 @@ deallocate cursor_Migracion_Pub
  
 GO
 
-
--- Insert Admin
-
+--Insert Admin
 Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Admin',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Admin'))
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
@@ -504,7 +508,7 @@ Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('superAdmin','8d9
 
 GO
 
-
+--Migración tabla Calificación.
 insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
 	(select distinct Calificacion_Codigo,
 					 Calificacion_Cant_Estrellas, 
@@ -515,6 +519,7 @@ insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User
 	 
 GO
 
+--Migración tabla Factura.
 insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Usuario)
 	(select distinct Factura_Nro,
 					Factura_Fecha,
@@ -526,6 +531,7 @@ insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_
 
 GO
 
+--Migración tabla Item_Factura.
 insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto,Item_Publicacion)
 	(select Item_Factura_Cantidad,
 			Factura_Nro,
@@ -535,7 +541,7 @@ insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto,Item_Public
 
 GO
 
-
+--Migración tabla Compra.
 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
 	(select distinct Publicacion_Cod,
 					 Compra_Fecha,
@@ -545,6 +551,7 @@ insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprado
 	
 GO
 
+--Migración tabla Oferta.
 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
 	(select distinct Publicacion_Cod,
 					 Oferta_Fecha,
@@ -554,13 +561,13 @@ insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
 	
 GO
 
---Migración corregida
+
+
+-- STORE PROCEDURES --
 go
 
--- Store Procedures
+--Login. //corregido//
 
-
---Login //corregido//
 create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out, @rol nvarchar(255) out
 as 
 begin
@@ -623,7 +630,7 @@ end
 
 GO
 
--- Generar usuario (CORREGIDO) revisado
+-- Generar usuario. (CORREGIDO) revisado
 create procedure SQL_O.generar_usuario @nombreUsuario nvarchar(30) out, @pass nvarchar(255) out
 as
 begin 
@@ -637,7 +644,7 @@ begin
 end 
 GO
 
--- Alta Cliente //corregido//
+-- Alta Cliente. //corregido//
 create procedure SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
 							  @calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
@@ -688,7 +695,7 @@ commit
 
 GO
 
--- Alta Empresa //corregido//
+-- Alta Empresa. //corregido//
 create procedure SQL_O.alta_empresa @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_c datetime,
 								    @contacto nvarchar(50),@mail nvarchar(50), @dom_calle nvarchar(100),
 								    @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
@@ -736,7 +743,7 @@ commit
 
 GO 
 
--- Crear Publicación //corregido//
+-- Crear Publicación. //corregido//
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
 										@precio numeric(18,2), @tipo nvarchar(255), 
 										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
@@ -789,7 +796,7 @@ commit
 GO		
 
 
--- Alta de visibilidad(CORREGIDO) //revisado//
+-- Alta de visibilidad.(CORREGIDO) //revisado//
 
 create procedure SQL_O.alta_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0),
 										 @precio numeric(18,2), @porcentaje numeric(18,2)
@@ -808,7 +815,7 @@ begin transaction
 commit
 GO
 
--- Alta de rol
+-- Alta de rol.
 
 create procedure SQL_O.alta_rol @rol nvarchar(255)
 
@@ -824,7 +831,7 @@ begin transaction
 commit
 GO
 
--- Alta de funcionalidad por rol
+-- Alta de funcionalidad por rol.
 
 create procedure  SQL_O.alta_funcionalidad_por_rol @funcionalidad nvarchar(255) , @rol nvarchar(255)
 as
@@ -861,12 +868,12 @@ begin transaction
 		else 
 			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
 		
-commit	
+commit	*/
 GO
-*/	
+	
 
 
--- Formular Pregunta
+-- Formular Pregunta.
 
 create procedure SQL_O.crear_pregunta @publicacion numeric(18,0), @pregunta nvarchar(255), 
 									  @autor nvarchar(255)
@@ -880,7 +887,7 @@ begin transaction
 commit
 GO
 
--- Responder Pregunta
+-- Responder Pregunta.
 
 create procedure SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nvarchar(255)
 
@@ -895,7 +902,7 @@ begin transaction
 commit
 GO
 
--- Modificacion de Cliente //corregido//
+-- Modificacion de Cliente. //corregido//
 create procedure SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 											@cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
 											@calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
@@ -948,7 +955,7 @@ begin transaction
 commit 
 GO
 
--- Modificacion de Empresa //corregido//
+-- Modificacion de Empresa. //corregido//
 
 create procedure SQL_O.modificacion_empresa  @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_creacion datetime, @contacto nvarchar(50), 
 											 @mail nvarchar(50), @tel numeric(18,0), @calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
@@ -993,7 +1000,7 @@ commit
 GO
 
 
--- Baja de Rol //corregido//
+-- Baja de Rol. //corregido//
 
 create procedure SQL_O.baja_rol @rol nvarchar(255)
 as
@@ -1005,7 +1012,7 @@ begin transaction
 commit 
 GO 
 
--- Rehabilitar Rol //corregido//
+-- Rehabilitar Rol. //corregido//
 
 create procedure SQL_O.rehabilitacion_rol @rol nvarchar(255)
 as
@@ -1017,7 +1024,7 @@ begin transaction
 commit 
 GO 
 
--- Baja de visibilidad(CORREGIDO) //revisado//
+-- Baja de visibilidad.(CORREGIDO) //revisado//
 
 create procedure SQL_O.baja_visibilidad @visibilidad nvarchar(255)
 as
@@ -1029,7 +1036,7 @@ begin transaction
 commit
 GO 
 
--- Baja de Cliente 
+-- Baja de Cliente.
 create procedure SQL_O.baja_cliente @nombre nvarchar(255) , @apellido nvarchar(255) ,
                                     @tipo_doc nvarchar(20) ,@nro_doc numeric(18,0) , @mail nvarchar(50)
 as
@@ -1046,7 +1053,7 @@ commit
 GO 
 
 
--- Baja de Empresa
+-- Baja de Empresa.
 
 create procedure SQL_O.baja_empresa  @razon_social nvarchar(255) , 
 											 @cuit nvarchar(50) , @mail nvarchar(50) 
@@ -1062,7 +1069,7 @@ begin transaction
 commit	  
 GO
 
--- Ganador De Una Subasta
+-- Ganador De Una Subasta.
 
 create procedure SQL_O.setear_ganador 
 as 
@@ -1080,10 +1087,13 @@ end
 exec SQL_O.setear_ganador
 GO
 
---Funciones
+-- FUNCIONES --
+
 
 -- para llamar a las funciones por ej: select * from SQL_O.historial_compras('gdd1')
+GO
 
+--Historial de compras de un usuario.
 create function SQL_O.historial_compras (@usuario nvarchar(30))
 returns @tabla TABLE (Usuario nvarchar(30),
 					  Comprador nvarchar(30),
@@ -1115,6 +1125,7 @@ as
 	end
 go
 
+--Historial de calificaciones de un usuario.
 create function SQL_O.historial_calif(@usuario nvarchar(30))
 returns @tabla table (Usuario nvarchar(30),
 					  Comprador nvarchar(30),
@@ -1140,6 +1151,7 @@ as
 	end
 go
 
+--Historial de ofertas de un usuario.
 create function SQL_O.historial_ofertas(@usuario nvarchar(30))
 returns @tabla table (Usuario nvarchar(30),
 					  Comprador nvarchar(30),
