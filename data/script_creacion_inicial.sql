@@ -87,8 +87,6 @@ CREATE TABLE SQL_O.Administrativo(
 		)
 GO
 
-
-
 CREATE TABLE SQL_O.Usuario(
 		UserId numeric(18,0) Primary Key Identity,
 		Username varchar(30) Unique,
@@ -109,7 +107,6 @@ CREATE TABLE SQL_O.Visibilidad(
 		Vis_Baja bit default 0
 		)
 GO
-
 
 CREATE TABLE SQL_O.Publicacion(
 		Pub_Cod numeric(18,0) Primary Key,
@@ -811,6 +808,47 @@ begin transaction
 commit
 GO
 
+-- Alta de rol
+
+create procedure SQL_O.alta_rol @rol nvarchar(255)
+
+as
+begin transaction
+	if exists(select Rol_Desc from SQL_O.Rol where Rol_Desc = @rol)
+		begin
+			rollback
+			raiserror('El rol ya existe',16,1)
+		end
+		
+	Insert into SQL_O.Rol(Rol_Desc) values (@rol)
+commit
+GO
+
+-- Alta de funcionalidad por rol
+
+create procedure  SQL_O.alta_funcionalidad_por_rol @funcionalidad nvarchar(255) , @rol nvarchar(255)
+as
+begin transaction
+	
+	if ((select r.Rol_baja from SQL_O.Rol r where r.Rol_Desc = @rol) = 1)
+		begin
+			rollback
+			raiserror('El rol está dado de baja',16,1)
+		end
+		
+	if(not(exists(select Func_Cod from SQL_O.Funcionalidad where @funcionalidad = Func_Desc)))
+	begin 
+		Insert into SQL_O.Funcionalidad(Func_Desc) values (@funcionalidad)
+	end
+	
+	Insert into SQL_O.Func_Por_Rol(Func_Cod,Rol_Cod) 
+	values ((select f.Func_Cod from SQL_O.Funcionalidad f where f.Func_Desc = @funcionalidad),
+	        (select r.Rol_Cod from SQL_O.Rol r where r.Rol_Desc = @rol))
+
+commit
+GO
+			
+
 -- Alta Rubro(NO HACE FALTA)
 /*create procedure SQL_O.alta_rubro @codigo numeric(18,0), @descripcion nvarchar(255)
 as 
@@ -823,34 +861,39 @@ begin transaction
 		else 
 			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
 		
-commit	*/	
+commit	
 GO
+*/	
+
 
 -- Formular Pregunta
 
-create procedure SQL_O.crear_pregunta 
+create procedure SQL_O.crear_pregunta @publicacion numeric(18,0), @pregunta nvarchar(255), 
+									  @autor nvarchar(255)
+
+as 
+begin transaction
+
+	Insert into SQL_O.Pregunta(Pre_Fecha,Pre_Pub,Pre_Texto,Pre_User) 
+	values (GETDATE(),@publicacion,
+			@pregunta,(select u.UserId from SQL_O.Usuario u where u.Username = @autor))
+commit
+GO
 
 -- Responder Pregunta
 
-/*
-CREATE TABLE SQL_O.Respuesta(
-		Res_Cod numeric(18,0) Primary key identity,
-		Res_Texto nvarchar(255),
-		Res_Fecha datetime
-		)
-GO
+create procedure SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nvarchar(255)
 
-CREATE TABLE SQL_O.Pregunta(
-		Pre_Id numeric(18,0) Primary Key identity,
-		Pre_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
-		Pre_Res numeric(18,0) references SQL_O.Respuesta(Res_Cod) NOT NULL,
-		Pre_Texto nvarchar(255),
-		Pre_Fecha datetime,
-		Pre_User numeric(18,0) references SQL_O.Usuario(UserID)
-		)
-GO
-*/
+as
+begin transaction
+	
+	Insert into SQL_O.Respuesta(Res_Texto,Res_Fecha) values (@respuesta,GETDATE())
+	update SQL_O.Pregunta
+	set Pre_Res = (select Max(Res_Cod) from SQL_O.Respuesta)
+	where Pre_Id = @pregunta
 
+commit
+GO
 
 -- Modificacion de Cliente //corregido//
 create procedure SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
