@@ -1216,7 +1216,7 @@ CREATE TABLE SQL_O.Func_Por_Rol(
 		)*/
 GO
 
--- Modificacion de Visibilidad
+-- Modificacion de Visibilidad//Si los chicos nos mandan el codigo de la visibilidad podríamos cambiar también la descripción//
 
 create procedure SQL_O.modificacion_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0), @precio numeric(18,2),
 												@porcentaje numeric(18,2), @return numeric(1,0) out
