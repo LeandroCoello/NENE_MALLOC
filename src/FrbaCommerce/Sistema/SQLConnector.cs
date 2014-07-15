@@ -33,11 +33,11 @@ namespace FrbaCommerce.Sistema
         }
 
 
-        public object logearse(string query)
+        public int executeProcedure(string query)
         {
             SqlCommand queryCommand = new SqlCommand(query, connection);
             queryCommand.CommandType = CommandType.StoredProcedure;
-            return queryCommand.ExecuteScalar();
+            return (int)queryCommand.ExecuteScalar();
        
         }        
         public void consulta(string consulta)
