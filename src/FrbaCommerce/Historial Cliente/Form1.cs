@@ -14,6 +14,7 @@ namespace FrbaCommerce.Historial_Cliente
         public Form1()
         {
             InitializeComponent();
+            /*Realizar consulta al SQL por cada data para ir completando los campos de cada uno*/
         }
     }
 }

@@ -20,21 +20,6 @@ namespace FrbaCommerce
 
             InitializeComponent();
         }
-
-        System.Data.SqlClient.SqlConnection coneccion;
-
-        /*private void Form1_Load(object sender, EventArgs e) {
-            coneccion = new System.Data.SqlClient.SqlConnection();
-            coneccion.ConnectionString = @"Data Source=|DataDirectory|\Northwind.sdf";
-            try{
-                coneccion.Open();
-                MessageBox.Show("hola me conecte");
-            }catch(Exception){
-                MessageBox.Show("Los de bosnia todos PUTOS");
-            }
-            
-        }*/
-
         private void btnLogin_Click(object sender, EventArgs e)
         {
             FrbaCommerce.Login.Form1 logearse = new FrbaCommerce.Login.Form1();
