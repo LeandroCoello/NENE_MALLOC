@@ -568,7 +568,7 @@ go
 
 --Login. //corregido//
 
-create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out, @rol nvarchar(255) out
+create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
 as 
 begin
 set @return=0 --El usuario ingresa correctamente
@@ -593,11 +593,6 @@ if exists (select Username from SQL_O.Usuario where Username=@usuario and Userpa
 				set @return=2 --El usuario no ingresa por estar dado de baja
 				return
 			end
-			else 
-				begin
-				set @rol = (select Rol_Desc from SQL_O.Tipo, SQL_O.Usuario,SQL_O.Rol where Username = @usuario and User_Tipo=Tipo_Cod and Tipo_Rol=Rol_Cod and Rol_baja = 0)
-				end
-
 	end
 else
 	begin
