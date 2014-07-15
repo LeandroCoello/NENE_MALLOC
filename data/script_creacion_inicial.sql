@@ -1010,6 +1010,14 @@ as
 	declare @userid numeric(18,0)
 	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
 	
+	if((select u.Username 
+		from SQL_O.Publicacion p, SQL_O.Usuario u 
+		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+	begin
+		rollback
+		raiserror('Un usuario no puede ofertar en su publicacion',16,1)
+	end
+	
 		if( @monto=FLOOR(@monto) and @monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub
 						order by Oferta_Fecha desc) )
 			begin
@@ -1031,6 +1039,14 @@ as
 	begin transaction
 		declare @userid numeric(18,0)
 		set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
+		
+	if((select u.Username 
+		from SQL_O.Publicacion p, SQL_O.Usuario u 
+		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+	begin
+		rollback
+		raiserror('Un usuario no puede "auto comprarse"',16,1)
+	end
 	
 	if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub = Pub_Cod))
 		begin
@@ -1200,39 +1216,60 @@ GO
 
 -- Modificacion de Rol
 
-/*CREATE TABLE SQL_O.Rol(
-
-		Rol_Cod numeric(18,0) Primary Key,
-		Rol_Desc nvarchar(255),
-		Rol_baja bit default 0		
-		)
+create procedure SQL_O.modificacion_rol @rol_cod numeric(18,0) ,@descripcion nvarchar(255), @return numeric(1,0) out
+as
+begin transaction
+	set @return = 0
+	if(exists(select Rol_Desc from SQL_O.Rol where @rol_cod != Rol_Cod and Rol_Desc = @descripcion))
+	begin
+		rollback
+		raiserror('La descripcion ya pertenece a un rol',16,1)
+		set @return = 1
+	end
+	
+	update SQL_O.Rol
+	set Rol_Desc = @descripcion
+	where Rol_Cod = @rol_cod
+	
+commit
 GO
 
-CREATE TABLE SQL_O.Func_Por_Rol(
+-- Quitar funcionalidad
 
-		Rol_Cod numeric(18,0)references SQL_O.Rol(Rol_Cod),
-		Func_Cod numeric(18,0) references SQL_O.Funcionalidad(Func_Cod),	
-		Primary Key (Rol_Cod,Func_Cod)
-		)*/
+create procedure SQL_O.quitar_funcionalidad @funcionalidad nvarchar(255), @rol nvarchar(255)
+as
+begin transaction
+	declare @rol_cod numeric(18,0)
+	declare @func_cod numeric(18,0)
+	
+	set @rol_cod = (select Rol_Cod from SQL_O.Rol where @rol = Rol_Desc)
+	set @func_cod = (select Func_Cod from SQL_O.Funcionalidad where @funcionalidad = Func_Desc)
+	
+	Delete from SQL_O.Func_Por_Rol
+	where Func_Cod = @func_cod and Rol_Cod = @rol_cod
+	
+commit
 GO
 
 -- Modificacion de Visibilidad//Si los chicos nos mandan el codigo de la visibilidad podríamos cambiar también la descripción//
 
-create procedure SQL_O.modificacion_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0), @precio numeric(18,2),
-												@porcentaje numeric(18,2), @return numeric(1,0) out
+create procedure SQL_O.modificacion_visibilidad @vis_cod numeric(18,0) ,@descripcion nvarchar(255), @duracion numeric(18,0), 
+												@precio numeric(18,2),@porcentaje numeric(18,2), 
+												@return numeric(1,0) out
 as
 begin transaction
 	set @return=0
-	if(not(exists(select Vis_Cod from SQL_O.Visibilidad where @descripcion = Vis_Desc)))
+	if((exists(select Vis_Cod from SQL_O.Visibilidad where @descripcion = Vis_Desc and @vis_cod != Vis_Cod)))
 	begin
 		rollback
-		raiserror('La visibilidad que se intenta modificar no existe', 16, 1)
+		raiserror('La descripción de esa visibilidad ya existe', 16, 1)
 		set @return = 1
 		return
 	end
 	
 	update SQL_O.Visibilidad
-	set	Vis_Duracion = @duracion,
+	set	Vis_Desc = @descripcion,
+	Vis_Duracion = @duracion,
 	Vis_Precio = @precio,
 	Vis_Porcentaje = @porcentaje
 	where Vis_Desc = @descripcion
