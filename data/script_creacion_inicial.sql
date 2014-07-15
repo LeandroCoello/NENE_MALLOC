@@ -136,7 +136,8 @@ CREATE TABLE SQL_O.Pregunta(
 		Pre_Res numeric(18,0) references SQL_O.Respuesta(Res_Cod) NOT NULL,
 		Pre_Texto nvarchar(255),
 		Pre_Fecha datetime,
-		Pre_User numeric(18,0) references SQL_O.Usuario(UserID)
+		Pre_User numeric(18,0) references SQL_O.Usuario(UserID),
+		Pre_Respondida bit default 0
 		)
 GO
 
@@ -967,7 +968,8 @@ GO
 	
 
 -- Calificar
-create procedure SQL_O.calificar @pub numeric(18,0), @user numeric(18,0), @cant_estrellas numeric(18,0),@des nvarchar(255)
+create procedure SQL_O.calificar @pub numeric(18,0), @user numeric(18,0), @cant_estrellas numeric(18,0),
+								 @des nvarchar(255)
 as 
 	begin transaction
 	if (@cant_estrellas not between 0 and 10)
@@ -998,7 +1000,7 @@ as
 	commit
 
 
-go
+GO
 
 
 -- Formular Pregunta.
@@ -1022,9 +1024,15 @@ create procedure SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nv
 as
 begin transaction
 	
+	if((select Pre_Respondida from SQL_O.Pregunta where Pre_Id = @pregunta)=1)
+	begin
+		rollback
+		raiserror('La pregunta ya fue respondida',16,1)
+	end
 	Insert into SQL_O.Respuesta(Res_Texto,Res_Fecha) values (@respuesta,GETDATE())
 	update SQL_O.Pregunta
-	set Pre_Res = (select Max(Res_Cod) from SQL_O.Respuesta)
+	set Pre_Res = (select Max(Res_Cod) from SQL_O.Respuesta),
+	    Pre_Respondida = 1
 	where Pre_Id = @pregunta
 
 commit
