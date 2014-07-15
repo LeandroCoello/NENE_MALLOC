@@ -33,12 +33,12 @@ namespace FrbaCommerce.Sistema
         }
 
 
-        public int logearse(string query)
+        public object logearse(string query)
         {
             SqlCommand queryCommand = new SqlCommand(query, connection);
-            SqlDataReader reader = queryCommand.ExecuteReader();
-            //return reader.
-            return null
+            queryCommand.CommandType = CommandType.StoredProcedure;
+            return queryCommand.ExecuteScalar();
+       
         }        
         public void consulta(string consulta)
         {
