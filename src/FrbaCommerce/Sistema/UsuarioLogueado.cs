@@ -16,5 +16,9 @@ namespace FrbaCommerce.Sistema
             this.contraseñaHash = c;
             this.conexion = con;
         }
+        public String getNombreUsuario()
+        {
+            return nombreUsuario;
+        }
     }
 }
