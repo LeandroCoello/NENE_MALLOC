@@ -118,7 +118,8 @@ CREATE TABLE SQL_O.Publicacion(
 		Pub_Tipo nvarchar(100),
 		Pub_Estado nvarchar(255),
 		Pub_Visibilidad numeric(18,0) references SQL_O.Visibilidad(Vis_Cod) NOT NULL,
-		Pub_Duenio numeric (18,0) references SQL_O.Usuario(UserId) NOT NULL
+		Pub_Duenio numeric (18,0) references SQL_O.Usuario(UserId) NOT NULL,
+		Pub_Permite_Preguntas bit default 1
 		)
 GO
 
@@ -566,6 +567,63 @@ GO
 -- STORE PROCEDURES --
 go
 
+
+-- Setear reputación (la reputacion es el promedio entre total de estrellas recibidas y operaciones realizadas- entiendo  como operaciones realizadas a las ventas que tuvo+las subastas terminadas-)
+create procedure SQL_O.setear_reputacion
+as
+	begin
+	
+	update SQL_O.Cliente
+	set Cli_Reputacion= convert(numeric(18,0), --el convert porque la division devuelve una especie de float
+	
+		((select SUM(Cal_Cant_Est) from SQL_O.Calificacion,SQL_O.Publicacion,SQL_O.Usuario
+		where Cal_Pub=Pub_Cod and Pub_Duenio=UserId and Cli_Id=User_Tipo) -- suma total de estrellas de ese cliente
+		
+		
+		+(select Count(Compra_Id) from SQL_O.Compra,SQL_O.Publicacion,SQL_O.Usuario
+		where Compra_Pub=Pub_Cod and Pub_Duenio=UserId and Cli_Id=User_Tipo)
+		
+		+(select Count(Oferta_Id) from SQL_O.Oferta,SQL_O.Publicacion,SQL_O.Usuario
+		where Oferta_Pub=Pub_Cod and Pub_Duenio=UserId and Cli_Id=User_Tipo and Oferta_Gano=1))/2)
+
+	
+	update SQL_O.Empresa
+	set Emp_Reputacion= convert(numeric(18,0),
+	
+		((select SUM(Cal_Cant_Est) from SQL_O.Calificacion,SQL_O.Publicacion,SQL_O.Usuario
+		where Cal_Pub=Pub_Cod and Pub_Duenio=UserId and Emp_Cod=User_Tipo) -- suma total de estrellas de esa empresa
+		
+		
+		+(select Count(Compra_Id) from SQL_O.Compra,SQL_O.Publicacion,SQL_O.Usuario
+		where Compra_Pub=Pub_Cod and Pub_Duenio=UserId and Emp_Cod=User_Tipo)
+		
+		+(select Count(Oferta_Id) from SQL_O.Oferta,SQL_O.Publicacion,SQL_O.Usuario
+		where Oferta_Pub=Pub_Cod and Pub_Duenio=UserId and Emp_Cod=User_Tipo and Oferta_Gano=1))/2)
+	
+	end
+go
+exec SQL_O.setear_reputacion
+go
+
+-- Ganador De Una Subasta.
+
+create procedure SQL_O.setear_ganador 
+as 
+begin 
+	
+	update SQL_O.Oferta set Oferta_Gano = 1
+	where (select p.Pub_Estado 
+		   from Publicacion p 
+		   where Oferta_Pub = p.Pub_Cod
+		   and 	Oferta_Id = (select TOP 1 o2.Oferta_Id 
+							from Oferta o2 
+							where o2.Oferta_Pub = p.Pub_Cod
+							order by o2.Oferta_Fecha Desc)) = 'Terminado'	   
+end
+GO
+exec SQL_O.setear_ganador
+GO
+
 --Login. //corregido//
 
 create Procedure SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
@@ -742,7 +800,7 @@ GO
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
 										@precio numeric(18,2), @tipo nvarchar(255), 
 										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
-										@return numeric(1,0)
+										@admite_preguntas bit, @return numeric(1,0)
 										
 as
 begin transaction	
@@ -755,7 +813,7 @@ begin transaction
 		set @return = 1
 	end
 
-	if( @tipo = 'subasta' and @stock > 1) 
+	if( @tipo = 'Subasta' and @stock > 1) 
 	begin
 		rollback
 		raiserror('En Subastas el stock máximo permitido es 1',16,1)
@@ -779,11 +837,11 @@ begin transaction
 	
 	
 	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
-								  Pub_Estado,Pub_Visibilidad, Pub_Duenio)
+								  Pub_Estado,Pub_Visibilidad, Pub_Duenio,Pub_Permite_Preguntas)
 			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, GETDATE(), 
 			 GETDATE() + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
 			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
-		    (select UserId from SQL_O.Usuario where @duenio = Username))
+		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
 	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
 		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
 commit 
@@ -927,6 +985,14 @@ begin transaction
 						return 
 					end	
 				else
+					if exists(select Datos_Tel from SQL_O.Cliente,SQL_O.Datos_Pers where Cli_Datos_Pers=Datos_Id and @tel=Datos_Tel and Cli_Id!=@id_cliente)
+					   begin
+						   rollback
+						   raiserror('El numero de telefono ya pertenece a otro cliente', 16, 1)
+						   set @return=3 --ya hay alguien con el mismo nro de tel
+						   return
+					   end
+					else
 					/*¿QUE DATOS HAY QUE ACTUALIZAR?*/ --pisamos todo :D
 					update SQL_O.Cliente
 					set	Cli_Nombre = @nombre, 
@@ -1064,23 +1130,6 @@ begin transaction
 commit	  
 GO
 
--- Ganador De Una Subasta.
-
-create procedure SQL_O.setear_ganador 
-as 
-begin 
-	
-	update SQL_O.Oferta set Oferta_Gano = 1
-	where (select p.Pub_Estado 
-		   from Publicacion p 
-		   where Oferta_Pub = p.Pub_Cod
-		   and 	Oferta_Id = (select TOP 1 o2.Oferta_Id 
-							from Oferta o2 
-							where o2.Oferta_Pub = p.Pub_Cod
-							order by o2.Oferta_Fecha Desc)) = 'Terminado'	   
-end
-exec SQL_O.setear_ganador
-GO
 
 -- FUNCIONES --
 
