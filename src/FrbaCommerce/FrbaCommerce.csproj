@@ -109,23 +109,23 @@
     <Compile Include="Abm Empresa\FiltradoEmpresa.Designer.cs">
       <DependentUpon>FiltradoEmpresa.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Empresa\Form1.cs">
+    <Compile Include="Abm Empresa\AbmEmpresaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Empresa\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Empresa\AbmEmpresaForm.Designer.cs">
+      <DependentUpon>AbmEmpresaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ABM Rol\Form1.cs">
+    <Compile Include="ABM Rol\AbmRolForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ABM Rol\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ABM Rol\AbmRolForm.Designer.cs">
+      <DependentUpon>AbmRolForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Rubro\Form1.cs">
+    <Compile Include="Abm Rubro\AbmRubroForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Rubro\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Rubro\AbmRubroForm.Designer.cs">
+      <DependentUpon>AbmRubroForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Visibilidad\Calificar Vendedor\Form1.cs">
       <SubType>Form</SubType>
@@ -133,41 +133,41 @@
     <Compile Include="Abm Visibilidad\Calificar Vendedor\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Visibilidad\Form1.cs">
+    <Compile Include="Abm Visibilidad\AbmVisibilidadForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Visibilidad\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Visibilidad\AbmVisibilidadForm.Designer.cs">
+      <DependentUpon>AbmVisibilidadForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Calificar Vendedor\Form1.cs">
+    <Compile Include="Calificar Vendedor\CalifVendForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Calificar Vendedor\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Calificar Vendedor\CalifVendForm.Designer.cs">
+      <DependentUpon>CalifVendForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Comprar-Ofertar\Form1.cs">
+    <Compile Include="Comprar-Ofertar\CompOferForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Comprar-Ofertar\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Comprar-Ofertar\CompOferForm.Designer.cs">
+      <DependentUpon>CompOferForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editar Publicacion\Form1.cs">
+    <Compile Include="Editar Publicacion\EditPubForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editar Publicacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Editar Publicacion\EditPubForm.Designer.cs">
+      <DependentUpon>EditPubForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Facturar Publicaciones\Form1.cs">
+    <Compile Include="Facturar Publicaciones\FacPubForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Facturar Publicaciones\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Facturar Publicaciones\FacPubForm.Designer.cs">
+      <DependentUpon>FacPubForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="PrincipalForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="PrincipalForm.Designer.cs">
+      <DependentUpon>PrincipalForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Generar Publicacion\CompraInmediata.cs">
       <SubType>Form</SubType>
@@ -175,11 +175,11 @@
     <Compile Include="Generar Publicacion\CompraInmediata.Designer.cs">
       <DependentUpon>CompraInmediata.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generar Publicacion\Form1.cs">
+    <Compile Include="Generar Publicacion\GenPubForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Generar Publicacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Generar Publicacion\GenPubForm.Designer.cs">
+      <DependentUpon>GenPubForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Generar Publicacion\Subasta.cs">
       <SubType>Form</SubType>
@@ -187,11 +187,11 @@
     <Compile Include="Generar Publicacion\Subasta.Designer.cs">
       <DependentUpon>Subasta.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gestion de Preguntas\Form1.cs">
+    <Compile Include="Gestion de Preguntas\GestPreguntasForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gestion de Preguntas\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Gestion de Preguntas\GestPreguntasForm.Designer.cs">
+      <DependentUpon>GestPreguntasForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Gestion de Preguntas\GestorPregOResp.cs">
       <SubType>Form</SubType>
@@ -205,23 +205,23 @@
     <Compile Include="Gestion de Preguntas\Responder.Designer.cs">
       <DependentUpon>Responder.cs</DependentUpon>
     </Compile>
-    <Compile Include="Historial Cliente\Form1.cs">
+    <Compile Include="Historial Cliente\HistorialFrom.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Historial Cliente\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Historial Cliente\HistorialFrom.Designer.cs">
+      <DependentUpon>HistorialFrom.cs</DependentUpon>
     </Compile>
-    <Compile Include="Listado Estadistico\Form1.cs">
+    <Compile Include="Listado Estadistico\ListEstadisticoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Listado Estadistico\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Listado Estadistico\ListEstadisticoForm.Designer.cs">
+      <DependentUpon>ListEstadisticoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Login\Form1.cs">
+    <Compile Include="Login\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Login\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Login\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Login\Form2EleccionRol.cs">
       <SubType>Form</SubType>
@@ -253,23 +253,23 @@
     <EmbeddedResource Include="Abm Empresa\FiltradoEmpresa.resx">
       <DependentUpon>FiltradoEmpresa.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Abm Empresa\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Abm Empresa\AbmEmpresaForm.resx">
+      <DependentUpon>AbmEmpresaForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ABM Rol\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="ABM Rol\AbmRolForm.resx">
+      <DependentUpon>AbmRolForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Abm Rubro\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Abm Rubro\AbmRubroForm.resx">
+      <DependentUpon>AbmRubroForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="PrincipalForm.resx">
+      <DependentUpon>PrincipalForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generar Publicacion\CompraInmediata.resx">
       <DependentUpon>CompraInmediata.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Gestion de Preguntas\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Gestion de Preguntas\GestPreguntasForm.resx">
+      <DependentUpon>GestPreguntasForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Gestion de Preguntas\GestorPregOResp.resx">
       <DependentUpon>GestorPregOResp.cs</DependentUpon>
@@ -277,11 +277,11 @@
     <EmbeddedResource Include="Gestion de Preguntas\Responder.resx">
       <DependentUpon>Responder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Historial Cliente\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Historial Cliente\HistorialFrom.resx">
+      <DependentUpon>HistorialFrom.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Login\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Login\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\Form2EleccionRol.resx">
       <DependentUpon>Form2EleccionRol.cs</DependentUpon>
@@ -294,8 +294,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Registro de Usuario\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Registro de Usuario\RegistroUsuarioForm.resx">
+      <DependentUpon>RegistroUsuarioForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Registro de Usuario\Form2ParaCliente.resx">
       <DependentUpon>Form2ParaCliente.cs</DependentUpon>
@@ -320,11 +320,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Registro de Usuario\Form1.cs">
+    <Compile Include="Registro de Usuario\RegistroUsuarioForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Registro de Usuario\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Registro de Usuario\RegistroUsuarioForm.Designer.cs">
+      <DependentUpon>RegistroUsuarioForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Registro de Usuario\Form2ParaAdministrador.cs">
       <SubType>Form</SubType>
