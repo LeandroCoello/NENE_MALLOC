@@ -1010,6 +1010,13 @@ create procedure SQL_O.crear_pregunta @publicacion numeric(18,0), @pregunta nvar
 
 as 
 begin transaction
+	if((select u.Username 
+		from SQL_O.Publicacion p, SQL_O.Usuario u 
+		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @publicacion)=@autor)
+	begin
+		rollback
+		raiserror('Un usuario no puede "auto preguntarse"',16,1)
+	end
 
 	Insert into SQL_O.Pregunta(Pre_Fecha,Pre_Pub,Pre_Texto,Pre_User) 
 	values (GETDATE(),@publicacion,
