@@ -789,84 +789,6 @@ commit
 
 GO		
 
--- Calificar
-create procedure SQL_O.calificar @pub numeric(18,0), @user numeric(18,0), @cant_estrellas numeric(18,0),
-								 @des nvarchar(255)
-as 
-	begin transaction
-	if (@cant_estrellas not between 0 and 10)
-		begin
-			rollback
-			raiserror('La cantidad de estrellas debe estar entre 0 y 10',16,1)
-			end
-	else
-	insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
-			values( (select MAX(Cal_Codigo) from SQL_O.Calificacion)+1,
-					@cant_estrellas, @des, @pub, @user)
-	
-	declare @tipo_duenio numeric(18,0)
-	set @tipo_duenio = (select User_Tipo from SQL_O.Publicacion,SQL_O.Usuario where Pub_Cod=@pub and Pub_Duenio=UserId)
-	
-	declare @bit bit
-	if(exists(select Cli_Id from SQL_O.Cliente where Cli_Id=@tipo_duenio))
-		begin
-		set @bit =0
-		end
-	else
-		if(exists(select Emp_Cod from SQL_O.Empresa where Emp_Cod=@tipo_duenio))
-			begin
-			set @bit=1
-			end
-	exec SQL_O.actualizar_reputacion @tipo=@tipo_duenio, @bit=@bit
-	
-	commit
-
-
-GO
-
-
--- Formular Pregunta.
-
-create procedure SQL_O.crear_pregunta @publicacion numeric(18,0), @pregunta nvarchar(255), 
-									  @autor nvarchar(255)
-
-as 
-begin transaction
-	if((select u.Username 
-		from SQL_O.Publicacion p, SQL_O.Usuario u 
-		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @publicacion)=@autor)
-	begin
-		rollback
-		raiserror('Un usuario no puede "auto preguntarse"',16,1)
-	end
-
-	Insert into SQL_O.Pregunta(Pre_Fecha,Pre_Pub,Pre_Texto,Pre_User) 
-	values (GETDATE(),@publicacion,
-			@pregunta,(select u.UserId from SQL_O.Usuario u where u.Username = @autor))
-commit
-GO
-
--- Responder Pregunta.
-
-create procedure SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nvarchar(255)
-
-as
-begin transaction
-	
-	if((select Pre_Respondida from SQL_O.Pregunta where Pre_Id = @pregunta)=1)
-	begin
-		rollback
-		raiserror('La pregunta ya fue respondida',16,1)
-	end
-	Insert into SQL_O.Respuesta(Res_Texto,Res_Fecha) values (@respuesta,GETDATE())
-	update SQL_O.Pregunta
-	set Pre_Res = (select Max(Res_Cod) from SQL_O.Respuesta),
-	    Pre_Respondida = 1
-	where Pre_Id = @pregunta
-
-commit
-GO
-
 -- Alta Cliente. //corregido//
 create procedure SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
 							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
@@ -1043,11 +965,15 @@ commit	*/
 GO
 	
 
--- Calificar (ver como va a llegar el usuario-id o username-)
-create procedure SQL_O.calificar @pub numeric(18,0), @user numeric(18,0), @cant_estrellas numeric(18,0),
+-- Calificar 
+
+create procedure SQL_O.calificar @pub numeric(18,0), @usuario varchar(30), @cant_estrellas numeric(18,0),
 								 @des nvarchar(255)
 as 
 	begin transaction
+	declare @userid numeric(18,0)
+	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
+	
 	if (@cant_estrellas not between 0 and 10)
 		begin
 			rollback
@@ -1057,7 +983,7 @@ as
 	else
 	insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
 			values( (select MAX(Cal_Codigo) from SQL_O.Calificacion)+1,
-					@cant_estrellas, @des, @pub, @user)
+					@cant_estrellas, @des, @pub, @userid)
 	
 	declare @tipo_duenio numeric(18,0)
 	set @tipo_duenio = (select User_Tipo from SQL_O.Publicacion,SQL_O.Usuario where Pub_Cod=@pub and Pub_Duenio=UserId)
@@ -1074,41 +1000,54 @@ as
 			end
 	exec SQL_O.actualizar_reputacion @tipo=@tipo_duenio, @bit=@bit
 	
-	commit
-
-
+commit
 GO
 
--- Ofertar (ver como va a llegar el usuario-id o username-)
-create procedure SQL_O.ofertar @pub numeric(18,0), @user numeric(18,0),@monto numeric(18,2)
+-- Generar Oferta
+create procedure SQL_O.generar_oferta @pub numeric(18,0), @usuario varchar(30),@monto numeric(18,2)
 as
-	begin
+	begin transaction
+	declare @userid numeric(18,0)
+	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
 	--validar que el monto es entero, wtf
 		if(@monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub
 						order by Oferta_Fecha desc) )
 			begin
 				 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
-						values (@pub,GETDATE(), @monto, @user) 
+						values (@pub,GETDATE(), @monto, @userid) 
 			end
 		else
 			rollback
 			raiserror('El monto debe ser entero y mayor a la ultima oferta.',16,1)
 			return	
-	end
+	commit
 GO
 
 
--- Comprar
-/*
-create procedure SQL_O.comprar @pub numeric(18,0), @usuario nvarchar(30) , @cant numeric(18,0)
+-- Generar Compra
+
+create procedure SQL_O.generar_compra @pub numeric(18,0), @usuario varchar(30) , @cant numeric(18,0)
 as 
-	begin
+	begin transaction
+		declare @userid numeric(18,0)
+		set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
 	
-	
-	
-	
-	end
-*/
+	if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub = Pub_Cod))
+		begin
+			 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
+					values (@pub,GETDATE(),@cant,@userid)
+					
+			 update SQL_O.Publicacion
+			 set Pub_Stock= Pub_Stock-@cant
+				 where Pub_Cod=@pub	
+		
+		end
+	else
+		rollback
+		raiserror('La cantidad debe ser menor que el stock.',16,1)
+		return	
+			
+	commit
 GO
 
 -- Formular Pregunta.
@@ -1151,9 +1090,6 @@ begin transaction
 	where Pre_Id = @pregunta
 
 commit
-=======
-commit*/
->>>>>>> origin/master
 GO
 
 -- Modificacion de Cliente. //corregido//
@@ -1277,8 +1213,8 @@ CREATE TABLE SQL_O.Func_Por_Rol(
 		Rol_Cod numeric(18,0)references SQL_O.Rol(Rol_Cod),
 		Func_Cod numeric(18,0) references SQL_O.Funcionalidad(Func_Cod),	
 		Primary Key (Rol_Cod,Func_Cod)
-		)
-GO*/
+		)*/
+GO
 
 -- Modificacion de Visibilidad
 
