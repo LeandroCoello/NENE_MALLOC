@@ -38,11 +38,22 @@ namespace FrbaCommerce.Sistema
             SqlCommand queryCommand = new SqlCommand(query, connection);
             queryCommand.CommandType = CommandType.StoredProcedure;
             return (int)queryCommand.ExecuteScalar();
-       
         }        
-        public void consulta(string consulta)
+        public DataTable consulta(string consulta)
         {
-          
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.CommandTimeout = 999999999;
+
+            sqlCommand.Connection = this.connection;
+            sqlCommand.CommandText = consulta;
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(consulta, this.connection);
+
+            DataTable dataTable = new DataTable();
+            dataTable.Locale = System.Globalization.CultureInfo.InvariantCulture;
+
+            dataAdapter.Fill(dataTable);
+            return dataTable;
         }
         public UsuarioLogueado registrarse()
         {
