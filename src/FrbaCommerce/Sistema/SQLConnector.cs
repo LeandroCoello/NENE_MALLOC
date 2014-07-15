@@ -16,7 +16,7 @@ namespace FrbaCommerce.Sistema
     {
         private SqlConnection connection;
 
-        private SQLConnector() {
+        public SQLConnector() {
             try
             {
                 connection = new SqlConnection("Data Source=localhost/SQLSERVER2008;Initial Catalog=GD1C2014;user=gd;password=gd2014");
