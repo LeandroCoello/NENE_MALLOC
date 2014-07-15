@@ -605,6 +605,46 @@ go
 exec SQL_O.setear_reputacion
 go
 
+
+-- Actualizar reputacion (se supone que cada vez que se califica a alguien se debe actualizar la reputacion de ese alguien)
+create procedure SQL_O.actualizar_reputacion @tipo numeric(18,0), @bit bit
+as 
+	begin
+		if(@bit=0)
+			begin
+				update SQL_O.Cliente
+				set Cli_Reputacion= convert(numeric(18,0),
+		
+									((select SUM(Cal_Cant_Est) from SQL_O.Calificacion,SQL_O.Publicacion,SQL_O.Usuario
+									where Cal_Pub=Pub_Cod and Pub_Duenio=UserId and @tipo=User_Tipo) 
+									
+									
+									+(select Count(Compra_Id) from SQL_O.Compra,SQL_O.Publicacion,SQL_O.Usuario
+									where Compra_Pub=Pub_Cod and Pub_Duenio=UserId and @tipo=User_Tipo)
+									
+									+(select Count(Oferta_Id) from SQL_O.Oferta,SQL_O.Publicacion,SQL_O.Usuario
+									where Oferta_Pub=Pub_Cod and Pub_Duenio=UserId and @tipo=User_Tipo and Oferta_Gano=1))/2)
+				where Cli_Id=@tipo
+			end 
+		else
+			update SQL_O.Empresa
+			set Emp_Reputacion= convert(numeric(18,0),
+	
+								((select SUM(Cal_Cant_Est) from SQL_O.Calificacion,SQL_O.Publicacion,SQL_O.Usuario
+								where Cal_Pub=Pub_Cod and Pub_Duenio=UserId and @tipo=User_Tipo)
+								
+								
+								+(select Count(Compra_Id) from SQL_O.Compra,SQL_O.Publicacion,SQL_O.Usuario
+								where Compra_Pub=Pub_Cod and Pub_Duenio=UserId and @tipo=User_Tipo)
+								
+								+(select Count(Oferta_Id) from SQL_O.Oferta,SQL_O.Publicacion,SQL_O.Usuario
+								where Oferta_Pub=Pub_Cod and Pub_Duenio=UserId and @tipo=User_Tipo and Oferta_Gano=1))/2)	
+			where Emp_Cod=@tipo
+			
+	end
+
+go
+
 -- Ganador De Una Subasta.
 
 create procedure SQL_O.setear_ganador 
