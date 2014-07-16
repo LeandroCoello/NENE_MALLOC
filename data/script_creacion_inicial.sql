@@ -742,11 +742,13 @@ GO
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0),
 										@precio numeric(18,2), @tipo nvarchar(255), 
 										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
-										@admite_preguntas bit, @return numeric(1,0)
+										@admite_preguntas bit,@fecha nvarchar(8), @return numeric(1,0) out
 										
 as
 begin transaction	
 
+	declare @fecha_real datetime
+	set @fecha_real = @fecha
 	set @return = 0
 	if( @stock < 1) 
 	begin
@@ -780,8 +782,8 @@ begin transaction
 	
 	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
 								  Pub_Estado,Pub_Visibilidad, Pub_Duenio,Pub_Permite_Preguntas)
-			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, GETDATE(), 
-			 GETDATE() + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
+			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, @fecha_real, 
+			 @fecha_real + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
 			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
 		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
 		
@@ -1139,10 +1141,12 @@ commit
 GO
 
 -- Generar Oferta
-create procedure SQL_O.generar_oferta @pub numeric(18,0), @usuario varchar(30),@monto numeric(18,2)
+create procedure SQL_O.generar_oferta @pub numeric(18,0), @usuario varchar(30),@monto numeric(18,2), @fecha nvarchar(8)
 as
 	begin transaction
 	declare @userid numeric(18,0)
+	declare @fecha_real datetime
+	set @fecha_real = @fecha
 	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
 	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub)='Publicada')
 	begin
@@ -1158,7 +1162,7 @@ as
 							order by Oferta_Fecha desc) )
 				begin
 					 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
-							values (@pub,GETDATE(), @monto, @userid) 
+							values (@pub,@fecha_real, @monto, @userid) 
 				end
 			else
 			begin
@@ -1188,10 +1192,12 @@ GO
 
 -- Generar Compra
 
-create procedure SQL_O.generar_compra @pub numeric(18,0), @usuario varchar(30) , @cant numeric(18,0)
+create procedure SQL_O.generar_compra @pub numeric(18,0), @usuario varchar(30) , @cant numeric(18,0), @fecha nvarchar(8)
 as 
 	begin transaction
 		declare @userid numeric(18,0)
+		declare @fecha_real datetime
+		set @fecha_real = @fecha
 		set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
 	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub)='Publicada')
 	begin
@@ -1206,7 +1212,7 @@ as
 		if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub = Pub_Cod))
 			begin
 				 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
-						values (@pub,GETDATE(),@cant,@userid)
+						values (@pub,@fecha_real,@cant,@userid)
 						
 				 update SQL_O.Publicacion
 				 set Pub_Stock= Pub_Stock-@cant
@@ -1234,10 +1240,14 @@ GO
 -- Formular Pregunta.
 
 create procedure SQL_O.crear_pregunta @publicacion numeric(18,0), @pregunta nvarchar(255), 
-									  @autor nvarchar(255)
+									  @autor nvarchar(255), @fecha nvarchar(8)
 
 as 
 begin transaction
+
+	declare @fecha_real datetime
+	set @fecha_real = @fecha
+	
 	if((select u.Username 
 		from SQL_O.Publicacion p, SQL_O.Usuario u 
 		where p.Pub_Duenio = u.UserId and p.Pub_Cod = @publicacion)=@autor)
@@ -1255,24 +1265,27 @@ begin transaction
 	end
 
 	Insert into SQL_O.Pregunta(Pre_Fecha,Pre_Pub,Pre_Texto,Pre_User) 
-	values (GETDATE(),@publicacion,
+	values (@fecha_real,@publicacion,
 			@pregunta,(select u.UserId from SQL_O.Usuario u where u.Username = @autor))
 commit
 GO
 
 -- Responder Pregunta.
 
-create procedure SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nvarchar(255)
+create procedure SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nvarchar(255), @fecha nvarchar(8)
 
 as
 begin transaction
+
+	declare @fecha_real datetime
+	set @fecha_real = @fecha
 	
 	if((select Pre_Respondida from SQL_O.Pregunta where Pre_Id = @pregunta)=1)
 	begin
 		rollback
 		raiserror('La pregunta ya fue respondida',16,1)
 	end
-	Insert into SQL_O.Respuesta(Res_Texto,Res_Fecha) values (@respuesta,GETDATE())
+	Insert into SQL_O.Respuesta(Res_Texto,Res_Fecha) values (@respuesta,@fecha_real)
 	update SQL_O.Pregunta
 	set Pre_Res = (select Max(Res_Cod) from SQL_O.Respuesta),
 	    Pre_Respondida = 1
@@ -1518,14 +1531,17 @@ commit
 GO 
 
 -- Generar Factura
-create procedure SQL_O.generar_factura @user nvarchar(30), @forma_pago nvarchar(255), @nro_fact numeric(18,0) out
+create procedure SQL_O.generar_factura @user nvarchar(30), @forma_pago nvarchar(255),@fecha nvarchar(8), @nro_fact numeric(18,0) out
 as
 begin transaction
-		 declare @userid numeric(18,0)
-		 set @userid= (select UserId from SQL_O.Usuario where Username=@user)
-		 set @nro_fact=(select MAX(Factura_Nro) from SQL_O.Factura)+1
+		
+		declare @fecha_real datetime
+		set @fecha_real = @fecha
+		declare @userid numeric(18,0)
+		set @userid= (select UserId from SQL_O.Usuario where Username=@user)
+		set @nro_fact=(select MAX(Factura_Nro) from SQL_O.Factura)+1
 		insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Forma_Pago,Factura_Usuario)
-				values(@nro_fact,GETDATE(),@forma_pago,@userid)
+				values(@nro_fact,@fecha_real,@forma_pago,@userid)
 commit
 GO
 
