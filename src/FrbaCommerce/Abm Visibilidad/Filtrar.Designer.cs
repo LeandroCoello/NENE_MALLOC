@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.btnBusqueda = new System.Windows.Forms.Button();
-            this.btnLimpiar = new System.Windows.Forms.Button();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnBusqueda = new System.Windows.Forms.Button();
+            this.btnLimpiar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDuracion = new System.Windows.Forms.TextBox();
             this.txtDescripcion = new System.Windows.Forms.TextBox();
@@ -58,24 +58,6 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(544, 150);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // btnBusqueda
-            // 
-            this.btnBusqueda.Location = new System.Drawing.Point(343, 56);
-            this.btnBusqueda.Name = "btnBusqueda";
-            this.btnBusqueda.Size = new System.Drawing.Size(75, 23);
-            this.btnBusqueda.TabIndex = 1;
-            this.btnBusqueda.Text = "Buscar";
-            this.btnBusqueda.UseVisualStyleBackColor = true;
-            // 
-            // btnLimpiar
-            // 
-            this.btnLimpiar.Location = new System.Drawing.Point(39, 56);
-            this.btnLimpiar.Name = "btnLimpiar";
-            this.btnLimpiar.Size = new System.Drawing.Size(75, 23);
-            this.btnLimpiar.TabIndex = 2;
-            this.btnLimpiar.Text = "Limpiar";
-            this.btnLimpiar.UseVisualStyleBackColor = true;
             // 
             // Column1
             // 
@@ -101,6 +83,26 @@
             // 
             this.Column4.HeaderText = "Porcentaje";
             this.Column4.Name = "Column4";
+            // 
+            // btnBusqueda
+            // 
+            this.btnBusqueda.Location = new System.Drawing.Point(343, 56);
+            this.btnBusqueda.Name = "btnBusqueda";
+            this.btnBusqueda.Size = new System.Drawing.Size(75, 23);
+            this.btnBusqueda.TabIndex = 1;
+            this.btnBusqueda.Text = "Buscar";
+            this.btnBusqueda.UseVisualStyleBackColor = true;
+            this.btnBusqueda.Click += new System.EventHandler(this.btnBusqueda_Click);
+            // 
+            // btnLimpiar
+            // 
+            this.btnLimpiar.Location = new System.Drawing.Point(39, 56);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.Size = new System.Drawing.Size(75, 23);
+            this.btnLimpiar.TabIndex = 2;
+            this.btnLimpiar.Text = "Limpiar";
+            this.btnLimpiar.UseVisualStyleBackColor = true;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
             // label1
             // 
@@ -142,6 +144,7 @@
             this.btnModif.TabIndex = 7;
             this.btnModif.Text = "Modificar";
             this.btnModif.UseVisualStyleBackColor = true;
+            this.btnModif.Click += new System.EventHandler(this.btnModif_Click);
             // 
             // btnBaja
             // 
@@ -151,12 +154,13 @@
             this.btnBaja.TabIndex = 8;
             this.btnBaja.Text = "Eliminar";
             this.btnBaja.UseVisualStyleBackColor = true;
+            this.btnBaja.Click += new System.EventHandler(this.btnBaja_Click);
             // 
             // Filtrar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(574, 310);
+            this.ClientSize = new System.Drawing.Size(579, 303);
             this.Controls.Add(this.btnBaja);
             this.Controls.Add(this.btnModif);
             this.Controls.Add(this.label2);
