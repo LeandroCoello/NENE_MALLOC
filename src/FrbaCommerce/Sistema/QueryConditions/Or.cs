@@ -17,6 +17,10 @@ namespace FrbaCommerce.Sistema.QueryConditions
         }
         String toString()
         {
+            if (exp1.toString() == null || exp2.toString() == null)
+            {
+                return exp1.toString() + exp2.toString();
+            }
             return exp1.toString() + " OR " + exp2.toString();
         }
     }
