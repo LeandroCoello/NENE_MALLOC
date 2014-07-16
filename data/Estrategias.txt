@@ -20,6 +20,11 @@ Luego para las ofertas de subastas creamos la tabla Oferta que conoce a su publi
 
 El objetivo de que los datos de calificación, compra y oferta estén ubicados en esas tablas es, aparte de la normalización, utilizar las mismas para la obtención del historial, explicado mas adelante.
 
+El Grado de visibilidad, es decir el orden en que se muestran las publicaciones segun las visibilidades coincide con el orden de las códigos de éstas.
+
+Forma de pago una tabla sola con campo 'E' o 'T' si es efectivo o tarjeta con atributos comunes(monto) y no comunes (en el caso 
+de efectivo los campos de tarjeta van en null)
+
 (acá va factura e item factura)
 
 -- Migracion
@@ -32,7 +37,11 @@ Tanto en los inserts masivos como en los cursores los campos fk los completamos 
 
 Utilizamos Ids autoincrementales en aquellas tablas cuyo código no estaba determinado en la tabla maestra, particularmente en Funcionalidad, Datos_Pers, Tipo, Usuario, Pregunta, Respuesta, Item_Factura, Compra, Oferta y Rubro. El objetivo es delegar el tratamiento de Ids(las pks de las tablas) al motor de base de datos.
 
-(algo de factura e item factura)
+- Cada vez que se realiza una venta por compra inmediata o por subasta se generara un item factura que todavia
+no va a estar rendido en ninguna factura. A la hora de rendir las publicaciones simplemente se añadirán los items
+a la factura a pagar comenzando desde las más antiguas.
+
+
 
 
 -- Stores Procedures
