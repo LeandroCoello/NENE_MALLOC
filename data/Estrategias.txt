@@ -47,3 +47,156 @@ Cada función recibe un usuario y muestra las compras, ofertas o calificaciones(d
 Para compra se muestra el comprador y el vendedor, la descripción de la publicación, el rubro de ésta, la cantidad y la fecha.
 Para calificación, comprador, vendedor, cantidad de estrellas y descripción.
 Por último para las ofertas se muesta el vendedor, copmrador, la fecha, el monto y si ganó o nó la subasta (de la forma 'Si','No').
+
+
+Listado de Procedures y parámetros
+
+
+-- Actualizar reputacion (se supone que cada vez que se califica a alguien se debe actualizar la reputacion de ese alguien)
+SQL_O.actualizar_reputacion @tipo numeric(18,0), @bit bit -- el bit es para saber si es cliente o empresa
+
+-- Ganador De Una Subasta.
+
+SQL_O.setear_ganador 
+
+--Login. 
+
+SQL_O.proc_login @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
+
+-- Generar usuario. 
+SQL_O.generar_usuario @nombreUsuario nvarchar(30) out, @pass nvarchar(255) out
+
+-- Crear Publicación. 
+SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0),
+										@precio numeric(18,2), @tipo nvarchar(255), 
+										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
+										@admite_preguntas bit, @return numeric(1,0)
+										
+-- Editar Publicacion
+SQL_O.editar_publicacion @nro_pub numeric(18,0),@estado nvarchar(255), @descripcion nvarchar(255),
+										  @stock numeric(18,0), @precio numeric(18,2), @visibilidad nvarchar(255),
+										  @duenio nvarchar(30), @permite_preg bit, @return numeric(1,0) out
+
+-- Agregar Rubro a Publicacion
+
+SQL_O.agregar_rubro @pub_cod numeric(18,0), @rubro nvarchar(255)
+
+-- Alta Cliente. 
+SQL_O.alta_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
+							  @cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
+							  @calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
+							  @depto nvarchar(50),@codpost nvarchar(50), @usuario nvarchar(30),
+							  @return numeric(1,0)
+							  
+
+-- Alta Empresa. 
+SQL_O.alta_empresa @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_c datetime,
+								    @contacto nvarchar(50),@mail nvarchar(50), @dom_calle nvarchar(100),
+								    @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
+								    @tel numeric(18,0), @cod_postal nvarchar(50),@usuario nvarchar(30),
+								    @return numeric (1,0) out
+
+-- Alta de visibilidad.
+
+SQL_O.alta_visibilidad @descripcion nvarchar(255), @duracion numeric(18,0),
+										 @precio numeric(18,2), @porcentaje numeric(18,2)
+
+-- Alta de rol.
+
+SQL_O.alta_rol @rol nvarchar(255)
+
+-- Alta de funcionalidad por rol.
+
+SQL_O.alta_funcionalidad_por_rol @funcionalidad nvarchar(255) , @rol nvarchar(255)
+
+-- Calificar 
+
+SQL_O.calificar @pub numeric(18,0), @usuario varchar(30), @cant_estrellas numeric(18,0),
+								 @des nvarchar(255), @return numeric (1,0)
+
+-- Generar Oferta
+SQL_O.generar_oferta @pub numeric(18,0), @usuario varchar(30),@monto numeric(18,2)
+
+--Finalizar subasta
+SQL_O.finalizar_subasta @pub numeric(18,0) (faltan parametros)
+
+-- Generar Compra
+
+SQL_O.generar_compra @pub numeric(18,0), @usuario varchar(30) , @cant numeric(18,0)
+
+-- Formular Pregunta.
+
+SQL_O.crear_pregunta @publicacion numeric(18,0), @pregunta nvarchar(255), @autor nvarchar(255)
+
+
+-- Responder Pregunta.
+
+SQL_O.responder_pregunta @pregunta numeric(18,0), @respuesta nvarchar(255)
+
+-- Modificacion de Cliente.
+
+SQL_O.modificacion_cliente @nrodoc numeric(18,0),@tipodoc nvarchar(20),@apellido nvarchar(255),@nombre nvarchar(255),
+											@cuil nvarchar(50),@fecha_nac datetime,@mail nvarchar(50),@tel numeric(18,0),
+											@calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
+											@depto nvarchar(50),@codpost nvarchar(50), @usuario nvarchar(30),
+											@return numeric(1,0) out
+
+-- Modificacion de Empresa.
+
+SQL_O.modificacion_empresa  @razon_social nvarchar(255), @cuit nvarchar(50), @fecha_creacion datetime, @contacto nvarchar(50), 
+											 @mail nvarchar(50), @tel numeric(18,0), @calle nvarchar(100),@nrocalle numeric(18,0), @piso numeric(18,0),
+											 @dpto nvarchar(50), @cod_post nvarchar(50), @usuario nvarchar(30), @return numeric(1,0) out					 
+
+-- Modificacion de Rol
+
+SQL_O.modificacion_rol @rol_cod numeric(18,0) ,@descripcion nvarchar(255), @return numeric(1,0) out
+
+-- Quitar funcionalidad
+
+SQL_O.quitar_funcionalidad @funcionalidad nvarchar(255), @rol nvarchar(255)
+
+-- Modificacion de Visibilidad//Si los chicos nos mandan el codigo de la visibilidad podríamos cambiar también la descripción//
+
+SQL_O.modificacion_visibilidad @vis_cod numeric(18,0) ,@descripcion nvarchar(255), @duracion numeric(18,0), 
+												@precio numeric(18,2),@porcentaje numeric(18,2), 
+												@return numeric(1,0) out
+
+-- Baja de visibilidad. 
+
+SQL_O.baja_visibilidad @visibilidad nvarchar(255)
+
+-- Baja de Cliente.
+SQL_O.baja_cliente @nombre nvarchar(255) , @apellido nvarchar(255) ,
+                                    @tipo_doc nvarchar(20) ,@nro_doc numeric(18,0) , @mail nvarchar(50)
+
+-- Baja de Empresa.
+
+SQL_O.baja_empresa  @razon_social nvarchar(255) , @cuit nvarchar(50) , @mail nvarchar(50) 
+
+-- Baja de Rol. 
+
+SQL_O.baja_rol @rol nvarchar(255)
+
+-- Rehabilitar Rol. 
+
+SQL_O.rehabilitacion_rol @rol nvarchar(255)
+
+-- Generar Factura
+SQL_O.generar_factura @user nvarchar(30), @forma_pago nvarchar(255), @nro_fact numeric(18,0) out
+
+-- Crear Item Factura
+
+SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0)
+
+-- Agregar Items a la factura
+
+SQL_O.agregar_item  @factura numeric(18,0), @item_factura numeric(18,0)
+
+-- Inhabilitar Usuario 
+
+SQL_O.inhabilitar_usuario @user varchar(30)
+
+-- Rehabilitar Usuario 
+
+SQL_O.rehabilitar_usuario @user varchar(30)
+

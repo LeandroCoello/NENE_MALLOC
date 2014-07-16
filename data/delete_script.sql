@@ -52,6 +52,7 @@ drop procedure [SQL_O].[modificacion_rol]
 drop procedure [SQL_O].[alta_rubro]
 drop procedure [SQL_O].[generar_factura]
 drop procedure [SQL_O].[agregar_item]
+drop procedure [SQL_O].[crear_item]
 drop procedure [SQL_O].[inhabilitar_usuario]
 drop procedure [SQL_O].[rehabilitar_usuario]
 go

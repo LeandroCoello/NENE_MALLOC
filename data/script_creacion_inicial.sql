@@ -1211,7 +1211,8 @@ as
 				 update SQL_O.Publicacion
 				 set Pub_Stock= Pub_Stock-@cant
 					 where Pub_Cod=@pub	
-				--insert en item factura
+				
+				exec SQL_O.crear_item @pub_cod = @pub, @cantidad = @cant
 			
 			end
 		else
@@ -1528,9 +1529,24 @@ begin transaction
 commit
 GO
 
+-- Crear Item Factura
+
+create procedure SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0)
+as
+begin transaction
+	declare @monto numeric(18,2)
+	
+	--Validar si el monto es 0 por bonificacion
+	set @monto = (select (v.Vis_Porcentaje * p.Pub_Precio)/100 from SQL_O.Visibilidad v, SQL_O.Publicacion p where p.Pub_Cod = @pub_cod and p.Pub_Visibilidad = v.Vis_Cod)
+	
+	Insert into SQL_O.Item_Factura(Item_Monto,Item_Cantidad,Item_Publicacion) 
+	values (@monto,@cantidad,@pub_cod)
+commit
+GO
+
 -- Agregar Items a la factura
 
-create procedure SQL_O.agregar_item @pub_cod numeric(18,0), @cantidad numeric(18,0), @factura numeric(18,0)
+create procedure SQL_O.agregar_item  @factura numeric(18,0), @item_factura numeric(18,0)
 as
 begin transaction
 	if(exists(select Factura_Nro from SQL_O.Factura where @factura = Factura_Nro))
@@ -1540,14 +1556,12 @@ begin transaction
 		return
 	end
 	
-	declare @monto numeric(18,2)
-	set @monto = (select (v.Vis_Porcentaje * p.Pub_Precio)/100 from SQL_O.Visibilidad v, SQL_O.Publicacion p where p.Pub_Cod = @pub_cod and p.Pub_Visibilidad = v.Vis_Cod)
-	
-	Insert into SQL_O.Item_Factura(Item_Monto,Item_Cantidad,Item_Publicacion,Item_Factura) 
-	values (@monto,@cantidad,@pub_cod,@factura)
+	update SQL_O.Item_factura
+	set Item_Factura = @factura
+	where Item_Id = @item_factura
 	
 	update SQL_O.Factura
-	set Factura_Total = Factura_Total + (@monto * @cantidad)
+	set Factura_Total = Factura_Total + (select  Item_Monto * Item_Cantidad from SQL_O.Item_Factura where @item_factura = Item_Id)
 	where Factura_Nro = @factura
 	
 commit
@@ -1557,7 +1571,7 @@ GO
 
 -- Inhabilitar Usuario 
 
-create procedure inhabilitar_usuario @user varchar(30)
+create procedure SQL_O.inhabilitar_usuario @user varchar(30)
 as
 begin transaction
 	
@@ -1574,7 +1588,7 @@ GO
 
 -- Rehabilitar Usuario 
 
-create procedure rehabilitar_usuario @user varchar(30)
+create procedure SQL_O.rehabilitar_usuario @user varchar(30)
 as
 begin transaction
 
