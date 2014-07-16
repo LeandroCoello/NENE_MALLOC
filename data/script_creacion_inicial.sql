@@ -1066,16 +1066,35 @@ GO
 -- Calificar 
 
 create procedure SQL_O.calificar @pub numeric(18,0), @usuario varchar(30), @cant_estrellas numeric(18,0),
-								 @des nvarchar(255)
+								 @des nvarchar(255), @return numeric (1,0)
 as 
 	begin transaction
 	declare @userid numeric(18,0)
 	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
+	set @return=0
+	
+	declare @tipo nvarchar(100)
+	declare @estado nvarchar(255)
+	declare @ganador_subasta numeric(18,0)
+		
+	set @tipo=(select Pub_Tipo from SQL_O.Publicacion where Pub_Cod=@pub)
+	set @estado=(select Pub_Estado from SQL_O.Publicacion where Pub_Cod=@pub)
+	set @ganador_subasta = (select Oferta_Cliente from SQL_O.Oferta where Oferta_Pub=@pub and Oferta_Gano=1)
+	
+	if ( (@tipo='Subasta' and @estado!='Finalizada') or (@tipo='Subasta' and @estado='Finalizada' and @ganador_subasta!=@userid) )
+		 begin
+			  rollback
+			  raiserror('La subasta no esta finalizada o el usuario no es el ganador.',16,1)
+			  set @return=1
+			  return		 
+		 end
+	
 	
 	if (@cant_estrellas not between 0 and 10)
 		begin
 			rollback
 			raiserror('La cantidad de estrellas debe estar entre 0 y 10',16,1)
+			set @return=2
 			return
 		end
 	else
