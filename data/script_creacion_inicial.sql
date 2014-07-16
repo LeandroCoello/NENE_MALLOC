@@ -144,7 +144,7 @@ GO
 CREATE TABLE SQL_O.Factura (
 	Factura_Nro numeric(18,0) Primary Key, 
 	Factura_Fecha datetime, 
-	Factura_Total numeric(18,0),
+	Factura_Total numeric(18,0) default 0,
 	Factura_Forma_Pago nvarchar(255),
 	Factura_Usuario numeric(18,0) references SQL_O.Usuario(UserId)
 	)
@@ -155,7 +155,8 @@ CREATE TABLE SQL_O.Item_Factura (
 	Item_Monto numeric(18,2),
 	Item_Cantidad numeric(18,0),
 	Item_Publicacion numeric(18,0) references SQL_O.Publicacion(Pub_Cod),
-	Item_Factura numeric(18,0) references SQL_O.Factura(Factura_Nro)
+	Item_Factura numeric(18,0) references SQL_O.Factura(Factura_Nro),
+	Item_Rendido bit default 0
 	)
 GO
 
@@ -1177,6 +1178,13 @@ as
 commit
 GO
 
+--Finalizar subasta
+/*create procedure SQL_O.finalizar_subasta @pub numeric(18,0)
+as 
+begin
+end
+*/
+GO
 
 -- Generar Compra
 
@@ -1203,6 +1211,7 @@ as
 				 update SQL_O.Publicacion
 				 set Pub_Stock= Pub_Stock-@cant
 					 where Pub_Cod=@pub	
+				--insert en item factura
 			
 			end
 		else
@@ -1468,7 +1477,6 @@ begin transaction
 commit 
 GO 
 
-
 -- Baja de Empresa.
 
 create procedure SQL_O.baja_empresa  @razon_social nvarchar(255) , @cuit nvarchar(50) , @mail nvarchar(50) 
@@ -1507,6 +1515,80 @@ begin transaction
 	
 commit 
 GO 
+
+-- Generar Factura
+create procedure SQL_O.generar_factura @user nvarchar(30), @forma_pago nvarchar(255), @nro_fact numeric(18,0) out
+as
+begin transaction
+		 declare @userid numeric(18,0)
+		 set @userid= (select UserId from SQL_O.Usuario where Username=@user)
+		 set @nro_fact=(select MAX(Factura_Nro) from SQL_O.Factura)+1
+		insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Forma_Pago,Factura_Usuario)
+				values(@nro_fact,GETDATE(),@forma_pago,@userid)
+commit
+GO
+
+-- Agregar Items a la factura
+
+create procedure SQL_O.agregar_item @pub_cod numeric(18,0), @cantidad numeric(18,0), @factura numeric(18,0)
+as
+begin transaction
+	if(exists(select Factura_Nro from SQL_O.Factura where @factura = Factura_Nro))
+	begin 
+		rollback
+		raiserror('La factura no existe',16,1)
+		return
+	end
+	
+	declare @monto numeric(18,2)
+	set @monto = (select (v.Vis_Porcentaje * p.Pub_Precio)/100 from SQL_O.Visibilidad v, SQL_O.Publicacion p where p.Pub_Cod = @pub_cod and p.Pub_Visibilidad = v.Vis_Cod)
+	
+	Insert into SQL_O.Item_Factura(Item_Monto,Item_Cantidad,Item_Publicacion,Item_Factura) 
+	values (@monto,@cantidad,@pub_cod,@factura)
+	
+	update SQL_O.Factura
+	set Factura_Total = Factura_Total + (@monto * @cantidad)
+	where Factura_Nro = @factura
+	
+commit
+GO
+
+
+
+-- Inhabilitar Usuario 
+
+create procedure inhabilitar_usuario @user varchar(30)
+as
+begin transaction
+	
+	update SQL_O.Usuario
+	set User_Deshabilitado = 1
+	where @user = Username
+	
+	update SQL_O.Publicacion
+	set Pub_Estado = 'Pausada'
+	where Pub_Duenio = (select UserId from SQL_O.Usuario where Username = @user)
+	
+commit
+GO
+
+-- Rehabilitar Usuario 
+
+create procedure rehabilitar_usuario @user varchar(30)
+as
+begin transaction
+
+	update SQL_O.Usuario 
+	set User_Deshabilitado = 0
+	where @user = Username
+	
+	update SQL_O.Publicacion
+	set Pub_Estado = 'Publicada'
+	where Pub_Duenio = (select UserId from SQL_O.Usuario where Username = @user)
+	  and Pub_Estado = 'Pausada'
+	
+commit
+GO
 
 
 -- FUNCIONES --
@@ -1564,7 +1646,7 @@ as
 									(select Pub_Duenio from SQL_O.Publicacion where Cal_Pub=Pub_Cod)=@id)
 		return
 	end
-go
+GO
 
 --Historial de ofertas de un usuario.
 create function SQL_O.historial_ofertas(@usuario nvarchar(30))
