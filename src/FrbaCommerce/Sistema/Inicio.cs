@@ -26,7 +26,7 @@ namespace FrbaCommerce.Sistema
         public UsuarioLogueado login(String nombreDeUsuario, String contraseña)
         {
 
-            switch (connection.executeProcedure("exec SQL_O.proc_login User_Id,Userpass FROM SQL_O.Usuario where (User_Id ='" + nombreDeUsuario + "')and (Userpass = '" + this.SHA256Encripta(contraseña) + "')"))
+            switch (connection.executeIntegerProcedure("exec SQL_O.proc_login User_Id,Userpass FROM SQL_O.Usuario where (User_Id ='" + nombreDeUsuario + "')and (Userpass = '" + this.SHA256Encripta(contraseña) + "')"))
             {
                 case 0:
                 return new UsuarioLogueado(nombreDeUsuario, contraseña, connection);

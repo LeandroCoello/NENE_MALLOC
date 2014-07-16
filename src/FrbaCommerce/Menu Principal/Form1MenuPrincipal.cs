@@ -15,7 +15,8 @@ namespace FrbaCommerce.Menu_Principal
         {
             InitializeComponent();
             if (rolAsignado == "Cliente")
-            { btnCompraOferta.Visible = true;
+            { 
+              btnCompraOferta.Visible = true;
               btnCalificar.Visible = true;
             }
         }

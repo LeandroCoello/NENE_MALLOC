@@ -29,12 +29,23 @@ namespace FrbaCommerce.Sistema
         }
 
 
-        public int executeProcedure(string query)
+        public int executeIntegerProcedure(string query)
         {
             SqlCommand queryCommand = new SqlCommand(query, connection);
             queryCommand.CommandType = CommandType.StoredProcedure;
             return (int)queryCommand.ExecuteScalar();
-        }        
+        }
+        public void executeOnly(string query)
+        {   
+            SqlCommand queryCommand = new SqlCommand();
+            queryCommand.CommandTimeout = 999999999;
+
+            queryCommand.Connection = this.connection;
+            queryCommand.CommandText = query;
+            queryCommand.ExecuteNonQuery();
+            queryCommand.Dispose();
+            queryCommand = null;
+        }
         public DataTable consulta(string consulta)
         {
             SqlCommand sqlCommand = new SqlCommand();
@@ -55,6 +66,8 @@ namespace FrbaCommerce.Sistema
         {
             return null;
         }
+
+
 
     }
 }

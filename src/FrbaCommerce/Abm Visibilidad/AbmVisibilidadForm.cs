@@ -15,5 +15,26 @@ namespace FrbaCommerce.Abm_Visibilidad
         {
             InitializeComponent();
         }
+
+        private void btnCrear_Click(object sender, EventArgs e)
+        {
+            Alta levantarAlta = new Alta();
+            levantarAlta.ShowDialog();
+            this.Hide();
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            Filtrar levantarFiltro = new Filtrar();
+            levantarFiltro.ShowDialog();
+            this.Hide();
+        }
+
+        private void btnBaja_Click(object sender, EventArgs e)
+        {
+            Filtrar levantarFiltro = new Filtrar();
+            levantarFiltro.ShowDialog();
+            this.Hide();
+        }
     }
 }
