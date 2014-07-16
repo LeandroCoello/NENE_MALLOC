@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaCommerce.Sistema;
 
 
 namespace FrbaCommerce.Registro_de_Usuario
@@ -13,6 +15,8 @@ namespace FrbaCommerce.Registro_de_Usuario
     public partial class RegistroUsuarioForm : Form
     {
 
+        Inicio inicio;
+        UsuarioLogueado userLog;
         public RegistroUsuarioForm()
         {
             InitializeComponent();
@@ -30,8 +34,17 @@ namespace FrbaCommerce.Registro_de_Usuario
 
         private void btnConfirmacion_Click(object sender, EventArgs e)
         {
-            //Solicitar al sql usuario y contraseña
-            btnContinuar.Enabled = true;
+            if (!string.IsNullOrEmpty(LBEleccionDeRol.SelectedItem.ToString()))
+            {
+                userLog =  inicio.registrarse();
+                lblMostrarUsuario.Text = userLog.getNombreUsuario();
+                lblMostrarContraseña.Text = userLog.getContraseña();
+                lblMostrarUsuario.Enabled = true;
+                lblMostrarContraseña.Enabled = true;
+                btnContinuar.Enabled = true;
+            }
+            else { MessageBox.Show("Por favor eliga una opcion"); }
+
         }
 
         private void btnContinuar_Click(object sender, EventArgs e)

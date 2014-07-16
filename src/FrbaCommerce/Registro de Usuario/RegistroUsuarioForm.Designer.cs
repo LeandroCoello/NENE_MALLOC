@@ -77,6 +77,7 @@
             // lblMostrarUsuario
             // 
             this.lblMostrarUsuario.AutoSize = true;
+            this.lblMostrarUsuario.Enabled = false;
             this.lblMostrarUsuario.Location = new System.Drawing.Point(63, 144);
             this.lblMostrarUsuario.Name = "lblMostrarUsuario";
             this.lblMostrarUsuario.Size = new System.Drawing.Size(209, 13);
@@ -86,13 +87,14 @@
             // lblMostrarContraseña
             // 
             this.lblMostrarContraseña.AutoSize = true;
+            this.lblMostrarContraseña.Enabled = false;
             this.lblMostrarContraseña.Location = new System.Drawing.Point(63, 183);
             this.lblMostrarContraseña.Name = "lblMostrarContraseña";
             this.lblMostrarContraseña.Size = new System.Drawing.Size(188, 13);
             this.lblMostrarContraseña.TabIndex = 10;
             this.lblMostrarContraseña.Text = "Se muestra la pass asignada asignada";
             // 
-            // Form1
+            // RegistroUsuarioForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -103,7 +105,7 @@
             this.Controls.Add(this.LBEleccionDeRol);
             this.Controls.Add(this.lblEleccionRol);
             this.Controls.Add(this.btnContinuar);
-            this.Name = "Form1";
+            this.Name = "RegistroUsuarioForm";
             this.Text = "Registrar Usuario";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);

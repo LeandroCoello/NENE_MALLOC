@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data.SqlClient;
+using System.Data;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 
@@ -15,10 +15,13 @@ namespace FrbaCommerce.Sistema
         {
             this.connection = connectionInstance;
         }
-        public UsuarioLogueado registrarse(String nombreDeUruario)
+        public UsuarioLogueado registrarse()
         {
-            
-            return null;
+            string queryRegistro = "exec SQL_O.generar_usuario";
+            DataTable usuarioNuevo = connection.consulta(queryRegistro);
+            string userId = usuarioNuevo.Columns[0].ToString();
+            string passSinHash = usuarioNuevo.Columns[1].ToString();
+            return new UsuarioLogueado(userId,passSinHash);
         }
         public UsuarioLogueado login(String nombreDeUsuario, String contraseña)
         {
