@@ -41,7 +41,10 @@ Utilizamos Ids autoincrementales en aquellas tablas cuyo código no estaba determ
 no va a estar rendido en ninguna factura. A la hora de rendir las publicaciones simplemente se añadirán los items
 a la factura a pagar comenzando desde las más antiguas.
 
+-- Aclaraciones
 
+Las fechas en el script_inicial en un principio se obtenian con GETDATE() pero luego se decidió recibirlas por un parámetro de tipo nvarchar(8) (AAAAMMDD)
+desde el código en C# ya que se establecen en el archivo de configuración y eso aporta una mayor consistencia. Ese parámetro luego será pasado a datetime.
 
 
 -- Stores Procedures
