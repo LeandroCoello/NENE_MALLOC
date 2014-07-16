@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace FrbaCommerce.Sistema
 {
-    class SQLConnector
+    public class SQLConnector
     {
         private SqlConnection connection;
 

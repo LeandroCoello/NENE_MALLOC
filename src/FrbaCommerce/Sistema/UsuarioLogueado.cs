@@ -7,7 +7,7 @@ using System.Data;
 
 namespace FrbaCommerce.Sistema
 {
-    class UsuarioLogueado
+    public class UsuarioLogueado
     {
         private SQLConnector conexion;
         private String nombreUsuario;
