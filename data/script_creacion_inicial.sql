@@ -738,7 +738,7 @@ end
 GO
 
 -- Crear Publicación. //corregido//
-create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0), @rubro nvarchar(255),
+create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0),
 										@precio numeric(18,2), @tipo nvarchar(255), 
 										@estado varchar(255),@visibilidad nvarchar(255), @duenio varchar(30),
 										@admite_preguntas bit, @return numeric(1,0)
@@ -783,8 +783,7 @@ begin transaction
 			 GETDATE() + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
 			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
 		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
-	Insert into SQL_O.Pub_Por_Rubro (Rubro_Cod, Pub_Cod) 
-		values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro), 	(select Max(Pub_Cod) from SQL_O.Publicacion))	
+		
 commit 
 
 GO		
@@ -885,6 +884,24 @@ begin transaction
 	    Pub_Fecha_Vto = Pub_Fecha_Ini + (select Vis_Duracion from SQL_O.Visibilidad where @vis_cod = Vis_Cod)
 	where Pub_Cod = @nro_pub
 commit	
+GO
+
+-- Agregar Rubro a Publicacion
+
+create procedure SQL_O.agregar_rubro @pub_cod numeric(18,0), @rubro nvarchar(255)
+as
+begin transaction
+	if(not(exists(select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro)))
+	begin
+		rollback
+		raiserror('El rubro no existe',16,1)
+		return
+	end
+	
+	Insert into SQL_O.Pub_Por_Rubro(Rubro_Cod,Pub_Cod) 
+	values ((select Rubro_Cod from SQL_O.Rubro where Rubro_Desc = @rubro),@pub_cod)
+	
+commit
 GO
 
 -- Alta Cliente. //corregido//
@@ -1058,7 +1075,7 @@ begin transaction
 		else 
 			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
 		
-<<<<<<< HEAD
+
 commit	*/
 GO
 	
@@ -1573,6 +1590,4 @@ as
 								(select Pub_Duenio from SQL_O.Publicacion where Oferta_Pub=Pub_Cod)=@id)
 		return
 	end
-go
-
-
+GO
