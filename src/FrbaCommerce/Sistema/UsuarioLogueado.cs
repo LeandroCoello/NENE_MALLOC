@@ -44,5 +44,11 @@ namespace FrbaCommerce.Sistema
             }
             return rolesAsignados;
         }
+        public List<Publicacion> conseguirPublicaciones()
+        {
+            //aca va la logica del query de publicaciones
+            return null;
+        }
+
     }
 }
