@@ -336,7 +336,7 @@ Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos
 Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers ,Emp_Razon_Social, Emp_Cuit, Emp_Fecha_Creacion) 
 			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social, @cuit, @fecha_c)
 
-Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values (('gdd'+convert(varchar(30),@idemp)),
+Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values (('Usuario'+convert(varchar(30),@idemp)),
 																'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
 																(select MAX(Tipo_Cod) from SQL_O.Tipo))
 
@@ -413,7 +413,7 @@ Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_N
 			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @dni, @apellido, @nombre,@fecha_nac,'DNI')
 
 
-Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('gdd'+CONVERT(varchar(30),@idcli),
+Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('Usuario'+CONVERT(varchar(30),@idcli),
 															   '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
 															   (select MAX(Tipo_Cod) from SQL_O.Tipo))
 
@@ -730,7 +730,7 @@ begin
 	declare @id numeric(18,0)
 	set @id = (select MAX(UserId) from SQL_O.Usuario)+1
 	set @nombreUsuario = 'Usuario'+CONVERT(varchar(30),@id)
-	set @pass = 123456
+	set @pass = '123456'
 	insert into SQL_O.Usuario(Username,Userpass)
 		values(@nombreUsuario ,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
 		
