@@ -28,10 +28,6 @@ namespace FrbaCommerce.Sistema
             }
         }
 
-        public List<string> ObtenerRoles(string queri) {
-            return null;
-        }
-
 
         public int executeProcedure(string query)
         {

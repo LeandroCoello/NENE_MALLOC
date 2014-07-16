@@ -17,6 +17,8 @@ namespace FrbaCommerce.Login
         string passHasheada;
         int contadorDeIntentos = 0;
         private Inicio inicio;
+        private UsuarioLogueado userLog;
+        private List<string> roles = new List<string>();
         public LoginForm(SQLConnector connection)
         {
             InitializeComponent();
@@ -40,20 +42,26 @@ namespace FrbaCommerce.Login
             {
                 try
                 {
-                    inicio.login(txtUsuario.Text, txtContraseña.Text);
+                   userLog =  inicio.login(txtUsuario.Text, txtContraseña.Text);
                 }
                 catch (Exception exception)
                 {
                     MessageBox.Show(exception.Message);
                 }
+               roles = userLog.conseguirRoles();
+                     if (roles.Count() > 1)
+                         {
+                           Form2EleccionRol levantarEleccionRol = new Form2EleccionRol(roles);
+                         }
+                     else {
+                           Menu_Principal.Form1MenuPrincipal levantarMenu = new FrbaCommerce.Menu_Principal.Form1MenuPrincipal(roles.First());
+                      }
             }
             else
             {
                 MessageBox.Show("Se ha alcanazo el maximo de intentos de login, usuario inhabilitado");
                 btnAceptar.Enabled = false;
             }
-
-
         }
     }
 }
