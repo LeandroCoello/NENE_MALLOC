@@ -120,7 +120,8 @@ GO
 CREATE TABLE SQL_O.Publicacion(
 		Pub_Cod numeric(18,0) Primary Key,
 		Pub_Desc nvarchar(255),
-		Pub_Stock numeric(18,0),
+		Pub_Stock_Inicial numeric(18,0),
+		Pub_Stock_Actual numeric(18,0),
 		Pub_Fecha_Ini datetime,
 		Pub_Fecha_Vto datetime,
 		Pub_Precio numeric(18,2),
@@ -513,9 +514,9 @@ if(@tipo='Compra Inmediata')
 		set @unidades_vendidas= isnull((select SUM(Compra_Cantidad) from SQL_O.Compra where Compra_Pub=@cod),0)	
 	end
 
-Insert into SQL_O.Publicacion(Pub_Cod,Pub_Desc,Pub_Stock,Pub_Fecha_Ini,Pub_Fecha_Vto,Pub_Precio,Pub_Tipo
+Insert into SQL_O.Publicacion(Pub_Cod,Pub_Desc,Pub_Stock_Actual, Pub_Stock_Inicial,Pub_Fecha_Ini,Pub_Fecha_Vto,Pub_Precio,Pub_Tipo
 							,Pub_Estado,Pub_Duenio,Pub_Visibilidad)
-			values(@cod, @desc, @stock-@unidades_vendidas, @fecha_ini, @fecha_vto, @precio,@tipo,'Finalizada',@duenio,@visibilidad_cod)
+			values(@cod, @desc, @stock-@unidades_vendidas, @stock, @fecha_ini, @fecha_vto, @precio,@tipo,'Finalizada',@duenio,@visibilidad_cod)
 
 Insert into SQL_O.Pub_Por_Rubro(Pub_Cod,Rubro_Cod)
 			values(@cod,(select Rubro_Cod from SQL_O.Rubro where @rubro=Rubro_Desc))
@@ -888,9 +889,9 @@ begin transaction
 	declare @codigo numeric(18,0)
 	set @codigo = (select Max(Pub_Cod) from SQL_O.Publicacion) + 1
 	
-	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
+	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock_Inicial, Pub_Stock_Actual, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
 								  Pub_Estado,Pub_Visibilidad, Pub_Duenio,Pub_Permite_Preguntas)
-			values (@codigo , @descripcion, @stock, @fecha_real, 
+			values (@codigo , @descripcion, @stock, @stock, @fecha_real, 
 			 @fecha_real + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
 			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
 		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
@@ -927,7 +928,7 @@ begin transaction
 		return
 	end	
 	
-	if((select Pub_Stock 
+	if((select Pub_Stock_Actual 
 		from SQL_O.Publicacion
 		where @nro_pub = Pub_Cod
 		  and Pub_Estado = 'Publicada'
@@ -944,7 +945,7 @@ begin transaction
 	          where @nro_pub = Pub_Cod
 	            and Pub_Tipo = 'Subasta'
 	            and Pub_Estado = 'Publicada'
-	            and @stock != Pub_Stock))
+	            and @stock != Pub_Stock_Actual))
 	begin 
 		rollback
 		raiserror('No se puede cambiar el stock de una subasta',16,1)
@@ -970,7 +971,7 @@ begin transaction
 			  where @nro_pub = Pub_Cod
 			    and Pub_Estado = 'Pausada'
 			    and (@precio != Pub_Precio 
-				  or @stock != Pub_Stock
+				  or @stock != Pub_Stock_Actual
 			      or @vis_cod != Pub_Visibilidad 
 			      or @permite_preg != Pub_Permite_Preguntas
 			      or @descripcion != Pub_Desc
@@ -988,7 +989,7 @@ begin transaction
 			  where @nro_pub = Pub_Cod
 			    and Pub_Estado = 'Finalizada'
 			    and (@precio != Pub_Precio 
-				  or @stock != Pub_Stock
+				  or @stock != Pub_Stock_Actual
 			      or @vis_cod != Pub_Visibilidad 
 			      or @permite_preg != Pub_Permite_Preguntas
 			      or @descripcion != Pub_Desc
@@ -1019,7 +1020,7 @@ begin transaction
 	    Pub_Estado = @estado,
 	    Pub_Permite_Preguntas = @permite_preg,
 	    Pub_Precio = @precio,
-	    Pub_Stock = @stock,
+	    Pub_Stock_Actual = @stock,
 	    Pub_Visibilidad = @vis_cod,
 	    Pub_Fecha_Ini=@fecha_real,
 	    Pub_Fecha_Vto = Pub_Fecha_Ini + (select Vis_Duracion from SQL_O.Visibilidad where @vis_cod = Vis_Cod)
@@ -1436,7 +1437,7 @@ as
 			raiserror('Un usuario no puede "auto comprarse"',16,1)
 		end
 		declare @pub_stock numeric(18,0)
-		set @pub_stock=(select Pub_Stock from SQL_O.Publicacion where @pub_cod = Pub_Cod)
+		set @pub_stock=(select Pub_Stock_Actual from SQL_O.Publicacion where @pub_cod = Pub_Cod)
 		
 		if(@cant <= @pub_stock)
 			begin
@@ -1444,7 +1445,7 @@ as
 						values (@pub_cod,@fecha_real,@cant,@userid)
 						
 				 update SQL_O.Publicacion
-				 set Pub_Stock= Pub_Stock-@cant
+				 set Pub_Stock_Actual= Pub_Stock_Actual-@cant
 					 where Pub_Cod=@pub_cod	
 				 if(@cant-@pub_stock=0)
 					begin
