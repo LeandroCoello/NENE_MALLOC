@@ -84,11 +84,19 @@ namespace FrbaCommerce.Abm_Cliente
 
         private void btnModif_Click(object sender, EventArgs e)
         {
+            string DNI = dataGridView1.SelectedCells[0].Value.ToString();
+            string queryUser = "SELECT U.username FROM SQL_O.Usuario U,SQL_O.Cliente C,SQL_O.Tipo T"
+                                +"WHERE C.Cli_Id = T.Tipo_Cod and"
+                                +"T.Tipo_Cod = U.User_Tipo and"
+                                +"C.Cli_NroDoc ="+DNI
+                                +"GROUP BY U.username";
+
+            string userId= conec.consulta(queryUser).ToString();
             List<string> valores = new List<string>();
             foreach (DataGridViewRow row in dataGridView1.SelectedRows) {
                 valores.Add(row.ToString());
             }
-            Modificar levantarModif = new Modificar(valores);
+            Modificar levantarModif = new Modificar(valores,userId);
             levantarModif.ShowDialog();
             this.Hide();
 
