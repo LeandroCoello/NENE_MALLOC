@@ -5,11 +5,11 @@ using System.Text;
 
 namespace FrbaCommerce.Sistema.QueryConditions
 {
-    class Rule : Condition
+    class Regla : Condition
     {
         String exp;
 
-        public Rule(String expression)
+        public Regla(String expression)
         {
             exp = expression;
         }

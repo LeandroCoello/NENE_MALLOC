@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using FrbaCommerce.Sistema;
+using FrbaCommerce.Sistema.QueryConditions;
 
 namespace FrbaCommerce.Abm_Cliente
 {
@@ -42,44 +43,25 @@ namespace FrbaCommerce.Abm_Cliente
         }
 
         private string generarConsultas() {
-            string consulta="";
-            string generador;
-            bool val = true;
-            int i = 0;
-            while (val) {
-                if (string.IsNullOrEmpty(consultas[i]))
+            List<Regla> listaDeReglas = consultas.ConvertAll(p=> new Regla(p));
+            if (listaDeReglas.Count() > 0)
+            {
+                Condition regla = listaDeReglas[0];
+                listaDeReglas.Remove((Regla) regla);
+                foreach (Regla unaRegla in listaDeReglas)
                 {
-                    val = false;
+                    regla = new And(regla, unaRegla);
                 }
-                else { consulta = "and"+consulta+ consultas[i]; }
-               
-                if (!string.IsNullOrEmpty(consultas[i+1])){
-                    consulta += " and ";
-                }
-                i++;
-           }
-            if (string.IsNullOrEmpty(consulta)) {
-                return generador = "";
+                return regla.toString();
+            
+
             }
-            else { return generador = "WHERE" + consulta; }
-        }
-        private List<string> validarConsultas(){
-            if(!string.IsNullOrEmpty(txtNombre.Text)){
-                    consultas.Add( "C.Cli_Nombre LIKE%" + txtNombre.Text+"%");
-                }
-            if(!string.IsNullOrEmpty(txtApellido.Text)){
-                    consultas.Add( "C.Cli_Apellido LIKE%" + txtApellido.Text+"%");
-                }
-            if(!string.IsNullOrEmpty(txtNDoc.Text)){
-                    consultas.Add( "C.Cli_Nombre LIKE%" + txtNombre.Text+"%");
-                }
-            if(!string.IsNullOrEmpty(txtMail.Text)){
-                    consultas.Add( "C.Cli_Mail LIKE%" + txtNombre.Text+"%");
-                }
-            if(!string.IsNullOrEmpty(cBTipDoc.SelectedItem.ToString())){
-                    consultas.Add( "C.Cli_Nombre =" + cBTipDoc.SelectedItem.ToString());
-                }
-            return consultas;
+            else
+            {
+                return null;
+            }
+
+
          }
 
         private void btnModif_Click(object sender, EventArgs e)
