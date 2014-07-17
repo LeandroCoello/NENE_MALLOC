@@ -782,6 +782,46 @@ begin
 end 
 GO
 
+
+-- Crear Item Factura
+
+create procedure SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0), @tipo nvarchar(255)
+as
+begin transaction
+	declare @monto numeric(18,2)
+	
+	if(@tipo = 'Publicacion')
+	begin
+		if((select COUNT(i.Item_Id)
+				from SQL_O.Publicacion p, SQL_O.Item_Factura i 
+				where i.Item_Publicacion = p.Pub_Cod
+				and i.Item_Tipo = 'Publicacion'
+				and p.Pub_Visibilidad =(select p3.Pub_Visibilidad
+										from SQL_O.Publicacion p3 
+										where p3.Pub_Cod = @pub_cod
+				and p.Pub_Duenio = (select p2.Pub_Duenio
+									from SQL_O.Publicacion p2 
+									where p2.Pub_Cod = @pub_cod)) % 10)=0)
+		begin
+			set @monto = 0
+		end
+		else
+		begin
+			set @monto = (select v.Vis_Precio from SQL_O.Visibilidad v, SQL_O.Publicacion p where p.Pub_Cod = @pub_cod and p.Pub_Visibilidad = v.Vis_Cod) 
+		end
+	end
+	else
+	begin
+		set @monto = (select (v.Vis_Porcentaje * p4.Pub_Precio)/100 from SQL_O.Visibilidad v, SQL_O.Publicacion p4 where p4.Pub_Cod = @pub_cod and p4.Pub_Visibilidad = v.Vis_Cod)
+	end
+	
+	Insert into SQL_O.Item_Factura(Item_Monto,Item_Cantidad,Item_Publicacion) 
+	values (@monto,@cantidad,@pub_cod)
+	
+commit
+GO
+
+
 -- Crear Publicación. //corregido//
 create procedure SQL_O.alta_publicacion @descripcion nvarchar(255), @stock numeric(18,0),
 										@precio numeric(18,2), @tipo nvarchar(255), 
@@ -1270,8 +1310,10 @@ as
 			rollback
 			raiserror('Un usuario no puede "auto comprarse"',16,1)
 		end
+		declare @pub_stock numeric(18,0)
+		set @pub_stock=(select Pub_Stock from SQL_O.Publicacion where @pub_cod = Pub_Cod)
 		
-		if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub_cod = Pub_Cod))
+		if(@cant <= @pub_stock)
 			begin
 				 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
 						values (@pub_cod,@fecha_real,@cant,@userid)
@@ -1279,8 +1321,14 @@ as
 				 update SQL_O.Publicacion
 				 set Pub_Stock= Pub_Stock-@cant
 					 where Pub_Cod=@pub_cod	
-				
-				exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = @cant, @tipo = 'Venta Inmediata'
+				 if(@cant-@pub_stock=0)
+					begin
+						update SQL_O.Publicacion
+						set Pub_Estado='Finalizada'
+							where Pub_Cod=@pub_cod
+					end
+									
+			     exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = @cant, @tipo = 'Venta Inmediata'
 			
 			end
 		else
@@ -1629,43 +1677,6 @@ begin transaction
 	  FP_Fecha_Venc_Tarj= @fecha,
 	  FP_Tipo_Tarjeta=@tipo_tarjeta
 
-commit
-GO
--- Crear Item Factura
-
-create procedure SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0), @tipo nvarchar(255)
-as
-begin transaction
-	declare @monto numeric(18,2)
-	
-	if(@tipo = 'Publicacion')
-	begin
-		if((select COUNT(i.Item_Id)
-				from SQL_O.Publicacion p, SQL_O.Item_Factura i 
-				where i.Item_Publicacion = p.Pub_Cod
-				and i.Item_Tipo = 'Publicacion'
-				and p.Pub_Visibilidad =(select p3.Pub_Visibilidad
-										from SQL_O.Publicacion p3 
-										where p3.Pub_Cod = @pub_cod
-				and p.Pub_Duenio = (select p2.Pub_Duenio
-									from SQL_O.Publicacion p2 
-									where p2.Pub_Cod = @pub_cod)) % 10)=0)
-		begin
-			set @monto = 0
-		end
-		else
-		begin
-			set @monto = (select v.Vis_Precio from SQL_O.Visibilidad v, SQL_O.Publicacion p where p.Pub_Cod = @pub_cod and p.Pub_Visibilidad = v.Vis_Cod) 
-		end
-	end
-	else
-	begin
-		set @monto = (select (v.Vis_Porcentaje * p4.Pub_Precio)/100 from SQL_O.Visibilidad v, SQL_O.Publicacion p4 where p4.Pub_Cod = @pub_cod and p4.Pub_Visibilidad = v.Vis_Cod)
-	end
-	
-	Insert into SQL_O.Item_Factura(Item_Monto,Item_Cantidad,Item_Publicacion) 
-	values (@monto,@cantidad,@pub_cod)
-	
 commit
 GO
 
