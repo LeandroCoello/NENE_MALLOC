@@ -18,14 +18,15 @@ namespace FrbaCommerce.Abm_Cliente
             InitializeComponent();
             cBTipDoc.Items.Add("DNI");
             cBTipDoc.Items.Add("CI");
-
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btnLimpiar_Click(object sender, EventArgs e)
         {
-
+            txtApellido.Clear();
+            txtMail.Clear();
+            txtNDoc.Clear();
+            txtNombre.Clear();
         }
-
 
     }
 }
