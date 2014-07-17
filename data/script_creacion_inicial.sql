@@ -514,7 +514,7 @@ if(@tipo='Compra Inmediata')
 
 Insert into SQL_O.Publicacion(Pub_Cod,Pub_Desc,Pub_Stock,Pub_Fecha_Ini,Pub_Fecha_Vto,Pub_Precio,Pub_Tipo
 							,Pub_Estado,Pub_Duenio,Pub_Visibilidad)
-			values(@cod, @desc, @stock-@unidades_vendidas, @fecha_ini, @fecha_vto, @precio,@tipo,@estado,@duenio,@visibilidad_cod)
+			values(@cod, @desc, @stock-@unidades_vendidas, @fecha_ini, @fecha_vto, @precio,@tipo,'Finalizada',@duenio,@visibilidad_cod)
 
 Insert into SQL_O.Pub_Por_Rubro(Pub_Cod,Rubro_Cod)
 			values(@cod,(select Rubro_Cod from SQL_O.Rubro where @rubro=Rubro_Desc))
