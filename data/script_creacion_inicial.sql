@@ -896,13 +896,13 @@ GO
 -- Editar Publicacion
 create procedure SQL_O.editar_publicacion @nro_pub numeric(18,0),@estado nvarchar(255), @descripcion nvarchar(255),
 										  @stock numeric(18,0), @precio numeric(18,2), @visibilidad nvarchar(255),
-										  @duenio nvarchar(30), @permite_preg bit, @fecha_ini nvarchar(8), @return numeric(1,0) out
+										  @duenio nvarchar(30), @permite_preg bit, @fecha nvarchar(8), @return numeric(1,0) out
 as
 begin transaction
 	declare @vis_cod numeric(18,0)
 	declare @duenio_cod numeric(18,0)
-	declare @fecha datetime
-	set @fecha=@fecha_ini
+	declare @fecha_real datetime
+	set @fecha_real=@fecha
 	set @return = 0
 	set @vis_cod = (select Vis_Cod from SQL_O.Visibilidad where Vis_Desc = @visibilidad)
 	set @duenio_cod = (select UserId from SQL_O.Usuario where Username = @duenio)
@@ -914,7 +914,7 @@ begin transaction
 			         or @vis_cod != Pub_Visibilidad 
 			         or @permite_preg != Pub_Permite_Preguntas
 			         or @estado = 'Borrador'
-			         or @fecha!=Pub_Fecha_Ini)))
+			         or @fecha_real!=Pub_Fecha_Ini)))
 	begin 
 		rollback
 		raiserror('No puedo cambiar esos campos en una publicacion Activa',16,1)
@@ -947,6 +947,19 @@ begin transaction
 		return
 	end	
 	
+	if(exists(select Pub_Cod 
+	          from SQL_O.Publicacion 
+	          where @nro_pub = Pub_Cod
+	            and Pub_Tipo = 'Subasta'
+	            and Pub_Estado = 'Publicada'
+	            and @estado = 'Pausada'))
+	begin 
+		rollback
+		raiserror('No se pueden pausar las subastas a menos que qede inhabilitado el usuario',16,1)
+		set @return = 4
+		return
+	end		
+	
 	if(exists(select Pub_Cod
 			  from SQL_O.Publicacion 
 			  where @nro_pub = Pub_Cod
@@ -957,11 +970,11 @@ begin transaction
 			      or @permite_preg != Pub_Permite_Preguntas
 			      or @descripcion != Pub_Desc
 			      or @estado != 'Publicada'
-			      or @fecha!=Pub_Fecha_Ini)))
+			      or @fecha_real!=Pub_Fecha_Ini)))
 	begin 
 		rollback
 		raiserror('No puedo cambiar esos campos en una publicacion Pausada',16,1)
-		set @return = 4
+		set @return = 5
 		return
 	end
 	
@@ -975,11 +988,11 @@ begin transaction
 			      or @permite_preg != Pub_Permite_Preguntas
 			      or @descripcion != Pub_Desc
 			      or @estado != Pub_Estado
-			      or @fecha!=Pub_Fecha_Ini)))
+			      or @fecha_real!=Pub_Fecha_Ini)))
 	begin 
 		rollback
 		raiserror('No puedo cambiar esos campos en una publicacion Finalizada',16,1)
-		set @return = 5
+		set @return = 6
 		return
 	end
 	
@@ -988,11 +1001,11 @@ begin transaction
 			  where @nro_pub = Pub_Cod
 			    and Pub_Estado = 'Borrador'
 			    and @estado = 'Publicada'
-			    and @fecha!=Pub_Fecha_Ini ))
+			    and @fecha_real!=Pub_Fecha_Ini ))
 	begin 
 		rollback
 		raiserror('Se debe actualizar la fecha al cambiar de estado Borrador a Publicada',16,1)
-		set @return = 6
+		set @return = 7
 		return
 	end
 	
@@ -1003,7 +1016,7 @@ begin transaction
 	    Pub_Precio = @precio,
 	    Pub_Stock = @stock,
 	    Pub_Visibilidad = @vis_cod,
-	    Pub_Fecha_Ini=@fecha,
+	    Pub_Fecha_Ini=@fecha_real,
 	    Pub_Fecha_Vto = Pub_Fecha_Ini + (select Vis_Duracion from SQL_O.Visibilidad where @vis_cod = Vis_Cod)
 	where Pub_Cod = @nro_pub
 commit	
