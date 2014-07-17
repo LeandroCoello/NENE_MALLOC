@@ -127,18 +127,6 @@
     <Compile Include="Abm Rubro\AbmRubroForm.Designer.cs">
       <DependentUpon>AbmRubroForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Visibilidad\Alta.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Alta.Designer.cs">
-      <DependentUpon>Alta.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Baja.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Baja.Designer.cs">
-      <DependentUpon>Baja.cs</DependentUpon>
-    </Compile>
     <Compile Include="Abm Visibilidad\Calificar Vendedor\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,18 +138,6 @@
     </Compile>
     <Compile Include="Abm Visibilidad\AbmVisibilidadForm.Designer.cs">
       <DependentUpon>AbmVisibilidadForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Filtrar.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Filtrar.Designer.cs">
-      <DependentUpon>Filtrar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Modificar.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Modificar.Designer.cs">
-      <DependentUpon>Modificar.cs</DependentUpon>
     </Compile>
     <Compile Include="Calificar Vendedor\CalifVendForm.cs">
       <SubType>Form</SubType>
@@ -253,7 +229,6 @@
     <Compile Include="Login\Form2EleccionRol.Designer.cs">
       <DependentUpon>Form2EleccionRol.cs</DependentUpon>
     </Compile>
-    <Compile Include="Login\LoginDatos.cs" />
     <Compile Include="Menu Principal\Form1MenuPrincipal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -285,12 +260,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rubro\AbmRubroForm.resx">
       <DependentUpon>AbmRubroForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Abm Visibilidad\AbmVisibilidadForm.resx">
-      <DependentUpon>AbmVisibilidadForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Abm Visibilidad\Alta.resx">
-      <DependentUpon>Alta.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PrincipalForm.resx">
       <DependentUpon>PrincipalForm.cs</DependentUpon>
@@ -386,6 +355,7 @@
       <DependentUpon>Form2RegistroEmpresa.cs</DependentUpon>
     </Compile>
     <Compile Include="Sistema\Inicio.cs" />
+    <Compile Include="Sistema\Publicacion.cs" />
     <Compile Include="Sistema\QueryConditions\And.cs" />
     <Compile Include="Sistema\QueryConditions\Condition.cs" />
     <Compile Include="Sistema\QueryConditions\Or.cs" />
