@@ -14,7 +14,7 @@ namespace FrbaCommerce.Abm_Cliente
     public partial class Filtrado : Form
     {
         SQLConnector conec = new SQLConnector();
-        List<string> consultas = new List<string>();
+        
         public Filtrado()
         {
 
@@ -34,15 +34,15 @@ namespace FrbaCommerce.Abm_Cliente
 
         private void btnFiltrar_Click(object sender, EventArgs e)
         {
-            this.validarConsultas();
+           
             string queryConsulta = "SELECT C.Cli_Nombre,C.Cli_Apellido,C.Cli_TipoDoc,C.Cli_NroDoc,D.Datos_Mail,C.Cli_Fecha_Nac,D.Datos_Tel,D.Datos_Dom_Calle,D.Datos_Nro_Calle,D.Datos_Dom_Piso,D.Datos_Depto,D.Datos_Cod_Postal,D.Datos_Localidad FROM SQL_O.Cliente C,SQL_O.Datos_Pers"
                                     + "WHERE C.Cli_Datos_Pers = D._Datos_Id"
-                                    + this.generarConsultas()
+                                    + this.generarConsultas( this.validarConsultas())
                                     + "GROUP BY C.Cli_Nombre,C.Cli_Apellido,C.Cli_TipoDoc,C.Cli_NroDoc,C.Cli_Mail";
             dataGridView1.DataSource = conec.consulta(queryConsulta);
         }
 
-        private string generarConsultas() {
+        private string generarConsultas(List<String> consultas) {
             List<Regla> listaDeReglas = consultas.ConvertAll(p=> new Regla(p));
             if (listaDeReglas.Count() > 0)
             {
@@ -53,8 +53,6 @@ namespace FrbaCommerce.Abm_Cliente
                     regla = new And(regla, unaRegla);
                 }
                 return regla.toString();
-            
-
             }
             else
             {
@@ -63,6 +61,26 @@ namespace FrbaCommerce.Abm_Cliente
 
 
          }
+        private List<string> validarConsultas(){
+            List<string> consultas = new List<string>();
+            if(!string.IsNullOrEmpty(txtNombre.Text)){
+                    consultas.Add( "C.Cli_Nombre LIKE%" + txtNombre.Text+"%");
+                }
+            if(!string.IsNullOrEmpty(txtApellido.Text)){
+                    consultas.Add( "C.Cli_Apellido LIKE%" + txtApellido.Text+"%");
+                }
+            if(!string.IsNullOrEmpty(txtNDoc.Text)){
+                    consultas.Add( "C.Cli_Nombre LIKE%" + txtNombre.Text+"%");
+                }
+            if(!string.IsNullOrEmpty(txtMail.Text)){
+                    consultas.Add( "C.Cli_Mail LIKE%" + txtNombre.Text+"%");
+                }
+            if(!string.IsNullOrEmpty(cBTipDoc.SelectedItem.ToString())){
+                    consultas.Add( "C.Cli_Nombre =" + cBTipDoc.SelectedItem.ToString());
+                }
+            return consultas;
+        }
+
 
         private void btnModif_Click(object sender, EventArgs e)
         {
