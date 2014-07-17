@@ -442,18 +442,6 @@ deallocate cursor_Migracion_Cli
  
 GO
 
-
---Migración tabla Compra.
-insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
-	(select distinct Publicacion_Cod,
-					 Compra_Fecha,
-					 Compra_Cantidad,
-					 (select UserId from SQL_O.Cliente c,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni = c.Cli_NroDoc and c.Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
-	from gd_esquema.Maestra where Compra_Fecha is not null)
-	
-GO
-
-
 --Migración tabla Publicación, Pub_Por_Rubro.
 Declare 
 @cod numeric(18,0),
@@ -522,6 +510,16 @@ end
 close cursor_Migracion_Pub
 deallocate cursor_Migracion_Pub
  
+GO
+
+--Migración tabla Compra.
+insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
+	(select distinct Publicacion_Cod,
+					 Compra_Fecha,
+					 Compra_Cantidad,
+					 (select UserId from SQL_O.Cliente c,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni = c.Cli_NroDoc and c.Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
+	from gd_esquema.Maestra where Compra_Fecha is not null)
+	
 GO
 
 --Insert Admin
