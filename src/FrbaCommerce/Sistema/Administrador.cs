@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FrbaCommerce.Sistema
 {
-    interface Administrador
+    public class Administrador
     {
         public List<String> vendedoresConMayorFacturacion()
         {

@@ -18,10 +18,6 @@ namespace FrbaCommerce.Sistema
             this.contraseñaHash = c;
             this.conexion = con;
         }
-        public UsuarioLogueado(String nom, String passSinHash) {
-            this.contraseñaHash = passSinHash;
-            this.nombreUsuario = nom;
-        }
         public String getNombreUsuario()
         {
             return nombreUsuario;
@@ -47,6 +43,11 @@ namespace FrbaCommerce.Sistema
         public List<Publicacion> conseguirPublicaciones()
         {
             //aca va la logica del query de publicaciones
+            return null;
+        }
+
+        public Item_Factura conseguirCompra()
+        {
             return null;
         }
 

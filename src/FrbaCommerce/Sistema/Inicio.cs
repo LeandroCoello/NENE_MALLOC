@@ -21,7 +21,7 @@ namespace FrbaCommerce.Sistema
             DataTable usuarioNuevo = connection.consulta(queryRegistro);
             string userId = usuarioNuevo.Columns[0].ToString();
             string passSinHash = usuarioNuevo.Columns[1].ToString();
-            return new UsuarioLogueado(userId,passSinHash);
+            return new UsuarioLogueado(userId,passSinHash, connection);
         }
         public UsuarioLogueado login(String nombreDeUsuario, String contraseña)
         {

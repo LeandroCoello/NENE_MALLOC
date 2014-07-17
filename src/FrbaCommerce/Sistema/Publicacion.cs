@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FrbaCommerce.Sistema
 {
-    class Publicacion
+    public class Publicacion
     {
         int cod;
         Double precio;
@@ -14,4 +14,9 @@ namespace FrbaCommerce.Sistema
         char estado;
         string tipo;
     }
+    public void conseguirPreguntas()
+    {
+        
+    }
+
 }
