@@ -198,7 +198,7 @@ SQL_O.generar_factura @user nvarchar(30), @forma_pago nvarchar(255), @fecha nvar
 
 -- Crear Item Factura
 
-SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0)
+SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0), @tipo nvarchar(255)
 
 -- Agregar Items a la factura
 
