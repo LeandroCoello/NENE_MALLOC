@@ -84,7 +84,7 @@ namespace FrbaCommerce.Abm_Cliente
 
         private void btnModif_Click(object sender, EventArgs e)
         {
-            string DNI = dataGridView1.SelectedCells[0].Value.ToString();
+            string DNI = dataGridView1.SelectedCells[3].Value.ToString();
             string queryUser = "SELECT U.username FROM SQL_O.Usuario U,SQL_O.Cliente C,SQL_O.Tipo T"
                                 +"WHERE C.Cli_Id = T.Tipo_Cod and"
                                 +"T.Tipo_Cod = U.User_Tipo and"
@@ -104,7 +104,14 @@ namespace FrbaCommerce.Abm_Cliente
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-
+            List<string> valores = new List<string>();
+            for (int i = 0; i < 6; i++)
+            {
+                valores.Add(dataGridView1.SelectedCells[i].Value.ToString());
+            }
+            BAJA levantarBaja = new BAJA(valores);
+            levantarBaja.ShowDialog();
+            this.Hide();
         }
         
         }
