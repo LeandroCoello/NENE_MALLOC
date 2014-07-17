@@ -502,9 +502,15 @@ else
 	begin
 	set @duenio  = (select UserId from SQL_O.Empresa,SQL_O.Tipo,SQL_O.Usuario where @cuit_empresa = Emp_Cuit and Emp_Cod=Tipo_Cod and User_Tipo=Tipo_Cod)
 	end
+	
 
 declare @unidades_vendidas numeric(18,0)
-set @unidades_vendidas= isnull((select SUM(Compra_Cantidad) from SQL_O.Compra where Compra_Pub=@cod),0)
+set @unidades_vendidas=0
+
+if(@tipo='Compra Inmediata')
+	begin
+		set @unidades_vendidas= isnull((select SUM(Compra_Cantidad) from SQL_O.Compra where Compra_Pub=@cod),0)	
+	end
 
 Insert into SQL_O.Publicacion(Pub_Cod,Pub_Desc,Pub_Stock,Pub_Fecha_Ini,Pub_Fecha_Vto,Pub_Precio,Pub_Tipo
 							,Pub_Estado,Pub_Duenio,Pub_Visibilidad)
