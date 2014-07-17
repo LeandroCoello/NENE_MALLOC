@@ -1881,7 +1881,7 @@ GO
 
 -- Calcular Trimestre
 
-create procedure SQL_O.calcular_trimestre @anio numeric(4,0), @trimestre numeric(1,0), @mes1 numeric(1,0) out, @mes2 numeric(1,0) out
+create procedure SQL_O.calcular_trimestre @trimestre numeric(1,0), @mes1 numeric(2,0) out, @mes2 numeric(2,0) out
 as
 	begin
 		 if(@trimestre=1)
@@ -1993,3 +1993,47 @@ as
 		return
 	end
 GO
+
+
+-- Listado de vendedores con mayor cantidad de productos no vendidos
+-- Listado de vendedores con mayor facturacion
+-- Listado de vendedores con mayores calificaciones
+-- Listado de clientes con mayor cantidad de publicaciones sin calificar
+/*
+create function SQL_O.listado_vend_prod_no_vendidos (@anio numeric(4,0), @trimestre numeric(1,0))
+returns @tabla table(Anio numeric(4,0), 
+	                 Mes numeric(2,0),
+	                 Visibilidad nvarchar(255), 
+	                 Vendedor varchar(30), 
+	                 Cant_Prod numeric(18,0))
+as
+begin
+	declare @mes_inicio numeric(2,0)
+	declare @mes_fin numeric(2,0)
+	
+	exec SQL_O.calcular_trimestre @mes1 = @mes_inicio out, @mes2 = @mes_fin out
+	insert into @tabla(Anio,Mes,Visibilidad,Vendedor,Cant_Prod) 
+	(select top 5 u.Username
+	 from SQL_O.Publicacion p, SQL_O.Usuario u 
+	 where MONTH(p.Fecha_Ini) between @mes_inicio and @mes_fin
+	   and YEAR(p.Fecha_Ini) = @anio
+	   and p.Pub_Duenio = u.UserId
+	 order by SUM(case when p.Pub_Tipo = 'Compra Inmediata' then (select SUM(c.Compra_Cantidad)
+															      from SQL_O.Compra c
+										                          where c.Compra_Pub = p.Pub_Cod)
+				  case when (p.Pub_Tipo = 'Subasta' and Pub_Estado = 'Publicada') then 1
+				  else 0 end)desc)
+end
+return
+GO
+ */
+  
+select top 5 u.Username
+ from SQL_O.Publicacion p, SQL_O.Usuario u, SQL_O.Compra c
+ where MONTH(p.Pub_Fecha_Ini) between 1 and 3
+   and YEAR(p.Pub_Fecha_Ini) = 2013
+   and p.Pub_Duenio = u.UserId
+   and  c.Compra_Pub = p.Pub_Cod
+ group by u.Username, p.Pub_Stock_Inicial
+ order by SUM(p.Pub_Stock_Inicial - c.Compra_Cantidad) desc
+  
