@@ -1675,12 +1675,23 @@ create procedure SQL_O.baja_cliente @nombre nvarchar(255) , @apellido nvarchar(2
 as
 begin transaction
 	
+	declare @cliente_id numeric(18,0)
+	set @cliente_id = (select c.Cli_Id 
+					   from SQL_O.Cliente c
+					   where Cli_Nombre = @nombre
+					     and Cli_Apellido = @apellido
+	                     and Cli_TipoDoc = @tipo_doc
+						 and Cli_NroDoc = @nro_doc
+						 and @mail = (select Datos_Mail from Datos_Pers, Cliente c where c.Cli_Datos_Pers = Datos_Id)) 
+	
 	update SQL_O.Cliente set Cli_Baja = 1
-	where Cli_Nombre = @nombre
-	  and Cli_Apellido = @apellido
-	  and Cli_TipoDoc = @tipo_doc
-	  and Cli_NroDoc = @nro_doc
-	  and @mail = (select Datos_Mail from Datos_Pers, Cliente c where c.Cli_Datos_Pers = Datos_Id)
+	where Cli_Id = @cliente_id
+	
+	update SQL_O.Publicacion
+	set Pub_Estado = 'Finalizada'
+	where Pub_Duenio = (select u.UserId 
+						from SQL_O.Usuario u
+						where u.User_Tipo = @cliente_id)
 	
 commit 
 GO 
@@ -1692,10 +1703,21 @@ create procedure SQL_O.baja_empresa  @razon_social nvarchar(255) , @cuit nvarcha
 as
 begin transaction
 
+	declare @empresa_cod numeric(18,0)
+	set @empresa_cod = (select Emp_Cod 
+						from SQL_O.Empresa
+						where Emp_Razon_Social = @razon_social
+						  and Emp_Cuit = @cuit 
+	                       and @mail = (select Datos_Mail from Datos_Pers, Empresa e where e.Emp_Datos_Pers = Datos_Id))
+	                       
 	update SQL_O.Empresa set Emp_Baja = 1
-	where Emp_Razon_Social = @razon_social
-	  and Emp_Cuit = @cuit 
-	  and @mail = (select Datos_Mail from Datos_Pers, Empresa e where e.Emp_Datos_Pers = Datos_Id)
+	where Emp_Cod = @empresa_cod
+	
+	update SQL_O.Publicacion
+	set Pub_Estado = 'Finalizada'
+	where Pub_Duenio = (select u.UserId 
+						from SQL_O.Usuario u
+						where u.User_Tipo = @empresa_cod)
 
 commit	  
 GO

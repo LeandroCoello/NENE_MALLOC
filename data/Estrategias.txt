@@ -51,7 +51,13 @@ se permite tener otro tipo de documento.
 
 Los datos pertinentes a las tablas que se encuentren en Null en la tabla maestra a la hora de la migración serán dejados como tal(en Null) hasta que se modifiquen.
 
-El stock a la hora de migrar se considerará que no está actualizado por ende en la migración se le resta la cantidad de unidades vendidas
+El stock a la hora de migrar se considerará que no está actualizado por ende en la migración se le resta la cantidad de unidades vendidas.
+
+Las publicaciones generan un item_factura al momento de su finalización, mientrás que las compras inmediatas y subastas que le compraron al vendedor generan un
+item_factura a la hora de realizarse la venta. Esto no se produce en el mismo momento en el cual se factura. Las rendiciones se generán luego en el orden que
+se generaron los items factura. Por rendición se entiende la asginación de 1 o más item_factura a una factura determinada.
+
+Cuando se dan de baja clientes y empresas se dan por finalizadas sus publicaciones.
 
 -- Stores Procedures
 
