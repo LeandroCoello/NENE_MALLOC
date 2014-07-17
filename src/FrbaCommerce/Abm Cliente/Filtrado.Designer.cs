@@ -50,6 +50,14 @@ namespace FrbaCommerce.Abm_Cliente
             this.TipoDoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DNI = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Mail = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -142,15 +150,17 @@ namespace FrbaCommerce.Abm_Cliente
             this.btnModif.TabIndex = 10;
             this.btnModif.Text = "Modificar";
             this.btnModif.UseVisualStyleBackColor = true;
+            this.btnModif.Click += new System.EventHandler(this.btnModif_Click);
             // 
             // btnBaja
             // 
-            this.btnBaja.Location = new System.Drawing.Point(547, 379);
+            this.btnBaja.Location = new System.Drawing.Point(328, 379);
             this.btnBaja.Name = "btnBaja";
             this.btnBaja.Size = new System.Drawing.Size(75, 23);
             this.btnBaja.TabIndex = 11;
             this.btnBaja.Text = "Baja";
             this.btnBaja.UseVisualStyleBackColor = true;
+            this.btnBaja.Click += new System.EventHandler(this.btnBaja_Click);
             // 
             // btnFiltrar
             // 
@@ -180,37 +190,90 @@ namespace FrbaCommerce.Abm_Cliente
             this.Apellido,
             this.TipoDoc,
             this.DNI,
-            this.Mail});
-            this.dataGridView1.Location = new System.Drawing.Point(80, 195);
+            this.Mail,
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4,
+            this.Column5,
+            this.Column6,
+            this.Column7,
+            this.Column8});
+            this.dataGridView1.Location = new System.Drawing.Point(12, 184);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(542, 144);
+            this.dataGridView1.Size = new System.Drawing.Size(516, 144);
             this.dataGridView1.TabIndex = 14;
             // 
             // Nombre
             // 
+            this.Nombre.HeaderText = "Nombre";
             this.Nombre.Name = "Nombre";
             // 
             // Apellido
             // 
+            this.Apellido.HeaderText = "Apellido";
             this.Apellido.Name = "Apellido";
             // 
             // TipoDoc
             // 
+            this.TipoDoc.HeaderText = "TipoDoc";
             this.TipoDoc.Name = "TipoDoc";
             // 
             // DNI
             // 
+            this.DNI.HeaderText = "DNI";
             this.DNI.Name = "DNI";
             // 
             // Mail
             // 
+            this.Mail.HeaderText = "Mail";
             this.Mail.Name = "Mail";
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Fecha Nac";
+            this.Column1.Name = "Column1";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Tel";
+            this.Column2.Name = "Column2";
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Calle";
+            this.Column3.Name = "Column3";
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Nro Calle";
+            this.Column4.Name = "Column4";
+            // 
+            // Column5
+            // 
+            this.Column5.HeaderText = "Piso";
+            this.Column5.Name = "Column5";
+            // 
+            // Column6
+            // 
+            this.Column6.HeaderText = "Depto";
+            this.Column6.Name = "Column6";
+            // 
+            // Column7
+            // 
+            this.Column7.HeaderText = "Codigo Postal";
+            this.Column7.Name = "Column7";
+            // 
+            // Column8
+            // 
+            this.Column8.HeaderText = "Localidad";
+            this.Column8.Name = "Column8";
             // 
             // Filtrado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(653, 443);
+            this.ClientSize = new System.Drawing.Size(536, 443);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.btnFiltrar);
@@ -262,5 +325,13 @@ namespace FrbaCommerce.Abm_Cliente
         private System.Windows.Forms.DataGridViewTextBoxColumn TipoDoc;
         private System.Windows.Forms.DataGridViewTextBoxColumn DNI;
         private System.Windows.Forms.DataGridViewTextBoxColumn Mail;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
     }
 }
