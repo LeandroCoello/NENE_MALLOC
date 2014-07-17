@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FrbaCommerce.Sistema.QueryConditions
 {
-    class Or : Condition
+   public class Or : Condition
     {
         private Condition exp1;
         private Condition exp2;
@@ -15,7 +15,7 @@ namespace FrbaCommerce.Sistema.QueryConditions
             this.exp1 = e1;
             this.exp2 = e2;
         }
-        String toString()
+        string Condition.toString()
         {
             if (exp1.toString() == null || exp2.toString() == null)
             {

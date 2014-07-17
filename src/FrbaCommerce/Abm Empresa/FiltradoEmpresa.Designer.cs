@@ -37,11 +37,11 @@
             this.btnLimpieza = new System.Windows.Forms.Button();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.btnModif = new System.Windows.Forms.Button();
+            this.btnElim = new System.Windows.Forms.Button();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnModif = new System.Windows.Forms.Button();
-            this.btnElim = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -123,21 +123,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(343, 162);
             this.dataGridView1.TabIndex = 8;
             // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Razon Social";
-            this.Column1.Name = "Column1";
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Mail";
-            this.Column2.Name = "Column2";
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Mail";
-            this.Column3.Name = "Column3";
-            // 
             // btnModif
             // 
             this.btnModif.Location = new System.Drawing.Point(13, 363);
@@ -155,6 +140,21 @@
             this.btnElim.TabIndex = 10;
             this.btnElim.Text = "Eliminar";
             this.btnElim.UseVisualStyleBackColor = true;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Razon Social";
+            this.Column1.Name = "Column1";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Cuit";
+            this.Column2.Name = "Column2";
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Mail";
+            this.Column3.Name = "Column3";
             // 
             // FiltradoEmpresa
             // 
@@ -191,10 +191,10 @@
         private System.Windows.Forms.Button btnLimpieza;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button btnModif;
+        private System.Windows.Forms.Button btnElim;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.Button btnModif;
-        private System.Windows.Forms.Button btnElim;
     }
 }

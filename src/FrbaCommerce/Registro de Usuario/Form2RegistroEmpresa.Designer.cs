@@ -141,7 +141,6 @@
             this.txtCiudad.Name = "txtCiudad";
             this.txtCiudad.Size = new System.Drawing.Size(139, 20);
             this.txtCiudad.TabIndex = 9;
-            this.txtCiudad.TextChanged += new System.EventHandler(this.txtCiudad_TextChanged);
             // 
             // txtCodigoPostal
             // 
@@ -149,7 +148,6 @@
             this.txtCodigoPostal.Name = "txtCodigoPostal";
             this.txtCodigoPostal.Size = new System.Drawing.Size(139, 20);
             this.txtCodigoPostal.TabIndex = 10;
-            this.txtCodigoPostal.TextChanged += new System.EventHandler(this.txtCodigoPostal_TextChanged);
             // 
             // txtLocalidad
             // 
@@ -157,7 +155,6 @@
             this.txtLocalidad.Name = "txtLocalidad";
             this.txtLocalidad.Size = new System.Drawing.Size(139, 20);
             this.txtLocalidad.TabIndex = 11;
-            this.txtLocalidad.TextChanged += new System.EventHandler(this.txtLocalidad_TextChanged);
             // 
             // txtDireccion
             // 
@@ -165,7 +162,6 @@
             this.txtDireccion.Name = "txtDireccion";
             this.txtDireccion.Size = new System.Drawing.Size(139, 20);
             this.txtDireccion.TabIndex = 12;
-            this.txtDireccion.TextChanged += new System.EventHandler(this.txtDireccion_TextChanged);
             // 
             // txtTelefono
             // 
@@ -173,7 +169,6 @@
             this.txtTelefono.Name = "txtTelefono";
             this.txtTelefono.Size = new System.Drawing.Size(139, 20);
             this.txtTelefono.TabIndex = 13;
-            this.txtTelefono.TextChanged += new System.EventHandler(this.txtTelefono_TextChanged);
             // 
             // txtMail
             // 
@@ -181,7 +176,6 @@
             this.txtMail.Name = "txtMail";
             this.txtMail.Size = new System.Drawing.Size(139, 20);
             this.txtMail.TabIndex = 14;
-            this.txtMail.TextChanged += new System.EventHandler(this.txtMail_TextChanged);
             // 
             // txtCuit
             // 
@@ -189,7 +183,6 @@
             this.txtCuit.Name = "txtCuit";
             this.txtCuit.Size = new System.Drawing.Size(139, 20);
             this.txtCuit.TabIndex = 15;
-            this.txtCuit.TextChanged += new System.EventHandler(this.txtCuit_TextChanged);
             // 
             // lblNomCont
             // 
@@ -217,7 +210,6 @@
             this.txtNomContacto.Size = new System.Drawing.Size(139, 20);
             this.txtNomContacto.TabIndex = 18;
             this.txtNomContacto.Visible = false;
-            this.txtNomContacto.TextChanged += new System.EventHandler(this.txtNomContacto_TextChanged);
             // 
             // txtFecCreac
             // 
@@ -225,7 +217,6 @@
             this.txtFecCreac.Name = "txtFecCreac";
             this.txtFecCreac.Size = new System.Drawing.Size(139, 20);
             this.txtFecCreac.TabIndex = 19;
-            this.txtFecCreac.TextChanged += new System.EventHandler(this.txtFecCreac_TextChanged);
             // 
             // btnFinalizarYContinuar
             // 
@@ -244,7 +235,6 @@
             this.txtTipDoc.Size = new System.Drawing.Size(139, 20);
             this.txtTipDoc.TabIndex = 54;
             this.txtTipDoc.Visible = false;
-            this.txtTipDoc.TextChanged += new System.EventHandler(this.txtTipDoc_TextChanged);
             // 
             // lblTdeDoc
             // 

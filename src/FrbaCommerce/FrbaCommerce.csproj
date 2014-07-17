@@ -145,12 +145,6 @@
     <Compile Include="Abm Visibilidad\Baja.Designer.cs">
       <DependentUpon>Baja.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Visibilidad\Calificar Vendedor\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Abm Visibilidad\Calificar Vendedor\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Abm Visibilidad\AbmVisibilidadForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,11 +264,17 @@
     <EmbeddedResource Include="Abm Cliente\Alta.resx">
       <DependentUpon>Alta.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Abm Cliente\BAJA.resx">
+      <DependentUpon>BAJA.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Abm Cliente\Filtrado.resx">
       <DependentUpon>Filtrado.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Cliente\AbmClienteForm.resx">
       <DependentUpon>AbmClienteForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Cliente\Modificar.resx">
+      <DependentUpon>Modificar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Empresa\AltaEmpresa.resx">
       <DependentUpon>AltaEmpresa.cs</DependentUpon>

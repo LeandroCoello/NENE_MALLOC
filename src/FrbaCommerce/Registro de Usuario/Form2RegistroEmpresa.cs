@@ -11,7 +11,7 @@ namespace FrbaCommerce.Registro_de_Usuario
 {
     public partial class Form2RegistroEmpresa : Form
     {
-
+        string rolAsignado;
         public Form2RegistroEmpresa()
         {
             InitializeComponent();
@@ -25,6 +25,11 @@ namespace FrbaCommerce.Registro_de_Usuario
             Menu_Principal.Form1MenuPrincipal levantarMenu = new Menu_Principal.Form1MenuPrincipal(rolAsignado);
             levantarMenu.ShowDialog();
             this.Close();
+        }
+
+        private void txtRazonSocial_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

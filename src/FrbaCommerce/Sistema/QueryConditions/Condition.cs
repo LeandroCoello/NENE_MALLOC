@@ -5,8 +5,8 @@ using System.Text;
 
 namespace FrbaCommerce.Sistema.QueryConditions
 {
-    interface Condition
+    public interface Condition
     {
-        String toString();
+        string toString();
     }
 }

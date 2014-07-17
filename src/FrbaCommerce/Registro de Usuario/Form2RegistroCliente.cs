@@ -11,6 +11,7 @@ namespace FrbaCommerce.Registro_de_Usuario
 {
     public partial class Form2RegistroCliente : Form
     {
+        string rolAsignado;
         public Form2RegistroCliente()
         {
             InitializeComponent();

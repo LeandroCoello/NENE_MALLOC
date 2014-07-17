@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FrbaCommerce.Sistema.QueryConditions
 {
-    class Regla : Condition
+    public class Regla : Condition
     {
         String exp;
 
@@ -14,7 +14,7 @@ namespace FrbaCommerce.Sistema.QueryConditions
             exp = expression;
         }
 
-        String toString()
+       string Condition.toString()
         {
             return exp; 
         }
