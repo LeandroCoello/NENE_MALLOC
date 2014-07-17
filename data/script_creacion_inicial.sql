@@ -154,6 +154,7 @@ CREATE TABLE SQL_O.Item_Factura (
 	Item_Id numeric(18,0) Primary Key Identity,
 	Item_Monto numeric(18,2),
 	Item_Cantidad numeric(18,0),
+	Item_Tipo nvarchar(255),
 	Item_Publicacion numeric(18,0) references SQL_O.Publicacion(Pub_Cod),
 	Item_Factura numeric(18,0) references SQL_O.Factura(Factura_Nro),
 	Item_Rendido bit default 0
@@ -778,15 +779,18 @@ begin transaction
 		set @return = 3
 	end
 											
-	
+	declare @codigo numeric(18,0)
+	set @codigo = (select Max(Pub_Cod) from SQL_O.Publicacion) + 1
 	
 	Insert into SQL_O.Publicacion(Pub_Cod, Pub_Desc, Pub_Stock, Pub_Fecha_Ini, Pub_Fecha_Vto, Pub_Precio, Pub_Tipo,
 								  Pub_Estado,Pub_Visibilidad, Pub_Duenio,Pub_Permite_Preguntas)
-			values ((select Max(Pub_Cod) from SQL_O.Publicacion) + 1, @descripcion, @stock, @fecha_real, 
+			values (@codigo , @descripcion, @stock, @fecha_real, 
 			 @fecha_real + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
 			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
 		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
-		
+	
+	exec SQL_O.crear_item @pub_cod = @codigo, @cantidad = 1, @tipo = 'Publicacion'	
+	
 commit 
 
 GO		
@@ -1064,24 +1068,6 @@ begin transaction
 
 commit
 GO
-			
-
--- Alta Rubro(NO HACE FALTA)
-/*create procedure SQL_O.alta_rubro @codigo numeric(18,0), @descripcion nvarchar(255)
-as 
-begin transaction
-		if exists(select Rubro_Cod from SQL_O.Rubro  where Rubro_Cod = @codigo)
-			begin
-				rollback
-				raiserror('El rubro ya existe.',16,1)
-			end
-		else 
-			Insert into SQL_O.Rubro(Rubro_Cod,Rubro_Desc) values (@codigo, @descripcion)
-		
-
-commit	*/
-GO
-	
 
 -- Calificar 
 
@@ -1217,7 +1203,8 @@ begin transaction
 	 set Oferta_Gano=1
 	 where Oferta_Id=@id_oferta
 
-
+	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Subasta'
+	 
 commit
 
 GO
@@ -1250,7 +1237,7 @@ as
 				 set Pub_Stock= Pub_Stock-@cant
 					 where Pub_Cod=@pub_cod	
 				
-				exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = @cant
+				exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = @cant, @tipo = 'Venta Inmediata'
 			
 			end
 		else
@@ -1579,22 +1566,30 @@ GO
 
 -- Crear Item Factura
 
-create procedure SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0)
+create procedure SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0), @tipo nvarchar(255)
 as
 begin transaction
 	declare @monto numeric(18,2)
 	
-	if((select COUNT(i.Item_Id)
-			from SQL_O.Publicacion p, SQL_O.Item_Factura i 
-			where i.Item_Publicacion = p.Pub_Cod
-			 and p.Pub_Visibilidad =(select p3.Pub_Visibilidad
-								     from SQL_O.Publicacion p3 
-		                             where p3.Pub_Cod = @pub_cod
-		     and p.Pub_Duenio = (select p2.Pub_Duenio
-								 from SQL_O.Publicacion p2 
-							     where p2.Pub_Cod = @pub_cod)) % 10)=0)
+	if(@tipo = 'Publicacion')
 	begin
-		set @monto = 0
+		if((select COUNT(i.Item_Id)
+				from SQL_O.Publicacion p, SQL_O.Item_Factura i 
+				where i.Item_Publicacion = p.Pub_Cod
+				and i.Item_Tipo = 'Publicacion'
+				and p.Pub_Visibilidad =(select p3.Pub_Visibilidad
+										from SQL_O.Publicacion p3 
+										where p3.Pub_Cod = @pub_cod
+				and p.Pub_Duenio = (select p2.Pub_Duenio
+									from SQL_O.Publicacion p2 
+									where p2.Pub_Cod = @pub_cod)) % 10)=0)
+		begin
+			set @monto = 0
+		end
+		else
+		begin
+			set @monto = (select v.Vis_Precio from SQL_O.Visibilidad v, SQL_O.Publicacion p where p.Pub_Cod = @pub_cod and p.Pub_Visibilidad = v.Vis_Cod) 
+		end
 	end
 	else
 	begin
