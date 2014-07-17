@@ -21,6 +21,7 @@ drop table [SQL_O].[Factura]
 drop table [SQL_O].[Usuario]
 drop table [SQL_O].[Tipo]
 drop table [SQL_O].[Rol]
+drop table [SQL_O].[Forma_Pago]
 go
 drop procedure [SQL_O].[alta_cliente]
 drop procedure [SQL_O].[alta_empresa]
@@ -56,6 +57,7 @@ drop procedure [SQL_O].[crear_item]
 drop procedure [SQL_O].[inhabilitar_usuario]
 drop procedure [SQL_O].[rehabilitar_usuario]
 drop procedure [SQL_O].[finalizar_subasta]
+drop procedure [SQL_O].[cargar_datos_tarjeta]
 
 go
 drop function [SQL_O].[historial_compras]

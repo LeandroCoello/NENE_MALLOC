@@ -35,7 +35,8 @@ CREATE TABLE SQL_O.Datos_Pers(
 		Datos_Nro_Calle numeric(18,0),
 		Datos_Dom_Piso numeric(18,0),
 		Datos_Depto nvarchar(50),
-		Datos_Cod_Postal nvarchar(50)
+		Datos_Cod_Postal nvarchar(50),
+		Datos_Localidad nvarchar(80)
 		)
 GO	
 		
@@ -141,11 +142,22 @@ CREATE TABLE SQL_O.Pregunta(
 		)
 GO
 
+CREATE TABLE SQL_O.Forma_Pago(
+	Forma_Pago_Id numeric(18,0) Primary Key identity,
+	Forma_Pago_Desc nvarchar(255),
+	Forma_Pago_NroTarjeta numeric(16,0),
+	FP_Duenio_Tarjeta nvarchar(80),
+	FP_Fecha_Venc_Tarj datetime,
+	FP_Tipo_Tarjeta nvarchar(30)
+	)
+GO
+
+
 CREATE TABLE SQL_O.Factura (
 	Factura_Nro numeric(18,0) Primary Key, 
 	Factura_Fecha datetime, 
 	Factura_Total numeric(18,0) default 0,
-	Factura_Forma_Pago nvarchar(255),
+	Factura_Forma_Pago numeric(18,0) references SQL_O.Forma_Pago(Forma_Pago_Id),
 	Factura_Usuario numeric(18,0) references SQL_O.Usuario(UserId)
 	)
 GO	
@@ -525,6 +537,41 @@ insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User
 GO
 
 --Migración tabla Factura.
+
+Declare 
+@fact_nro numeric(18,0),
+@fact_fecha datetime,
+@fact_total numeric(18,0),
+@forma_pago nvarchar(255),
+@fact_duenio numeric(18,0)
+
+Declare cursor_Migracion_Factura cursor 
+     for (select distinct Factura_Nro,
+					Factura_Fecha,
+					Factura_Total,
+					Forma_Pago_Desc,
+					(select Pub_Duenio from SQL_O.Publicacion where Pub_Cod = Publicacion_Cod)
+	from gd_esquema.Maestra where Factura_Nro is not null)
+	order by Factura_Nro
+Open cursor_Migracion_Factura
+fetch cursor_Migracion_Factura into @fact_nro, @fact_fecha , @fact_total, @forma_pago, @fact_duenio
+while(@@fetch_status=0)
+begin
+     
+     insert into SQL_O.Forma_Pago(Forma_Pago_Desc) values(@forma_pago)
+     
+     insert into SQL_O.Factura (Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Usuario)
+			values(@fact_nro,@fact_fecha,@fact_total,(select MAX(Forma_Pago_Id) from SQL_O.Forma_Pago),@fact_duenio)
+
+
+fetch cursor_Migracion_Factura into @fact_nro, @fact_fecha , @fact_total, @forma_pago, @fact_duenio
+							
+end
+close cursor_Migracion_Factura
+deallocate cursor_Migracion_Factura
+ 
+GO
+/*
 insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Usuario)
 	(select distinct Factura_Nro,
 					Factura_Fecha,
@@ -534,7 +581,7 @@ insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_
 	from gd_esquema.Maestra where Factura_Nro is not null)
 	order by Factura_Nro
 
-GO
+GO*/
 
 --Migración tabla Item_Factura.
 insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto,Item_Publicacion)
@@ -1556,14 +1603,38 @@ begin transaction
 		
 		declare @fecha_real datetime
 		set @fecha_real = @fecha
+		
 		declare @userid numeric(18,0)
 		set @userid= (select UserId from SQL_O.Usuario where Username=@user)
+		
 		set @nro_fact=(select MAX(Factura_Nro) from SQL_O.Factura)+1
+		
+		insert into SQL_O.Forma_Pago(Forma_Pago_Desc) values (@forma_pago)
+		
 		insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Forma_Pago,Factura_Usuario)
-				values(@nro_fact,@fecha_real,@forma_pago,@userid)
+				values(@nro_fact,@fecha_real,(select Max(Forma_Pago_Id) from SQL_O.Forma_Pago),@userid)
 commit
 GO
 
+-- Cargar Datos Tarjeta
+create procedure SQL_O.cargar_datos_tarjeta @nro_fact numeric(18,0), @nro_tarj numeric(16,0), @duenio nvarchar(80),@fecha_venc nvarchar(8),@tipo_tarjeta nvarchar(30)
+as 
+begin transaction
+	  declare @fecha datetime
+	  set @fecha=@fecha_venc
+	  declare @forma_id numeric(18,0)
+	  set @forma_id = (select Factura_Forma_Pago from SQL_O.Factura where Factura_Nro=@nro_fact)
+		
+	  	
+	
+	  update SQL_O.Forma_Pago
+	  set Forma_Pago_NroTarjeta=@nro_tarj,
+	  FP_Duenio_Tarjeta=@duenio,
+	  FP_Fecha_Venc_Tarj= @fecha,
+	  FP_Tipo_Tarjeta=@tipo_tarjeta
+
+commit
+GO
 -- Crear Item Factura
 
 create procedure SQL_O.crear_item @pub_cod numeric(18,0), @cantidad numeric(18,0), @tipo nvarchar(255)
@@ -1624,7 +1695,6 @@ begin transaction
 	
 commit
 GO
-
 
 
 -- Inhabilitar Usuario 

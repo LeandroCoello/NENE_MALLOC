@@ -22,16 +22,16 @@ El objetivo de que los datos de calificación, compra y oferta estén ubicados en 
 
 El Grado de visibilidad, es decir el orden en que se muestran las publicaciones segun las visibilidades coincide con el orden de las códigos de éstas.
 
-Forma de pago una tabla sola con campo 'E' o 'T' si es efectivo o tarjeta con atributos comunes(monto) y no comunes (en el caso 
-de efectivo los campos de tarjeta van en null)
+Forma de pago una tabla sola con campo 'E' o 'T' si es efectivo o tarjeta con atributos comunes(monto) y no comunes (en el caso de efectivo los campos de tarjeta van en null)
 
-(acá va factura e item factura)
+
 
 -- Migracion
 
 La mayoría de las tablas se migraron realizando inserts masivos.
 
 Para el caso de Empresa, Cliente y Publicación, debido a la normalización, por cada fila de Empresa y Cliente tenemos que insertar en cuatro tablas(Tipo,Datos_Pers,Empresa o Cliente y Usuario) y para Publicación en dos(Publicación y Pub_Por_Rubro -ésta última porque se supone que una publicación puede tener varios rubros-) . Por este tema decidimos migrar las tres tablas implementando cursores, aceptando la penalización de tiempo que nos trae su utilización.
+Tambien debido a que se deben guardar datos de forma de pago tarjeta (es decir hacer un insert a dos tablas distintas al migrar), implementamos un cursor para factura.
 
 Tanto en los inserts masivos como en los cursores los campos fk los completamos con subconsultas.
 
@@ -47,10 +47,13 @@ Las fechas en el script_inicial en un principio se obtenian con GETDATE() pero l
 desde el código en C# ya que se establecen en el archivo de configuración y eso aporta una mayor consistencia. Ese parámetro luego será pasado a datetime.
 
 
+
 -- Stores Procedures
 
 Las operaciones de login, alta, baja y modificación de usuarios cliente, usuarios empresa, visibilidades y publicaciónes, para facilitar la comunicación con la aplicación (y algo de fruta mas podemos tirar que ahora no se me ocurre :p) implementamos store procedures.
 En cada store procedure se valida que la entrada sea la correcta dentro de los valores que maneja el modelo de datos, es decir por ejemplo, validación de uniques.
+
+Al tener que guardar datos de la tarjeta, decidimos que al generar Factura se inserte la descripción de la forma de pago(sea efectivo o tarjeta) en la tabla Forma_Pago y en el caso de que sea tarjeta, se carguen los campos de tarjeta mediante otro procedimiento, separado de generar factura.
 
 -- Funciones Historial
 
@@ -214,6 +217,10 @@ SQL_O.rehabilitar_usuario @user varchar(30)
 
 --Finalizar subasta
 SQL_O.finalizar_subasta @pub_cod numeric(18,0)
+
+
+-- Cargar Datos Tarjeta
+SQL_O.cargar_datos_tarjeta @nro_fact numeric(18,0), @nro_tarj numeric(16,0), @duenio nvarchar(80),@fecha_venc nvarchar(8),@tipo_tarjeta nvarchar(30)
 
 
 
