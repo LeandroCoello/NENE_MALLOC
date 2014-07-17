@@ -892,9 +892,6 @@ begin transaction
 			 @fecha_real + (select Vis_Duracion from SQL_O.Visibilidad where @visibilidad = Vis_Desc), 
 			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
 		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
-	
-	--exec SQL_O.crear_item @pub_cod = @codigo, @cantidad = 1, @tipo = 'Publicacion'	
-	
 commit 
 
 GO		
@@ -1314,6 +1311,8 @@ create procedure SQL_O.finalizar_subasta @pub_cod numeric(18,0)
 as 
 begin transaction
 	 
+	 declare @user_id numeric(18,0)
+	 set @user_id = (select Pub_Duenio from SQL_O.Publicacion where Pub_Cod = @pub_cod)
 	 
 	 if( (select Pub_Tipo from SQL_O.Publicacion where Pub_Cod=@pub_cod)!='Subasta')
 		begin
@@ -1344,9 +1343,22 @@ begin transaction
 	 set Oferta_Gano=1
 	 where Oferta_Id=@id_oferta
 
-	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Subasta'
-	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Publicacion'
 	 
+	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Publicacion'
+	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Subasta'
+	 
+	 if((select COUNT(i.Item_Id)
+	     from SQL_O.Item_Factura i, SQL_O.Publicacion p 
+		 where i.Item_Rendido = 0 
+		   and i.Item_Tipo in ('Venta Inmediata','Subasta')
+		   and i.Item_Publicacion = p.Pub_Cod
+		   and p.Pub_Duenio = @user_id)>10)			
+	 begin
+		exec SQL_O.inhabilitar_usuario @user = @usuario
+		rollback
+		raiserror('El usuario quedo inhabilitado por llegar a las 10 ventas sin rendir',16,1)
+		return
+	 end			 
 commit
 
 GO
@@ -1417,9 +1429,19 @@ as
 						set Pub_Estado='Finalizada'
 							where Pub_Cod=@pub_cod
 					end
-									
-			     exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = @cant, @tipo = 'Venta Inmediata'
-			
+				 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = @cant, @tipo = 'Venta Inmediata'
+				 if((select COUNT(i.Item_Id)
+					 from SQL_O.Item_Factura i, SQL_O.Publicacion p 
+					 where i.Item_Rendido = 0 
+					   and i.Item_Tipo in ('Venta Inmediata','Subasta')
+					   and i.Item_Publicacion = p.Pub_Cod
+					   and p.Pub_Duenio = @userid)>10)			
+				 begin
+					exec SQL_O.inhabilitar_usuario @user = @usuario
+					rollback
+					raiserror('El usuario quedo inhabilitado por llegar a las 10 ventas sin rendir',16,1)
+					return
+				 end		
 			end
 		else
 		begin
