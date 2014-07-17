@@ -1207,15 +1207,15 @@ begin transaction
 	 
 	 update SQL_O.Publicacion
 	 set Pub_Estado='Finalizada'
-		where Pub_Cod=@pub_cod
+	 where Pub_Cod=@pub_cod
 		
 	 declare @id_oferta numeric(18,0)
 	 set @id_oferta=(select top 1 Oferta_Id from SQL_O.Oferta where Oferta_Pub=@pub_cod
 							order by Oferta_Fecha desc)
 	
-	update SQL_O.Oferta
-	set Oferta_Gano=1
-		where Oferta_Id=@id_oferta
+	 update SQL_O.Oferta
+	 set Oferta_Gano=1
+	 where Oferta_Id=@id_oferta
 
 
 commit
@@ -1584,11 +1584,26 @@ as
 begin transaction
 	declare @monto numeric(18,2)
 	
-	--Validar si el monto es 0 por bonificacion
-	set @monto = (select (v.Vis_Porcentaje * p.Pub_Precio)/100 from SQL_O.Visibilidad v, SQL_O.Publicacion p where p.Pub_Cod = @pub_cod and p.Pub_Visibilidad = v.Vis_Cod)
+	if((select COUNT(i.Item_Id)
+			from SQL_O.Publicacion p, SQL_O.Item_Factura i 
+			where i.Item_Publicacion = p.Pub_Cod
+			 and p.Pub_Visibilidad =(select p3.Pub_Visibilidad
+								     from SQL_O.Publicacion p3 
+		                             where p3.Pub_Cod = @pub_cod
+		     and p.Pub_Duenio = (select p2.Pub_Duenio
+								 from SQL_O.Publicacion p2 
+							     where p2.Pub_Cod = @pub_cod)) % 10)=0)
+	begin
+		set @monto = 0
+	end
+	else
+	begin
+		set @monto = (select (v.Vis_Porcentaje * p4.Pub_Precio)/100 from SQL_O.Visibilidad v, SQL_O.Publicacion p4 where p4.Pub_Cod = @pub_cod and p4.Pub_Visibilidad = v.Vis_Cod)
+	end
 	
 	Insert into SQL_O.Item_Factura(Item_Monto,Item_Cantidad,Item_Publicacion) 
 	values (@monto,@cantidad,@pub_cod)
+	
 commit
 GO
 
