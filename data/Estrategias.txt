@@ -46,6 +46,10 @@ a la factura a pagar comenzando desde las más antiguas.
 Las fechas en el script_inicial en un principio se obtenian con GETDATE() pero luego se decidió recibirlas por un parámetro de tipo nvarchar(8) (AAAAMMDD)
 desde el código en C# ya que se establecen en el archivo de configuración y eso aporta una mayor consistencia. Ese parámetro luego será pasado a datetime.
 
+Los Numeros de documento migrados de la tabla maestra serán considerados todos como tipo DNI, esto fue inferido por el nombre de la columna. En futuras incerciones
+se permite tener otro tipo de documento.
+
+Los datos pertinentes a las tablas que se encuentren en Null en la tabla maestra a la hora de la migración serán dejados como tal(en Null) hasta que se modifiquen.
 
 
 -- Stores Procedures

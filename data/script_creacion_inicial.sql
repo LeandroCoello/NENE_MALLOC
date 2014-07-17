@@ -571,24 +571,14 @@ close cursor_Migracion_Factura
 deallocate cursor_Migracion_Factura
  
 GO
-/*
-insert into SQL_O.Factura(Factura_Nro,Factura_Fecha,Factura_Total,Factura_Forma_Pago,Factura_Usuario)
-	(select distinct Factura_Nro,
-					Factura_Fecha,
-					Factura_Total,
-					Forma_Pago_Desc,
-					(select Pub_Duenio from SQL_O.Publicacion where Pub_Cod = Publicacion_Cod)
-	from gd_esquema.Maestra where Factura_Nro is not null)
-	order by Factura_Nro
-
-GO*/
 
 --Migración tabla Item_Factura.
-insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto,Item_Publicacion)
+insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto,Item_Publicacion, Item_Rendido)
 	(select Item_Factura_Cantidad,
 			Factura_Nro,
 			Item_Factura_Monto,
-			Publicacion_Cod
+			Publicacion_Cod, 
+			1
 	from gd_esquema.Maestra where Item_Factura_Cantidad is not null)
 
 GO
