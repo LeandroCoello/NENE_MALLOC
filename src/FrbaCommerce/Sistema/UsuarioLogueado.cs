@@ -28,11 +28,12 @@ namespace FrbaCommerce.Sistema
 
         public List<String> conseguirRoles()
         {
-            string queryRoles = "SELECT R.Rol_Desc FROM SQL_O.Rol R,SQL_O.Tipo T,SQL_O.Usuario U"
-                                +"WHERE R.Rol_Cod=T.Tipo_Rol"
-                                + "and (U.User_Id ='" + nombreUsuario + "')"
-                                +"and U.User_Tipo = T.Tipo_Cod"
-                                +"GROUP BY R.Rol_Desc";
+            string queryRoles = "SELECT R.Rol_Desc FROM SQL_O.Rol R,SQL_O.Usuarios_Por_Rol UR,SQL_O.Usuario U"
+                                + "WHERE U.Username ='" + nombreUsuario + "'"
+                                + "and UR.UserId = U.User_Id"
+                                + "and UR.Rol_Cod = R.Rol_Cod"
+                                + "and R.Rol_baja = 0"
+                                + "GROUP BY Rol_Cod";
             DataTable roles = conexion.consulta(queryRoles);
             List<string> rolesAsignados = new List<string>();
             foreach (DataRow row in roles.Rows) {
@@ -42,7 +43,9 @@ namespace FrbaCommerce.Sistema
         }
         public List<Publicacion> conseguirPublicaciones()
         {
-            //aca va la logica del query de publicaciones
+            string queryRoles = "SELECT R.Rol_Desc FROM SQL_O.Publicacion P,SQL_O.Tipo T,SQL_O.Usuario U"
+                                + "WHERE U.Username ='" + nombreUsuario + "'"
+                                + "and P.Pub_Duenio = U.User_Id";                            
             return null;
         }
 
