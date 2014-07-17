@@ -442,6 +442,18 @@ deallocate cursor_Migracion_Cli
  
 GO
 
+
+--Migración tabla Compra.
+insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
+	(select distinct Publicacion_Cod,
+					 Compra_Fecha,
+					 Compra_Cantidad,
+					 (select UserId from SQL_O.Cliente c,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni = c.Cli_NroDoc and c.Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
+	from gd_esquema.Maestra where Compra_Fecha is not null)
+	
+GO
+
+
 --Migración tabla Publicación, Pub_Por_Rubro.
 Declare 
 @cod numeric(18,0),
@@ -494,9 +506,12 @@ else
 	set @duenio  = (select UserId from SQL_O.Empresa,SQL_O.Tipo,SQL_O.Usuario where @cuit_empresa = Emp_Cuit and Emp_Cod=Tipo_Cod and User_Tipo=Tipo_Cod)
 	end
 
+declare @unidades_vendidas numeric(18,0)
+set @unidades_vendidas= isnull((select SUM(Compra_Cantidad) from SQL_O.Compra where Compra_Pub=@cod),0)
+
 Insert into SQL_O.Publicacion(Pub_Cod,Pub_Desc,Pub_Stock,Pub_Fecha_Ini,Pub_Fecha_Vto,Pub_Precio,Pub_Tipo
 							,Pub_Estado,Pub_Duenio,Pub_Visibilidad)
-			values(@cod, @desc, @stock, @fecha_ini, @fecha_vto, @precio,@tipo,@estado,@duenio,@visibilidad_cod)
+			values(@cod, @desc, @stock-@unidades_vendidas, @fecha_ini, @fecha_vto, @precio,@tipo,@estado,@duenio,@visibilidad_cod)
 
 Insert into SQL_O.Pub_Por_Rubro(Pub_Cod,Rubro_Cod)
 			values(@cod,(select Rubro_Cod from SQL_O.Rubro where @rubro=Rubro_Desc))
@@ -583,15 +598,6 @@ insert into SQL_O.Item_Factura(Item_Cantidad,Item_Factura,Item_Monto,Item_Public
 
 GO
 
---Migración tabla Compra.
-insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
-	(select distinct Publicacion_Cod,
-					 Compra_Fecha,
-					 Compra_Cantidad,
-					 (select UserId from SQL_O.Cliente c,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni = c.Cli_NroDoc and c.Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
-	from gd_esquema.Maestra where Compra_Fecha is not null)
-	
-GO
 
 --Migración tabla Oferta.
 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
