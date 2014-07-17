@@ -610,6 +610,30 @@ GO
 -- STORE PROCEDURES --
 GO
 
+-- Terminar las subastas de migracion y setear ganador
+
+create procedure SQL_O.actualizar_subastas
+as 
+begin 
+
+	update SQL_O.Publicacion
+	set Pub_Estado='Finalizada'
+	where Pub_Tipo='Subasta' and
+	exists(select Compra_Pub from SQL_O.Compra where Compra_Pub=Pub_Cod)
+	
+	update SQL_O.Oferta set Oferta_Gano = 1
+	where (select p.Pub_Estado 
+		   from Publicacion p 
+		   where Oferta_Pub = p.Pub_Cod
+		   and 	Oferta_Id = (select TOP 1 o2.Oferta_Id 
+							from Oferta o2 
+							where o2.Oferta_Pub = p.Pub_Cod
+							order by o2.Oferta_Fecha Desc)) = 'Finalizada'	   
+end
+GO
+exec SQL_O.actualizar_subastas
+GO
+
 
 -- Setear reputación (la reputacion es el promedio entre total de estrellas recibidas y operaciones realizadas- entiendo  como operaciones realizadas a las ventas que tuvo+las subastas terminadas-)
 create procedure SQL_O.setear_reputacion
@@ -688,24 +712,6 @@ as
 
 GO
 
--- Ganador De Una Subasta.
-
-create procedure SQL_O.setear_ganador 
-as 
-begin 
-	
-	update SQL_O.Oferta set Oferta_Gano = 1
-	where (select p.Pub_Estado 
-		   from Publicacion p 
-		   where Oferta_Pub = p.Pub_Cod
-		   and 	Oferta_Id = (select TOP 1 o2.Oferta_Id 
-							from Oferta o2 
-							where o2.Oferta_Pub = p.Pub_Cod
-							order by o2.Oferta_Fecha Desc)) = 'Terminado'	   
-end
-GO
-exec SQL_O.setear_ganador
-GO
 
 --Login. //corregido//
 
