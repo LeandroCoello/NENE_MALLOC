@@ -69,6 +69,8 @@ Cuando se dan de baja clientes y empresas se dan por finalizadas sus publicacion
 
 Se finaliza una subasta ejecutando el método finalizar_subasta. Dentro de éste se determina la oferta ganadora como la oferta que tiene la fecha máxima, es decir la última oferta que se realizó sobre esa subasta.
 
+En el listado estadístico se considera como calificación a la sumatoria de estrellas recibidas en el trimestre dado.
+
 -- Stores Procedures
 
 Las operaciones de login, alta, baja y modificación de usuarios cliente, usuarios empresa, visibilidades y publicaciónes, para facilitar la comunicación con la aplicación (y algo de fruta mas podemos tirar que ahora no se me ocurre :p) implementamos store procedures.
