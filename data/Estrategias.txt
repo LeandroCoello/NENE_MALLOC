@@ -212,3 +212,8 @@ SQL_O.inhabilitar_usuario @user varchar(30)
 
 SQL_O.rehabilitar_usuario @user varchar(30)
 
+--Finalizar subasta
+SQL_O.finalizar_subasta @pub_cod numeric(18,0)
+
+
+

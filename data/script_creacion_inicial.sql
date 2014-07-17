@@ -1085,7 +1085,7 @@ GO
 
 -- Calificar 
 
-create procedure SQL_O.calificar @pub numeric(18,0), @usuario varchar(30), @cant_estrellas numeric(18,0),
+create procedure SQL_O.calificar @pub_cod numeric(18,0), @usuario varchar(30), @cant_estrellas numeric(18,0),
 								 @des nvarchar(255), @return numeric (1,0)
 as 
 	begin transaction
@@ -1097,9 +1097,9 @@ as
 	declare @estado nvarchar(255)
 	declare @ganador_subasta numeric(18,0)
 		
-	set @tipo=(select Pub_Tipo from SQL_O.Publicacion where Pub_Cod=@pub)
-	set @estado=(select Pub_Estado from SQL_O.Publicacion where Pub_Cod=@pub)
-	set @ganador_subasta = (select Oferta_Cliente from SQL_O.Oferta where Oferta_Pub=@pub and Oferta_Gano=1)
+	set @tipo=(select Pub_Tipo from SQL_O.Publicacion where Pub_Cod=@pub_cod)
+	set @estado=(select Pub_Estado from SQL_O.Publicacion where Pub_Cod=@pub_cod)
+	set @ganador_subasta = (select Oferta_Cliente from SQL_O.Oferta where Oferta_Pub=@pub_cod and Oferta_Gano=1)
 	
 	if ( (@tipo='Subasta' and @estado!='Finalizada') or (@tipo='Subasta' and @estado='Finalizada' and @ganador_subasta!=@userid) )
 		 begin
@@ -1120,10 +1120,10 @@ as
 	else
 	insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
 			values( (select MAX(Cal_Codigo) from SQL_O.Calificacion)+1,
-					@cant_estrellas, @des, @pub, @userid)
+					@cant_estrellas, @des, @pub_cod, @userid)
 	
 	declare @tipo_duenio numeric(18,0)
-	set @tipo_duenio = (select User_Tipo from SQL_O.Publicacion,SQL_O.Usuario where Pub_Cod=@pub and Pub_Duenio=UserId)
+	set @tipo_duenio = (select User_Tipo from SQL_O.Publicacion,SQL_O.Usuario where Pub_Cod=@pub_cod and Pub_Duenio=UserId)
 	
 	declare @bit bit
 	if(exists(select Cli_Id from SQL_O.Cliente where Cli_Id=@tipo_duenio))
@@ -1141,28 +1141,28 @@ commit
 GO
 
 -- Generar Oferta
-create procedure SQL_O.generar_oferta @pub numeric(18,0), @usuario varchar(30),@monto numeric(18,2), @fecha nvarchar(8)
+create procedure SQL_O.generar_oferta @pub_cod numeric(18,0), @usuario varchar(30),@monto numeric(18,2), @fecha nvarchar(8)
 as
 	begin transaction
 	declare @userid numeric(18,0)
 	declare @fecha_real datetime
 	set @fecha_real = @fecha
 	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
-	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub)='Publicada')
+	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub_cod)='Publicada')
 	begin
 		if((select u.Username 
 			from SQL_O.Publicacion p, SQL_O.Usuario u 
-			where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+			where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub_cod)=@usuario)
 		begin
 			rollback
 			raiserror('Un usuario no puede ofertar en su publicacion',16,1)
 		end
 		
-			if( @monto=FLOOR(@monto) and @monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub
+			if( @monto=FLOOR(@monto) and @monto> (select top 1 Oferta_Monto from SQL_O.Oferta where Oferta_Pub=@pub_cod
 							order by Oferta_Fecha desc) )
 				begin
 					 insert into SQL_O.Oferta(Oferta_Pub,Oferta_Fecha,Oferta_Monto,Oferta_Cliente)
-							values (@pub,@fecha_real, @monto, @userid) 
+							values (@pub_cod,@fecha_real, @monto, @userid) 
 				end
 			else
 			begin
@@ -1183,42 +1183,74 @@ commit
 GO
 
 --Finalizar subasta
-/*create procedure SQL_O.finalizar_subasta @pub numeric(18,0)
+create procedure SQL_O.finalizar_subasta @pub_cod numeric(18,0)
 as 
-begin
-end
-*/
+begin transaction
+	 
+	 
+	 if( (select Pub_Tipo from SQL_O.Publicacion where Pub_Cod=@pub_cod)!='Subasta')
+		begin
+			 rollback
+			 raiserror('La publicacion no es una subasta.',16,1)
+			 return
+		
+		end
+	
+	if( (select Pub_Estado from SQL_O.Publicacion where Pub_Cod=@pub_cod)!='Publicada')
+		begin
+			 rollback
+			 raiserror('No se puede finalizar una subasta que no este publicada.',16,1)
+			 return
+		
+		end	
+	 
+	 
+	 update SQL_O.Publicacion
+	 set Pub_Estado='Finalizada'
+		where Pub_Cod=@pub_cod
+		
+	 declare @id_oferta numeric(18,0)
+	 set @id_oferta=(select top 1 Oferta_Id from SQL_O.Oferta where Oferta_Pub=@pub_cod
+							order by Oferta_Fecha desc)
+	
+	update SQL_O.Oferta
+	set Oferta_Gano=1
+		where Oferta_Id=@id_oferta
+
+
+commit
+
 GO
 
 -- Generar Compra
 
-create procedure SQL_O.generar_compra @pub numeric(18,0), @usuario varchar(30) , @cant numeric(18,0), @fecha nvarchar(8)
+create procedure SQL_O.generar_compra @pub_cod numeric(18,0), @usuario varchar(30) , @cant numeric(18,0), @fecha nvarchar(8)
 as 
 	begin transaction
 		declare @userid numeric(18,0)
 		declare @fecha_real datetime
 		set @fecha_real = @fecha
 		set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
-	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub)='Publicada')
+	if((select Pub_Estado from SQL_O.Publicacion where Pub_Cod = @pub_cod)='Publicada')
 	begin
 		if((select u.Username 
 			from SQL_O.Publicacion p, SQL_O.Usuario u 
-			where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub)=@usuario)
+			where p.Pub_Duenio = u.UserId and p.Pub_Cod = @pub_cod)=@usuario)
 		begin
 			rollback
 			raiserror('Un usuario no puede "auto comprarse"',16,1)
 		end
 		
-		if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub = Pub_Cod))
+		if(@cant < (select Pub_Stock from SQL_O.Publicacion where @pub_cod = Pub_Cod))
 			begin
 				 insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprador)
-						values (@pub,@fecha_real,@cant,@userid)
+						values (@pub_cod,@fecha_real,@cant,@userid)
 						
 				 update SQL_O.Publicacion
 				 set Pub_Stock= Pub_Stock-@cant
-					 where Pub_Cod=@pub	
+					 where Pub_Cod=@pub_cod	
 				
-				exec SQL_O.crear_item @pub_cod = @pub, @cantidad = @cant
+				exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = @cant
 			
 			end
 		else
