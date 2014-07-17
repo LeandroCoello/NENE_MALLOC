@@ -876,7 +876,7 @@ begin transaction
 			@precio,@tipo, @estado, (select Vis_Cod from SQL_O.Visibilidad where @visibilidad = Vis_Desc),
 		    (select UserId from SQL_O.Usuario where @duenio = Username),@admite_preguntas)
 	
-	exec SQL_O.crear_item @pub_cod = @codigo, @cantidad = 1, @tipo = 'Publicacion'	
+	--exec SQL_O.crear_item @pub_cod = @codigo, @cantidad = 1, @tipo = 'Publicacion'	
 	
 commit 
 
@@ -1214,6 +1214,7 @@ commit
 GO
 
 -- Generar Oferta
+
 create procedure SQL_O.generar_oferta @pub_cod numeric(18,0), @usuario varchar(30),@monto numeric(18,2), @fecha nvarchar(8)
 as
 	begin transaction
@@ -1255,7 +1256,8 @@ as
 commit
 GO
 
---Finalizar subasta
+-- Finalizar subasta
+
 create procedure SQL_O.finalizar_subasta @pub_cod numeric(18,0)
 as 
 begin transaction
@@ -1291,10 +1293,42 @@ begin transaction
 	 where Oferta_Id=@id_oferta
 
 	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Subasta'
+	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Publicacion'
 	 
 commit
 
 GO
+
+-- Finalizar publicacion
+
+create procedure SQL_O.finalizar_publicacion @pub_cod numeric(18,0)
+as 
+begin transaction
+			 if( (select Pub_Tipo from SQL_O.Publicacion where Pub_Cod=@pub_cod)!='Compra Inmediata')
+		begin
+			 rollback
+			 raiserror('La publicacion no es de compra Inmediata.',16,1)
+			 return
+		
+		end
+	
+	if( (select Pub_Estado from SQL_O.Publicacion where Pub_Cod=@pub_cod)!='Publicada')
+		begin
+			 rollback
+			 raiserror('No se puede finalizar una publicacion que no este publicada.',16,1)
+			 return
+		
+		end
+	
+	 update SQL_O.Publicacion
+	 set Pub_Estado='Finalizada'
+	 where Pub_Cod=@pub_cod
+			
+	 exec SQL_O.crear_item @pub_cod = @pub_cod, @cantidad = 1, @tipo = 'Publicacion'
+		
+commit
+GO
+
 
 -- Generar Compra
 
