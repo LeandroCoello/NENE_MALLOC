@@ -28,5 +28,11 @@ namespace FrbaCommerce.Abm_Cliente
             txtNombre.Clear();
         }
 
+        private void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            string queryConsulta = "SELECT C.Cli_Nombre,C.Cli_Apellido,C.Cli_TipoDoc,C.Cli_NroDoc,C.Cli_Mail FROM SQL_O.Cliente C"
+                                    +"WHERE ";
+        }
+        }
     }
 }

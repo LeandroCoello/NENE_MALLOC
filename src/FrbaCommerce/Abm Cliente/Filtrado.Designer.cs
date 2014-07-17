@@ -160,6 +160,7 @@ namespace FrbaCommerce.Abm_Cliente
             this.btnFiltrar.TabIndex = 12;
             this.btnFiltrar.Text = "Buscar";
             this.btnFiltrar.UseVisualStyleBackColor = true;
+            this.btnFiltrar.Click += new System.EventHandler(this.btnFiltrar_Click);
             // 
             // btnLimpiar
             // 
