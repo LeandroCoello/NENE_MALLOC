@@ -1312,7 +1312,10 @@ as
 begin transaction
 	 
 	 declare @user_id numeric(18,0)
+	 declare @usuario varchar(30)
+	 
 	 set @user_id = (select Pub_Duenio from SQL_O.Publicacion where Pub_Cod = @pub_cod)
+	 set @usuario = (select Username from SQL_O.Usuario where UserId = @user_id)
 	 
 	 if( (select Pub_Tipo from SQL_O.Publicacion where Pub_Cod=@pub_cod)!='Subasta')
 		begin
@@ -1393,6 +1396,22 @@ begin transaction
 commit
 GO
 
+-- Inhabilitar Usuario 
+
+create procedure SQL_O.inhabilitar_usuario @user varchar(30)
+as
+begin transaction
+	
+	update SQL_O.Usuario
+	set User_Deshabilitado = 1
+	where @user = Username
+	
+	update SQL_O.Publicacion
+	set Pub_Estado = 'Pausada'
+	where Pub_Duenio = (select UserId from SQL_O.Usuario where Username = @user)
+	
+commit
+GO
 
 -- Generar Compra
 
@@ -1833,24 +1852,6 @@ begin transaction
 	update SQL_O.Factura
 	set Factura_Total = Factura_Total + (select  Item_Monto * Item_Cantidad from SQL_O.Item_Factura where @item_factura = Item_Id)
 	where Factura_Nro = @factura
-	
-commit
-GO
-
-
--- Inhabilitar Usuario 
-
-create procedure SQL_O.inhabilitar_usuario @user varchar(30)
-as
-begin transaction
-	
-	update SQL_O.Usuario
-	set User_Deshabilitado = 1
-	where @user = Username
-	
-	update SQL_O.Publicacion
-	set Pub_Estado = 'Pausada'
-	where Pub_Duenio = (select UserId from SQL_O.Usuario where Username = @user)
 	
 commit
 GO
