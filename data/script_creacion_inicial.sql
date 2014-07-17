@@ -43,8 +43,7 @@ GO
 
 CREATE TABLE SQL_O.Tipo(
 		Tipo_Cod numeric(18,0) Primary Key identity,
-		Tipo_Nombre nvarchar(255),
-		Tipo_Rol numeric(18,0) references SQL_O.Rol(Rol_Cod)
+		Tipo_Nombre nvarchar(255)
 	)
 GO
 
@@ -97,6 +96,15 @@ CREATE TABLE SQL_O.Usuario(
 		User_Baja bit default 0,
 		User_Tipo numeric(18,0) references SQL_O.Tipo(Tipo_Cod)
 		)
+GO
+
+
+CREATE TABLE SQL_O.Usuarios_Por_Rol(
+		UserId numeric(18,0) references SQL_O.Usuario(UserId),
+		Rol_Cod numeric(18,0) references SQL_O.Rol(Rol_Cod)
+		Primary Key(UserId,Rol_Cod)
+	
+	)
 GO
 
 CREATE TABLE SQL_O.Visibilidad(
@@ -329,7 +337,7 @@ fetch cursor_Migracion_Emp into @razon_social, @cuit, @fecha_c, @mail, @dom_call
 							@nro_calle, @piso, @depto, @cod_postal
 
 while(@@fetch_status=0)
-begin
+begin 
 
 set @idemp = (select MAX(UserId)from SQL_O.Usuario)
 if (@idemp is null)
@@ -342,7 +350,7 @@ else
 	end
 	
 --userpass es 123456 con sha256
-Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Empresa',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Empresa'))
+Insert into SQL_O.Tipo(Tipo_Nombre) values ('Empresa')
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
@@ -353,7 +361,8 @@ Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers ,Emp_Razon_Social, Emp_Cuit, Em
 Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values (('Usuario'+convert(varchar(30),@idemp)),
 																'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
 																(select MAX(Tipo_Cod) from SQL_O.Tipo))
-
+																
+Insert into SQL_O.Usuarios_Por_Rol(UserId,Rol_Cod) values((select Max(UserId) from SQL_O.Usuario),(select Rol_Cod from SQL_O.Rol where Rol_Desc='Empresa'))
 
 fetch cursor_Migracion_Emp into @razon_social, @cuit, @fecha_c, @mail, @dom_calle,
 							@nro_calle, @piso, @depto, @cod_postal
@@ -417,7 +426,7 @@ else
 	end
 
 
-Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Cliente',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Cliente'))
+Insert into SQL_O.Tipo(Tipo_Nombre) values ('Cliente')
 
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
@@ -431,7 +440,7 @@ Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('Usuario'+CONVERT
 															   '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
 															   (select MAX(Tipo_Cod) from SQL_O.Tipo))
 
-
+Insert into SQL_O.Usuarios_Por_Rol(UserId,Rol_Cod) values ((select MAX(UserId) from SQL_O.Usuario),(select Rol_Cod from SQL_O.Rol where Rol_Desc='Cliente'))
 
 fetch cursor_Migracion_Cli into @dni, @apellido, @nombre, @fecha_nac, @mail, @dom_calle,
 							@nro_calle, @piso, @depto, @cod_postal
@@ -523,7 +532,7 @@ insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprado
 GO
 
 --Insert Admin
-Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Admin',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Admin'))
+Insert into SQL_O.Tipo(Tipo_Nombre) values ('Admin')
 
 Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
 			values('sql_o_rulz@gmail.com', 'Medrano','951', 4, 'O','0007',47777777)
@@ -534,6 +543,8 @@ Insert into SQL_O.Administrativo(Admin_Id,Admin_Datos_Pers ,Admin_NroDoc, Admin_
 			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), '77777777','Horsehead Bond','James',@datetime)
 
 Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('superAdmin','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',(select MAX(Tipo_Cod) from SQL_O.Tipo))
+
+Insert into SQL_O.Usuarios_Por_Rol(UserId,Rol_Cod) values ((select MAX(UserId) from SQL_O.Usuario),(select Rol_Cod from SQL_O.Rol where Rol_Desc='Admin'))
 
 GO
 
@@ -885,12 +896,13 @@ GO
 -- Editar Publicacion
 create procedure SQL_O.editar_publicacion @nro_pub numeric(18,0),@estado nvarchar(255), @descripcion nvarchar(255),
 										  @stock numeric(18,0), @precio numeric(18,2), @visibilidad nvarchar(255),
-										  @duenio nvarchar(30), @permite_preg bit, @return numeric(1,0) out
+										  @duenio nvarchar(30), @permite_preg bit, @fecha_ini nvarchar(8), @return numeric(1,0) out
 as
 begin transaction
 	declare @vis_cod numeric(18,0)
 	declare @duenio_cod numeric(18,0)
-	
+	declare @fecha datetime
+	set @fecha=@fecha_ini
 	set @return = 0
 	set @vis_cod = (select Vis_Cod from SQL_O.Visibilidad where Vis_Desc = @visibilidad)
 	set @duenio_cod = (select UserId from SQL_O.Usuario where Username = @duenio)
@@ -901,7 +913,8 @@ begin transaction
 			    and (@precio != Pub_Precio 
 			         or @vis_cod != Pub_Visibilidad 
 			         or @permite_preg != Pub_Permite_Preguntas
-			         or @estado = 'Borrada')))
+			         or @estado = 'Borrador'
+			         or @fecha!=Pub_Fecha_Ini)))
 	begin 
 		rollback
 		raiserror('No puedo cambiar esos campos en una publicacion Activa',16,1)
@@ -943,7 +956,8 @@ begin transaction
 			      or @vis_cod != Pub_Visibilidad 
 			      or @permite_preg != Pub_Permite_Preguntas
 			      or @descripcion != Pub_Desc
-			      or @estado != 'Publicada')))
+			      or @estado != 'Publicada'
+			      or @fecha!=Pub_Fecha_Ini)))
 	begin 
 		rollback
 		raiserror('No puedo cambiar esos campos en una publicacion Pausada',16,1)
@@ -960,11 +974,25 @@ begin transaction
 			      or @vis_cod != Pub_Visibilidad 
 			      or @permite_preg != Pub_Permite_Preguntas
 			      or @descripcion != Pub_Desc
-			      or @estado != Pub_Estado)))
+			      or @estado != Pub_Estado
+			      or @fecha!=Pub_Fecha_Ini)))
 	begin 
 		rollback
 		raiserror('No puedo cambiar esos campos en una publicacion Finalizada',16,1)
 		set @return = 5
+		return
+	end
+	
+	if(exists(select Pub_Cod
+			  from SQL_O.Publicacion 
+			  where @nro_pub = Pub_Cod
+			    and Pub_Estado = 'Borrador'
+			    and @estado = 'Publicada'
+			    and @fecha!=Pub_Fecha_Ini ))
+	begin 
+		rollback
+		raiserror('Se debe actualizar la fecha al cambiar de estado Borrador a Publicada',16,1)
+		set @return = 6
 		return
 	end
 	
@@ -975,6 +1003,7 @@ begin transaction
 	    Pub_Precio = @precio,
 	    Pub_Stock = @stock,
 	    Pub_Visibilidad = @vis_cod,
+	    Pub_Fecha_Ini=@fecha,
 	    Pub_Fecha_Vto = Pub_Fecha_Ini + (select Vis_Duracion from SQL_O.Visibilidad where @vis_cod = Vis_Cod)
 	where Pub_Cod = @nro_pub
 commit	
@@ -1033,7 +1062,7 @@ set @return = 0
 					end
 			 end
 			 
-		Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Cliente',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Cliente'))
+		Insert into SQL_O.Tipo(Tipo_Nombre) values ('Cliente')
 		
 		update SQL_O.Usuario 
 			set User_Tipo=(select max(Tipo_Cod) from SQL_O.Tipo)
@@ -1044,6 +1073,8 @@ set @return = 0
 			
 		Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc,Cli_Cuil) 
 			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @nrodoc, @apellido, @nombre,@fecha_nac,@tipodoc,@cuil)
+		
+		Insert into SQL_O.Usuarios_Por_Rol(UserId,Rol_Cod) values ((select UserId from SQL_O.Usuario where Username=@usuario),(select Rol_Cod from SQL_O.Rol where Rol_Desc='Cliente'))
 
 commit
 
@@ -1085,13 +1116,15 @@ set @return = 0
 					end
 			 end
 		
-		Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Rol) values ('Empresa',(select Rol_Cod from SQL_O.Rol where Rol_Desc='Empresa'))
+		Insert into SQL_O.Tipo(Tipo_Nombre) values ('Empresa')
 	 
 		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
 			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal,@tel)
 			
 		Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers,Emp_Razon_Social, Emp_Cuit,Emp_Fecha_Creacion,Emp_Contacto) 
 			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social,@cuit,@fecha_c,@contacto)
+		
+		Insert into SQL_O.Usuarios_Por_Rol(UserId,Rol_Cod) values ((select UserId from SQL_O.Usuario where Username=@usuario),(select Rol_Cod from SQL_O.Rol where Rol_Desc='Empresa'))
 
 commit
 
@@ -1777,6 +1810,37 @@ begin transaction
 commit
 GO
 
+-- Calcular Trimestre
+
+create procedure SQL_O.calcular_trimestre @anio numeric(4,0), @trimestre numeric(1,0), @mes1 numeric(1,0) out, @mes2 numeric(1,0) out
+as
+	begin
+		 if(@trimestre=1)
+				begin
+					set @mes1=1
+					set @mes2=3
+				end
+		
+		if(@trimestre=2)
+				begin
+					set @mes1=4
+					set @mes2=6
+				end
+				
+		if(@trimestre=3)
+				begin
+					set @mes1=7
+					set @mes2=9
+				end
+				
+		if(@trimestre=4)
+				begin
+					set @mes1=10
+					set @mes2=12
+				end
+
+	end
+GO
 
 -- FUNCIONES --
 
