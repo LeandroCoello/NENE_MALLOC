@@ -51,6 +51,7 @@ se permite tener otro tipo de documento.
 
 Los datos pertinentes a las tablas que se encuentren en Null en la tabla maestra a la hora de la migración serán dejados como tal(en Null) hasta que se modifiquen.
 
+El stock a la hora de migrar se considerará que no está actualizado por ende en la migración se le resta la cantidad de unidades vendidas
 
 -- Stores Procedures
 
