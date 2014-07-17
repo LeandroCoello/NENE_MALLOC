@@ -391,8 +391,8 @@
       <DependentUpon>Form2RegistroEmpresa.cs</DependentUpon>
     </Compile>
     <Compile Include="Sistema\Administrador.cs" />
-    <Compile Include="Sistema\Item_Factura.cs" />
     <Compile Include="Sistema\Inicio.cs" />
+    <Compile Include="Sistema\Item_Factura.cs" />
     <Compile Include="Sistema\Publicacion.cs" />
     <Compile Include="Sistema\QueryConditions\And.cs" />
     <Compile Include="Sistema\QueryConditions\Condition.cs" />
