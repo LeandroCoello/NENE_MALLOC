@@ -61,6 +61,7 @@ se generaron los items factura. Por rendición se entiende la asginación de 1 o m
 
 Cuando se dan de baja clientes y empresas se dan por finalizadas sus publicaciones.
 
+Se finaliza una subasta ejecutando el método finalizar_subasta. Dentro de éste se determina la oferta ganadora como la oferta que tiene la fecha máxima, es decir la última oferta que se realizó sobre esa subasta.
 
 -- Stores Procedures
 

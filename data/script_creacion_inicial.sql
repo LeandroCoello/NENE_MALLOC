@@ -204,6 +204,7 @@ CREATE TABLE SQL_O.Calificacion(
 		Cal_Codigo numeric(18,0) Primary Key,
 		Cal_Cant_Est numeric(18,0),
 		Cal_Desc nvarchar(255),
+		Cal_Fecha datetime,
 		Cal_Pub numeric(18,0) references SQL_O.Publicacion(Pub_Cod) NOT NULL,
 		Cal_User numeric(18,0) references SQL_O.Usuario(UserId)
 		)
@@ -555,12 +556,13 @@ Insert into SQL_O.Usuarios_Por_Rol(UserId,Rol_Cod) values ((select MAX(UserId) f
 GO
 
 --Migración tabla Calificación.
-insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
+insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User,Cal_Fecha)
 	(select distinct Calificacion_Codigo,
 					 Calificacion_Cant_Estrellas, 
 					 Calificacion_Descripcion,
 					 Publicacion_Cod,
-					 (select UserId from SQL_O.Cliente,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni=Cli_NroDoc and Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod)
+					 (select UserId from SQL_O.Cliente,SQL_O.Tipo,SQL_O.Usuario where Cli_Dni=Cli_NroDoc and Cli_Id=Tipo_Cod and User_Tipo=Tipo_Cod),
+					 Compra_Fecha
 	 from gd_esquema.Maestra where Calificacion_Codigo is not null)
 	 order by Calificacion_Codigo
 	 
@@ -1208,13 +1210,14 @@ GO
 -- Calificar 
 
 create procedure SQL_O.calificar @pub_cod numeric(18,0), @usuario varchar(30), @cant_estrellas numeric(18,0),
-								 @des nvarchar(255), @return numeric (1,0)
+								 @des nvarchar(255), @fecha nvarchar(8), @return numeric (1,0)
 as 
 	begin transaction
 	declare @userid numeric(18,0)
 	set @userid = (select UserId from SQL_O.Usuario where Username=@usuario)
 	set @return=0
-	
+	declare @fecha_real datetime
+	set @fecha_real= @fecha
 	declare @tipo nvarchar(100)
 	declare @estado nvarchar(255)
 	declare @ganador_subasta numeric(18,0)
@@ -1240,9 +1243,9 @@ as
 			return
 		end
 	else
-	insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User)
+	insert into SQL_O.Calificacion(Cal_Codigo,Cal_Cant_Est,Cal_Desc,Cal_Pub,Cal_User,Cal_Fecha)
 			values( (select MAX(Cal_Codigo) from SQL_O.Calificacion)+1,
-					@cant_estrellas, @des, @pub_cod, @userid)
+					@cant_estrellas, @des, @pub_cod, @userid,@fecha_real)
 	
 	declare @tipo_duenio numeric(18,0)
 	set @tipo_duenio = (select User_Tipo from SQL_O.Publicacion,SQL_O.Usuario where Pub_Cod=@pub_cod and Pub_Duenio=UserId)
@@ -1302,6 +1305,23 @@ as
 	end		
 			
 			
+commit
+GO
+
+-- Inhabilitar Usuario 
+
+create procedure SQL_O.inhabilitar_usuario @user varchar(30)
+as
+begin transaction
+	
+	update SQL_O.Usuario
+	set User_Deshabilitado = 1
+	where @user = Username
+	
+	update SQL_O.Publicacion
+	set Pub_Estado = 'Pausada'
+	where Pub_Duenio = (select UserId from SQL_O.Usuario where Username = @user)
+	
 commit
 GO
 
@@ -1396,22 +1416,6 @@ begin transaction
 commit
 GO
 
--- Inhabilitar Usuario 
-
-create procedure SQL_O.inhabilitar_usuario @user varchar(30)
-as
-begin transaction
-	
-	update SQL_O.Usuario
-	set User_Deshabilitado = 1
-	where @user = Username
-	
-	update SQL_O.Publicacion
-	set Pub_Estado = 'Pausada'
-	where Pub_Duenio = (select UserId from SQL_O.Usuario where Username = @user)
-	
-commit
-GO
 
 -- Generar Compra
 
