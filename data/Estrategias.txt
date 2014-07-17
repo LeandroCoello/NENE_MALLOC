@@ -37,23 +37,29 @@ Tanto en los inserts masivos como en los cursores los campos fk los completamos 
 
 Utilizamos Ids autoincrementales en aquellas tablas cuyo código no estaba determinado en la tabla maestra, particularmente en Funcionalidad, Datos_Pers, Tipo, Usuario, Pregunta, Respuesta, Item_Factura, Compra, Oferta y Rubro. El objetivo es delegar el tratamiento de Ids(las pks de las tablas) al motor de base de datos.
 
-- Cada vez que se realiza una venta por compra inmediata o por subasta se generara un item factura que todavia
+Cada vez que se realiza una venta por compra inmediata o por subasta se generara un item factura que todavia
 no va a estar rendido en ninguna factura. A la hora de rendir las publicaciones simplemente se añadirán los items
 a la factura a pagar comenzando desde las más antiguas.
 
--- Aclaraciones
+Para la migración se considera que la fecha en la que se realizó una calificación es la misma fecha en la cual se realizó la compra la cual se está calificando
+o la fecha en la que finalizóla subasta en cuestión.
+
 
 Las publicaciones migradas de la tabla maestra se considerarán como Finalizadas.
-
-Las fechas en el script_inicial en un principio se obtenian con GETDATE() pero luego se decidió recibirlas por un parámetro de tipo nvarchar(8) (AAAAMMDD)
-desde el código en C# ya que se establecen en el archivo de configuración y eso aporta una mayor consistencia. Ese parámetro luego será pasado a datetime.
 
 Los Numeros de documento migrados de la tabla maestra serán considerados todos como tipo DNI, esto fue inferido por el nombre de la columna. En futuras incerciones
 se permite tener otro tipo de documento.
 
+El stock a la hora de migrar se considerará que no está actualizado por ende en la migración se le resta la cantidad de unidades vendidas.
+
 Los datos pertinentes a las tablas que se encuentren en Null en la tabla maestra a la hora de la migración serán dejados como tal(en Null) hasta que se modifiquen.
 
-El stock a la hora de migrar se considerará que no está actualizado por ende en la migración se le resta la cantidad de unidades vendidas.
+
+-- Aclaraciones
+
+
+Las fechas en el script_inicial en un principio se obtenian con GETDATE() pero luego se decidió recibirlas por un parámetro de tipo nvarchar(8) (AAAAMMDD)
+desde el código en C# ya que se establecen en el archivo de configuración y eso aporta una mayor consistencia. Ese parámetro luego será pasado a datetime.
 
 Las publicaciones generan un item_factura al momento de su finalización, mientrás que las compras inmediatas y subastas que le compraron al vendedor generan un
 item_factura a la hora de realizarse la venta. Esto no se produce en el mismo momento en el cual se factura. Las rendiciones se generán luego en el orden que
