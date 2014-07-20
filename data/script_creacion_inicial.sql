@@ -27,23 +27,19 @@ CREATE TABLE SQL_O.Func_Por_Rol(
 		)
 GO
 
-CREATE TABLE SQL_O.Datos_Pers(
-		Datos_Id numeric(18,0) Primary Key Identity,
-		Datos_Mail nvarchar(50),
-		Datos_Tel numeric(18,0),
-		Datos_Dom_Calle nvarchar(100), 
-		Datos_Nro_Calle numeric(18,0),
-		Datos_Dom_Piso numeric(18,0),
-		Datos_Depto nvarchar(50),
-		Datos_Cod_Postal nvarchar(50),
-		Datos_Localidad nvarchar(80)
-		)
-GO	
-		
+	
 
 CREATE TABLE SQL_O.Tipo(
 		Tipo_Cod numeric(18,0) Primary Key identity,
-		Tipo_Nombre nvarchar(255)
+		Tipo_Nombre nvarchar(255),
+		Tipo_Mail nvarchar(50),
+		Tipo_Tel numeric(18,0),
+		Tipo_Dom_Calle nvarchar(100), 
+		Tipo_Nro_Calle numeric(18,0),
+		Tipo_Dom_Piso numeric(18,0),
+		Tipo_Depto nvarchar(50),
+		Tipo_Cod_Postal nvarchar(50),
+		Tipo_Localidad nvarchar(80)
 	)
 GO
 
@@ -54,7 +50,6 @@ CREATE TABLE SQL_O.Empresa(
 		Emp_Cuit nvarchar(50) Unique,
 		Emp_Fecha_Creacion datetime,
 		Emp_Contacto nvarchar(50),
-		Emp_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		Emp_Reputacion numeric(18,0) default 0,
 		Emp_Baja bit default 0
 	)
@@ -69,12 +64,12 @@ CREATE TABLE SQL_O.Cliente(
 		Cli_Nombre nvarchar(255),
 		Cli_Cuil nvarchar(50) ,
 		Cli_Fecha_Nac datetime,
-		Cli_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		Cli_Reputacion numeric(18) default 0,
 		Cli_Baja bit default 0
 		)
 GO
 
+--quizas no deberia estar 
 CREATE TABLE SQL_O.Administrativo(
 		Admin_Id numeric(18,0) Primary Key References SQL_O.Tipo(Tipo_Cod) NOT NULL,
 		Admin_NroDoc numeric(18,0), 
@@ -83,7 +78,6 @@ CREATE TABLE SQL_O.Administrativo(
 		Admin_Nombre nvarchar(255),
 		Admin_Cuil numeric(18,0) Unique,
 		Admin_Fecha_Nac datetime,
-		Admin_Datos_Pers numeric(18,0) references SQL_O.Datos_Pers(Datos_Id) NOT NULL,
 		)
 GO
 
@@ -309,7 +303,7 @@ Insert into SQL_O.Rubro(Rubro_Desc)
 		from gd_esquema.Maestra)
 GO	
 
---Migración tabla Tipo, Datos_Pers, Empresa, Usuario.
+--Migración tabla Tipo, Empresa, Usuario.
 Declare 
 @razon_social nvarchar(255),
 @cuit nvarchar(50),
@@ -352,13 +346,11 @@ else
 	end
 	
 --userpass es 123456 con sha256
-Insert into SQL_O.Tipo(Tipo_Nombre) values ('Empresa')
+Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Mail, Tipo_Dom_Calle, Tipo_Nro_Calle, Tipo_Dom_Piso, Tipo_Depto, Tipo_Cod_Postal)
+			 values ('Empresa',@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
 
-Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
-			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
-			
-Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers ,Emp_Razon_Social, Emp_Cuit, Emp_Fecha_Creacion) 
-			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social, @cuit, @fecha_c)
+Insert into SQL_O.Empresa(Emp_Cod, Emp_Razon_Social, Emp_Cuit, Emp_Fecha_Creacion) 
+			values((select Max(Tipo_Cod) from SQL_O.Tipo), @razon_social, @cuit, @fecha_c)
 
 Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values (('Usuario'+convert(varchar(30),@idemp)),
 																'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
@@ -374,7 +366,7 @@ deallocate cursor_Migracion_Emp
  
 GO
 
---Migración tabla Tipo, Datos_Pers, Cliente, Usuario.
+--Migración tabla Tipo, Cliente, Usuario.
 Declare 
 @dni numeric(18,0),
 @apellido nvarchar(255),
@@ -428,14 +420,12 @@ else
 	end
 
 
-Insert into SQL_O.Tipo(Tipo_Nombre) values ('Cliente')
+Insert into SQL_O.Tipo(Tipo_Nombre, Tipo_Mail, Tipo_Dom_Calle, Tipo_Nro_Calle, Tipo_Dom_Piso, Tipo_Depto, Tipo_Cod_Postal) 
+			values ('Cliente',@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
 
-
-Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal)
-			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal)
 			
-Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc) 
-			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @dni, @apellido, @nombre,@fecha_nac,'DNI')
+Insert into SQL_O.Cliente(Cli_Id, Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc) 
+			values((select Max(Tipo_Cod) from SQL_O.Tipo), @dni, @apellido, @nombre,@fecha_nac,'DNI')
 
 
 Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('Usuario'+CONVERT(varchar(30),@idcli),
@@ -540,15 +530,13 @@ insert into SQL_O.Compra(Compra_Pub,Compra_Fecha,Compra_Cantidad,Compra_Comprado
 GO
 
 --Insert Admin
-Insert into SQL_O.Tipo(Tipo_Nombre) values ('Admin')
-
-Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
-			values('sql_o_rulz@gmail.com', 'Medrano','951', 4, 'O','0007',47777777)
+Insert into SQL_O.Tipo(Tipo_Nombre,Tipo_Mail, Tipo_Dom_Calle, Tipo_Nro_Calle, Tipo_Dom_Piso, Tipo_Depto, Tipo_Cod_Postal, Tipo_Tel) 
+			values ('Admin','sql_o_rulz@gmail.com', 'Medrano','951', 4, 'O','0007',47777777)
 
 Declare @date date = '12-03-1985'
 Declare @datetime datetime = @date
-Insert into SQL_O.Administrativo(Admin_Id,Admin_Datos_Pers ,Admin_NroDoc, Admin_Apellido, Admin_Nombre,Admin_Fecha_Nac) 
-			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), '77777777','Horsehead Bond','James',@datetime)
+Insert into SQL_O.Administrativo(Admin_Id, Admin_NroDoc, Admin_Apellido, Admin_Nombre,Admin_Fecha_Nac) 
+			values((select Max(Tipo_Cod) from SQL_O.Tipo), '77777777','Horsehead Bond','James',@datetime)
 
 Insert into SQL_O.Usuario(Username,Userpass,User_Tipo) values ('superAdmin','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',(select MAX(Tipo_Cod) from SQL_O.Tipo))
 
@@ -1081,15 +1069,13 @@ set @return = 0
 					end
 			 end
 			 
-		Insert into SQL_O.Tipo(Tipo_Nombre) values ('Cliente')
+		Insert into SQL_O.Tipo(Tipo_Nombre, Tipo_Mail, Tipo_Dom_Calle, Tipo_Nro_Calle, Tipo_Dom_Piso, Tipo_Depto, Tipo_Cod_Postal,Tipo_Tel) 
+				values ('Cliente', @mail, @calle, @nrocalle, @piso, @depto, @codpost,@tel)
 		
 		update SQL_O.Usuario 
 			set User_Tipo=(select max(Tipo_Cod) from SQL_O.Tipo)
 				where Username=@usuario
 		
-		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
-			values(@mail, @calle, @nrocalle, @piso, @depto, @codpost,@tel)
-			
 		Insert into SQL_O.Cliente(Cli_Id,Cli_Datos_Pers ,Cli_NroDoc, Cli_Apellido, Cli_Nombre,Cli_Fecha_Nac,Cli_TipoDoc,Cli_Cuil) 
 			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @nrodoc, @apellido, @nombre,@fecha_nac,@tipodoc,@cuil)
 		
@@ -1135,11 +1121,9 @@ set @return = 0
 					end
 			 end
 		
-		Insert into SQL_O.Tipo(Tipo_Nombre) values ('Empresa')
+		Insert into SQL_O.Tipo(Tipo_Nombre, Tipo_Mail, Tipo_Dom_Calle, Tipo_Nro_Calle, Tipo_Dom_Piso, Tipo_Depto, Tipo_Cod_Postal, Tipo_Tel) 
+				values ('Empresa', @mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal,@tel)
 	 
-		Insert into SQL_O.Datos_Pers(Datos_Mail, Datos_Dom_Calle, Datos_Nro_Calle, Datos_Dom_Piso, Datos_Depto, Datos_Cod_Postal,Datos_Tel)
-			values(@mail, @dom_calle, @nro_calle, @piso, @depto, @cod_postal,@tel)
-			
 		Insert into SQL_O.Empresa(Emp_Cod,Emp_Datos_Pers,Emp_Razon_Social, Emp_Cuit,Emp_Fecha_Creacion,Emp_Contacto) 
 			values((select Max(Tipo_Cod) from SQL_O.Tipo),(select MAX(Datos_Id) from SQL_O.Datos_Pers), @razon_social,@cuit,@fecha_c,@contacto)
 		
@@ -1554,7 +1538,7 @@ begin transaction
 		declare @id_cliente numeric(18,0)
 		set @id_cliente= (select Tipo_Cod from SQL_O.Tipo,SQL_O.Usuario where Username=@usuario and User_Tipo=Tipo_Cod)
 		
-		if exists(select Cli_Id from SQL_O.Cliente where @nrodoc = Cli_NroDoc and @tipodoc = Cli_TipoDoc and @id_cliente!=Cli_Id)
+		if exists(select Tipo_Cod from SQL_O.Tipo, SQL_O.Cliente where Tipo_Cod=Cli_Id and @nrodoc = Cli_NroDoc and @tipodoc = Cli_TipoDoc and @id_cliente!=Cli_Id)
 			begin
 				rollback
 				raiserror('El tipo y numero de documento ya pertenece a otro cliente', 16, 1)
@@ -1571,7 +1555,7 @@ begin transaction
 						return 
 					end	
 				else
-					if exists(select Datos_Tel from SQL_O.Cliente,SQL_O.Datos_Pers where Cli_Datos_Pers=Datos_Id and @tel=Datos_Tel and Cli_Id!=@id_cliente)
+					if exists(select Tipo_Cod from SQL_O.Tipo where @tel=Tipo_Tel and Tipo_Cod!=@id_cliente)
 					   begin
 						   rollback
 						   raiserror('El numero de telefono ya pertenece a otro cliente', 16, 1)
@@ -1589,15 +1573,15 @@ begin transaction
 					Cli_Fecha_Nac=@fecha_nac
 					where Cli_Id = @id_cliente
 						
-					update SQL_O.Datos_Pers
-					set Datos_Mail = @mail,
-					Datos_Tel=@tel,
-					Datos_Dom_Calle=@calle,
-					Datos_Nro_Calle=@nrocalle,
-					Datos_Dom_Piso=@piso,
-					Datos_Depto=@depto,
-					Datos_Cod_Postal=@codpost
-					where Datos_Id = (select Cli_Datos_Pers from SQL_O.Cliente where Cli_Id = @id_cliente)
+					update SQL_O.Tipo
+					set Tipo_Mail = @mail,
+					Tipo_Tel=@tel,
+					Tipo_Dom_Calle=@calle,
+					Tipo_Nro_Calle=@nrocalle,
+					Tipo_Dom_Piso=@piso,
+					Tipo_Depto=@depto,
+					Tipo_Cod_Postal=@codpost
+					where Tipo_Cod = (select Tipo_Cod from SQL_O.Tipo where Tipo_Cod= @id_cliente)
 					
 commit 
 GO
@@ -1632,15 +1616,15 @@ begin transaction
 			Emp_Contacto=@contacto
 			where Emp_Cod = @id_empresa
 			
-			update SQL_O.Datos_Pers
-			set Datos_Mail = @mail,
-			Datos_Tel=@tel,
-			Datos_Dom_Calle=@calle,
-			Datos_Nro_Calle=@nrocalle,
-			Datos_Dom_Piso=@piso,
-			Datos_Depto=@dpto,
-			Datos_Cod_Postal=@cod_post
-			where Datos_Id = (select Emp_Datos_Pers from SQL_O.Empresa where Emp_Cod = @id_empresa)
+			update SQL_O.Tipo
+			set Tipo_Mail = @mail,
+			Tipo_Tel=@tel,
+			Tipo_Dom_Calle=@calle,
+			Tipo_Nro_Calle=@nrocalle,
+			Tipo_Dom_Piso=@piso,
+			Tipo_Depto=@dpto,
+			Tipo_Cod_Postal=@cod_post
+			where Tipo_Cod = (select Tipo_Cod from SQL_O.Tipo where Tipo_Cod= @id_empresa)
 	
 commit
 
