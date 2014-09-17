@@ -1,7 +1,7 @@
-src/FrbaCommerce/bin
-src/FrbaCommerce/obj
+src/FrbaHotel/bin
+src/FrbaHotel/obj
 *.exe
 *.Cache
 *.pdb
 *.cache
-src/FrbaCommerce.suo
+src/FrbaHotel.suo
