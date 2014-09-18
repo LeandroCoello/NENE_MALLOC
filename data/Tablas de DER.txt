@@ -1,0 +1,134 @@
+ROL 
+
+- Id de rol
+- Descripcion
+- Estado
+
+ROL POR FUNCIONALIDAD
+
+- Id de Rol
+- Id de Func
+
+FUNCIONALIDAD 
+
+- Id de Func
+- Descripcion
+
+ROL POR USUARIO
+
+- Id de Rol
+- Id de usuario
+
+DATOS PERSONALES
+
+- Id de datos
+- Nombre
+- Apellido
+- Telefono
+- Tipo de documento
+- Nro de documento
+- Mail
+- Direccion
+- Fecha de Nacimiento
+
+USUARIO
+
+- User name
+- Password
+- Id del user (Después vemos si se queda)
+- Id de datos
+- Estado
+
+CLIENTE
+
+- Id cliente
+- Id de Datos
+- Direccion, calle, localidad, pais (verificar en tabla maestra)
+- Nacionalidad
+- Estado
+
+HOTEL POR USER
+
+- Id del hotel
+- Id del user
+
+HOTEL
+
+- Nombre del Hotel
+- Mail
+- Telefono
+- Direccion
+- Cant estrellas
+- Ciudad
+- Pais
+- fecha de creación
+- Estadp
+
+PERIODOS DE CIERRE
+
+- Id del cierre
+- Id del hotel
+- Fecha inicio
+- Fecha fin
+- Descripcion motivo
+
+REGIMEN POR HOTEL
+
+- Id del regimen
+- Id del Hotel
+
+REGIMEN
+
+- Id del regimen
+- Descripcion
+- Precio Base
+- Estado (Activo/No activo)
+
+HABITACION
+
+- Id del hotel
+- Numero de habitacion
+- Piso
+- Estado
+- Vista
+- Tipo de habitacion
+- Descripcion(comodidades)
+
+RESERVA
+
+- Id de reserva
+- Id de cliente
+- Fecha de reserva
+- Fecha de ingreso
+- Fecha de salida
+- Estado 
+
+RESERVA POR HABITACION
+
+- Id de reserva por habitacion
+- Id de reserva
+- Id de habitacion
+- Id de regimen
+
+CLIENTE POR ESTADIA
+
+- Id de estadia
+- Id de cliente
+
+ESTADIA
+
+- Id de estadia
+- Id de reserva por habitacion
+
+CONSUMIBLE
+
+- Id de consumible
+- Id de estadia
+- Precio
+
+FACTURA
+
+- Id de factura
+- Id de estadia
+- Id de cliente
+- Fecha de la factura
