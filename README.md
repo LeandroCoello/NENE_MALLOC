@@ -1,6 +1,6 @@
-SQL_O
+NENE_MALLOC
 =====
 
 Implementación del Trabajo Práctico de Gestión de Datos.
 
-Primer cuatrimestre del 2014.
+Segundo cuatrimestre del 2014.
