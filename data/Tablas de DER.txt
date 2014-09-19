@@ -47,6 +47,7 @@ CLIENTE
 - Nacionalidad
 - Estado
 
+
 HOTEL POR USER
 
 - Id del hotel
@@ -94,6 +95,12 @@ HABITACION
 - Tipo de habitacion
 - Descripcion(comodidades)
 
+Tipo (Por Tabla Maestra)
+
+- Id del Tipo
+- Desc
+- Porcentual
+
 RESERVA
 
 - Id de reserva
@@ -105,7 +112,7 @@ RESERVA
 
 RESERVA POR HABITACION
 
-- Id de reserva por habitacion
+
 - Id de reserva
 - Id de habitacion
 - Id de regimen
@@ -120,7 +127,7 @@ ESTADIA
 - Id de estadia
 - Id de reserva por habitacion
 
-CONSUMIBLE
+CONSUMIBLE (Los consumibles ya estan cargados en su tabla en la maestra, para saber lo que se consumio en una estadia no queda otra que hacer un muchos a muchos)
 
 - Id de consumible
 - Id de estadia
