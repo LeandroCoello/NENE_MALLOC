@@ -130,7 +130,8 @@ CREATE TABLE NENE_MALLOC.Cliente(
 		Cliente_Id numeric(18,0) primary key identity,
 		Cliente_Datos numeric(18,0) references NENE_MALLOC.Datos_Personales(Datos_Id),
 		Cliente_Nacionalidad nvarchar(255),
-		Cliente_Deshabilitado bit default 0
+		Cliente_Deshabilitado bit default 0,
+		Cliente_Rol numeric(18,0) references NENE_MALLOC.Rol(Rol_Id)
 		)
 GO		
 
@@ -181,15 +182,6 @@ CREATE TABLE NENE_MALLOC.Consumible_Por_Estadia(
 		)
 GO
 
---En la tabla maestra un item es una estadia o un consumible, hay que revisar esto
-CREATE TABLE NENE_MALLOC.Item_Factura(
-		Item_Factura_Id numeric(18,0) primary key identity,
-		Item_Factura_Cantidad numeric(18,0),
-		Item_Factura_Monto numeric(18,2),
-		Item_Factura_Estadia numeric(18,0) references NENE_MALLOC.Estadia(Estadia_Id)
-		)
-GO
-
 CREATE TABLE NENE_MALLOC.Factura(
 		Factura_Id numeric(18,0) primary key,
 		Factura_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
@@ -197,6 +189,19 @@ CREATE TABLE NENE_MALLOC.Factura(
 		Factura_Total numeric(18,2)
 		)
 GO
+
+
+--En la tabla maestra un item es una estadia o un consumible, hay que revisar esto
+CREATE TABLE NENE_MALLOC.Item_Factura(
+		Item_Factura_Id numeric(18,0) primary key identity,
+		Item_Factura_Cantidad numeric(18,0),
+		Item_Factura_Monto numeric(18,2),
+		Item_Factura_Estadia numeric(18,0) references NENE_MALLOC.Estadia(Estadia_Id),
+		Item_Factura numeric(18,0) references NENE_MALLOC.Factura(Factura_Id)
+		)
+GO
+
+
 
 
 
