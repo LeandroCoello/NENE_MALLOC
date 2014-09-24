@@ -7,14 +7,14 @@ GO
 -- Creacion de Tablas
 
 CREATE TABLE NENE_MALLOC.Rol(
-		Rol_Id numeric(18,0) primary key identity,
+		Rol_Id numeric(18,0) primary key,
 		Rol_Desc nvarchar(255),
 		Rol_estado bit default 0
 		)
 GO
 
 CREATE TABLE NENE_MALLOC.Funcionalidad(
-		Func_Id numeric(18,0) Primary Key Identity,
+		Func_Id numeric(18,0) Primary Key,
 		Func_Desc nvarchar(255)		
 		)
 GO
@@ -157,7 +157,7 @@ CREATE TABLE NENE_MALLOC.Reserva_Por_Habitacion(
 GO
 
 CREATE TABLE NENE_MALLOC.Estadia(
-		Estadia_Id numeric(18,0) primary key identity,
+		Estadia_Id numeric(18,0) primary key identity references NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id),
 		Estadia_Reserva numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id)
 		)
 GO
@@ -177,8 +177,10 @@ CREATE TABLE NENE_MALLOC.Consumible(
 GO
 
 CREATE TABLE NENE_MALLOC.Consumible_Por_Estadia(
+		Consumible_Por_Estadia numeric(18,0) primary key identity references NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id),
 		Consumible_Id numeric(18,0) references NENE_MALLOC.Consumible(Consumible_Id),
-		Estadia_Id numeric(18,0) references NENE_MALLOC.Estadia(Estadia_Id)
+		Estadia_Id numeric(18,0) references NENE_MALLOC.Estadia(Estadia_Id),
+		Consumible_Cantidad numeric(18,0)
 		)
 GO
 
@@ -190,23 +192,110 @@ CREATE TABLE NENE_MALLOC.Factura(
 		)
 GO
 
+CREATE TABLE NENE_MALLOC.Tipo_Item_Factura (
+		Tipo_Item_Factura_Id numeric(18,0) primary key identity,
+		)
+GO
 
---En la tabla maestra un item es una estadia o un consumible, hay que revisar esto
 CREATE TABLE NENE_MALLOC.Item_Factura(
 		Item_Factura_Id numeric(18,0) primary key identity,
-		Item_Factura_Cantidad numeric(18,0),
+		Item_Factura_Cantidad numeric(18,0) default 1,
 		Item_Factura_Monto numeric(18,2),
-		Item_Factura_Estadia numeric(18,0) references NENE_MALLOC.Estadia(Estadia_Id),
+		Tipo_Item_Factura_Id numeric(18,0) references NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id),
 		Item_Factura numeric(18,0) references NENE_MALLOC.Factura(Factura_Id)
 		)
 GO
 
 
+-- Migración de datos
 
+--ROL
 
+Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (1, 'Administrador')
+Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (2, 'Recepcionista')
+Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (3, 'Guest')
+GO
 
+--FUNCIONALIDAD
 
-		
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (1,'Alta de Rol')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (2,'Baja de Rol')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (3,'Modificacion de Rol')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (4,'Login')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (5,'Alta de usuario')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (6,'Baja de usuario')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (7,'Modificacion de usuario')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (8,'Alta de Cliente')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (9,'Baja de Cliente')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (10,'Modificacion de Cliente')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (11,'Generar reserva')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (12,'Alta de Hotel')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (13,'Baja de Hotel')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (14,'Modificacion de Hotel')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (15,'Alta de Habitacion')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (16,'Baja de Habitacion')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (17,'Modificacion de Habitacion')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (18,'Alta de Regimen')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (19,'Baja de Regimen')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (20,'Modificacion de Regimen')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (21,'Modificar Reserva')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (22,'Cancelar Reserva')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (23,'Check-In')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (24,'Check-Out')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (25,'Registrar Consumibles')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (26,'Emitir Factura')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (27,'Listado Estadístico')
+GO
 
+--FUNCIONALIDAD POR ROL
 
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,1)		
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,2)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,3)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,4)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,4)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,5)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,6)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,7)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,8)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,8)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,9)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,9)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,10)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,10)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,11)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,11)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,12)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,13)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,14)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,15)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,16)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,17)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,18)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,19)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,20)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,21)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,21)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,22)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,22)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,23)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,24)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,25)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,25)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,26)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,26)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,27)
+GO
 
+--HOTEL
+
+Insert into NENE_MALLOC.Hotel(Hotel_Calle, Hotel_Nro_Calle, Hotel_Ciudad, Hotel_Cant_Est, Hotel_Recarga_Estrella)
+			(select Hotel_Calle, 
+				    Hotel_Nro_Calle, 
+				    Hotel_Ciudad,
+				    Hotel_CantEstrella,
+				    Hotel_Recarga_Estrella
+			 from gd_esquema.Maestra)
+GO
+
+--Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion,
