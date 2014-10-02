@@ -298,4 +298,77 @@ Insert into NENE_MALLOC.Hotel(Hotel_Calle, Hotel_Nro_Calle, Hotel_Ciudad, Hotel_
 			 from gd_esquema.Maestra)
 GO
 
---Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion,
+--CLIENTE, DATOS_PERSONALES, USUARIO, USUARIO_POR_ROL
+
+Declare
+@nacionalidad nvarchar(255),
+@nombre nvarchar(255),
+@apellido nvarchar(255),
+--@telefono numeric(18,0),
+--@tipo_doc nvarchar(30),
+--@nro_doc numeric(18,0),
+@mail nvarchar(255),
+@dom_calle nvarchar(255),
+@dom_nro numeric(18,0),
+@dom_piso numeric(18,0),
+@dom_depto nvarchar(50),
+@fecha_nac datetime,
+@id_cli numeric(18,0)
+Declare cursor_migracion_cliente cursor
+	for(select Cliente_Nacionalidad,
+			   Cliente_Nombre,
+			   Cliente_Apellido,
+			   Cliente_Mail,
+			   Cliente_Dom_Calle,
+			   Cliente_Nro_Calle,
+			   Cliente_Piso,
+			   Cliente_Depto,
+			   Cliente_Fecha_Nac
+			   
+		from gd_esquema.Maestra)
+Open cursor_migracion_cliente
+fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @dom_calle,@dom_nro, 
+                                    @dom_piso, @dom_depto, @fecha_nac
+while(@@fetch_status=0)
+begin 
+
+set @id_cli = (select MAX(Usuario_Id)from NENE_MALLOC.Usuario)
+if (@id_cli is null)
+	begin
+	set @id_cli = 1
+	end
+else 
+	begin 
+	set @id_cli= @id_cli +1
+	end
+	
+--userpass es 123456 con sha256
+
+Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre,Datos_Apellido,Datos_Mail,Datos_Dom_Calle, Datos_Dom_Nro_Calle,
+                                         Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac)
+                                  values(@nombre, @apellido,@mail,@dom_calle,@dom_nro,@dom_piso,
+                                         @dom_depto,@fecha_nac)
+                                      
+Insert into NENE_MALLOC.Cliente (Cliente_Datos, Cliente_Nacionalidad, Cliente_Rol)
+                          values((select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales), @nacionalidad, 8) --HARDCODEADO EL ROL
+                          
+Insert into NENE_MALLOC.Usuario(Usuario_datos, Usuario_name, Usuario_pass)
+                         values((select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales),
+                         ('Usuario'+convert(varchar(30),@id_cli)),
+                         '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
+                         
+Insert into NENE_MALLOC.Usuario_Por_Rol(Usuario_Id, Rol_Id)
+                                 values((select Max(Usuario_Id) from NENE_MALLOC.Usuario),
+                                        (select Rol_Id from NENE_MALLOC.Rol where Rol_Desc='Guest'))
+                                        
+fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @dom_calle,@dom_nro, 
+                                    @dom_piso, @dom_depto, @fecha_nac
+                                    
+end
+close cursor_migracion_cliente
+deallocate cursor_migracion_cliente
+ 
+GO
+
+--Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion, 
+--Cliente_Telefono, Cliente_Nro_Documento, Cliente_Tipo_Doc
