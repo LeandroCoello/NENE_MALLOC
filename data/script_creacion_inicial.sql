@@ -530,10 +530,43 @@ GO
 
 
 --CONSUMIBLE
-
 Insert into NENE_MALLOC.Consumible(Consumible_Id, Consumible_Desc, Consumible_precio)
                                   (select Consumible_Codigo, Consumible_Descripcion, Consumible_Precio
                                    from gd_esquema.Maestra)
+
+--FACTURA
+Declare 
+@codigo numeric(18,0),
+@cliente_mail nvarchar(255),
+@fecha datetime,
+@total numeric(18,2)
+Declare cursor_migracion_factura cursor
+	for(select Factura_Nro,
+	           Cliente_Mail,
+	           Factura_Fecha,
+	           Factura_Total
+	    from gd_esquema.Maestra)
+	    
+Open cursor_migracion_factura
+fetch cursor_migracion_factura into @codigo, @cliente_mail, @fecha, @total
+while(@@fetch_status=0)
+begin 	
+
+declare @cliente_id numeric(18,0)
+set @cliente_id = (select c.Cliente_Id
+                   from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d 
+                   where c.Cliente_Datos = d.Datos_Id
+                     and d.Datos_Mail = @cliente_mail)
+
+Insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha, Factura_Total)
+                         values(@codigo, @cliente_id, @fecha, @total)
+
+fetch cursor_migracion_factura into @codigo, @cliente_mail, @fecha, @total
+end
+close cursor_migracion_factura
+deallocate cursor_migracion_factura
+
+GO
 
 --Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion, 
 --Cliente_Telefono, Cliente_Nro_Documento, Cliente_Tipo_Doc
