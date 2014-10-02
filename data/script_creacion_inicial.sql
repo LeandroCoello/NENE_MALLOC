@@ -62,7 +62,7 @@ GO
 
 CREATE TABLE NENE_MALLOC.Hotel(
 		Hotel_Id numeric(18,0) primary key identity,
-		Hotel_Nombre nvarchar(255),
+		Hotel_Nombre nvarchar(255) default '',
 		Hotel_Mail nvarchar(255),
 		Hotel_Telefono numeric(18,0),
 		Hotel_Calle nvarchar(255),
@@ -121,7 +121,7 @@ CREATE TABLE NENE_MALLOC.Habitacion(
 		Habitacion_Hotel numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id),
 		Habitacion_Tipo numeric(18,0) references NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id),
 		Habitacion_Vista nvarchar(50), -- en la maestra esta como frente
-		Habitacion_Desc nvarchar(255), --esto no se, por ahi el enunciado se referia a la desc del tipo
+		Habitacion_Desc nvarchar(255) default '', --esto no se, por ahi el enunciado se referia a la desc del tipo
 		Habitacion_Cerrada bit default 0
 		)
 GO
@@ -287,15 +287,77 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,27)
 GO
 
+--REGIMEN
+
+Insert into NENE_MALLOC.Regimen(Regimen_Desc, Regimen_Precio)
+                               (select Regimen_Descripcion, Regimen_Precio
+                                from gd_esquema.Maestra)
+                                
+
+--TIPO DE HABITACIÓN
+
+Insert into NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id, Tipo_Hab_Desc, Tipo_Hab_Porc)
+                                       (select Habitacion_Tipo_Codigo, Habitacion_Tipo_Descripcion, Habitacion_Tipo_Porcentual
+                                        from gd_esquema.Maestra)    
+                                        
 --HOTEL
 
 Insert into NENE_MALLOC.Hotel(Hotel_Calle, Hotel_Nro_Calle, Hotel_Ciudad, Hotel_Cant_Est, Hotel_Recarga_Estrella)
-			(select Hotel_Calle, 
-				    Hotel_Nro_Calle, 
-				    Hotel_Ciudad,
-				    Hotel_CantEstrella,
-				    Hotel_Recarga_Estrella
+			(select distinct Hotel_Calle, 
+							 Hotel_Nro_Calle, 
+							 Hotel_Ciudad,
+							 Hotel_CantEstrella,
+							 Hotel_Recarga_Estrella
 			 from gd_esquema.Maestra)
+GO     
+                     
+--HABITACION, REGIMEN_POR_HOTEL
+Declare
+@calle nvarchar(255),
+@nro_calle nvarchar(255),
+@ciudad nvarchar(255),
+@habitacion_numero numeric(18,0),
+@habitacion_piso numeric(18,0),
+@habitacion_vista nvarchar(50),
+@habitacion_tipo numeric(18,0),
+@regimen nvarchar(255)
+Declare cursor_migracion_hotel cursor
+	for (select Hotel_Calle, 
+			    Hotel_Nro_Calle, 
+				Hotel_Ciudad,
+				Habitacion_Numero,
+				Habitacion_Piso,
+				Habitacion_Frente,
+				Habitacion_Tipo_Codigo,
+				Regimen_Descripcion
+		 from gd_esquema.Maestra)
+open cursor_migracion_hotel
+fetch cursor_migracion_hotel into @calle, @nro_calle, @ciudad,@habitacion_numero, @habitacion_piso, 
+                                  @habitacion_vista, @habitacion_tipo, @regimen
+                                    					      
+while(@@fetch_status=0)
+begin 
+					   
+declare @hotel_id numeric(18,0)
+set @hotel_id = (select Hotel_Id 
+                 from NENE_MALLOC.Hotel h 
+                 where h.Hotel_Calle = @calle 
+                   and h.Hotel_Nro_Calle = @nro_calle
+                   and h.Hotel_Ciudad = @ciudad)		
+				
+Insert into NENE_MALLOC.Habitacion(Habitacion_Num, Habitacion_Piso, Habitacion_Hotel, Habitacion_Tipo, Habitacion_Vista)
+                            values(@habitacion_numero,@habitacion_piso, @hotel_id, @habitacion_tipo, @habitacion_vista)
+
+Insert into NENE_MALLOC.Regimen_Por_Hotel(Regimen_Id, Hotel_Id) 
+                                  values ((select Regimen_Id from NENE_MALLOC.Regimen where Regimen_Desc = @regimen),
+                                          @hotel_id)
+                                          
+fetch cursor_migracion_hotel into @calle, @nro_calle, @ciudad,@habitacion_numero, @habitacion_piso, 
+                                  @habitacion_vista, @habitacion_tipo, @regimen
+                                    					      
+end
+close cursor_migracion_hotel
+deallocate cursor_migracion_hotel
 GO
 
 --CLIENTE, DATOS_PERSONALES, USUARIO, USUARIO_POR_ROL
@@ -369,6 +431,8 @@ close cursor_migracion_cliente
 deallocate cursor_migracion_cliente
  
 GO
+
+
 
 --Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion, 
 --Cliente_Telefono, Cliente_Nro_Documento, Cliente_Tipo_Doc
