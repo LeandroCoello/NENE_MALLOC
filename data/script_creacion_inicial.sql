@@ -528,5 +528,12 @@ deallocate cursor_migracion_reserva_por_habitacion
 
 GO
 
+
+--CONSUMIBLE
+
+Insert into NENE_MALLOC.Consumible(Consumible_Id, Consumible_Desc, Consumible_precio)
+                                  (select Consumible_Codigo, Consumible_Descripcion, Consumible_Precio
+                                   from gd_esquema.Maestra)
+
 --Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion, 
 --Cliente_Telefono, Cliente_Nro_Documento, Cliente_Tipo_Doc
