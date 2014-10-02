@@ -106,7 +106,7 @@ CREATE TABLE NENE_MALLOC.Regimen_Por_Hotel(
 		Primary Key(Hotel_Id,Regimen_Id)
 		)
 GO
---Por tabla maestra agregue el tipo como otra tabla 
+
 CREATE TABLE NENE_MALLOC.Tipo_Habitacion(
 		Tipo_Hab_Id numeric(18,0) primary key,
 		Tipo_Hab_Desc nvarchar(255),
@@ -139,8 +139,7 @@ CREATE TABLE NENE_MALLOC.Reserva(
 		Reserva_Id numeric(18,0) primary key,
 		Reserva_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
 		Reserva_Fecha datetime,
-		Rererva_FechaIng datetime,
-		Reserva_FechaSal datetime,
+		Reserva_FechaIng datetime,
 		Reserva_CantNoches numeric(18,0), --de nuevo por la maestra, despues vemos cual sacamos si fecha fin o este
 		Reserva_Estado nvarchar(255),
 		Reserva_Hotel numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id)
@@ -432,7 +431,102 @@ deallocate cursor_migracion_cliente
  
 GO
 
+--RESERVA
+Declare
+@codigo numeric(18,0),
+@fecha_ingreso datetime,
+@cant_noches numeric(18,0),
+@mail nvarchar(255),
+@calle nvarchar(255),
+@nro_calle nvarchar(255),
+@ciudad nvarchar(255)
+Declare cursor_migracion_reserva cursor
+	for(select Reserva_Codigo,
+	           Reserva_Fecha_Inicio,
+	           Reserva_Cant_Noches,
+	           Cliente_Mail,
+	           Hotel_Calle, 
+			   Hotel_Nro_Calle, 
+			   Hotel_Ciudad 
+		from gd_esquema.Maestra)
 
+Open cursor_migracion_reserva
+fetch cursor_migracion_reserva into @codigo, @fecha_ingreso, @cant_noches, @mail, @calle, @nro_calle, @ciudad
+
+while(@@fetch_status=0)
+begin 	
+
+declare @hotel_id numeric(18,0)
+declare @cliente_id numeric(18,0)
+set @hotel_id = (select Hotel_Id 
+                 from NENE_MALLOC.Hotel h 
+                 where h.Hotel_Calle = @calle 
+                   and h.Hotel_Nro_Calle = @nro_calle
+                   and h.Hotel_Ciudad = @ciudad)
+set @cliente_id = (select c.Cliente_Id 
+                   from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d 
+                   where d.Datos_Mail = @mail
+                     and c.Cliente_Datos = d.Datos_Id)
+                   	
+
+Insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_FechaIng, Reserva_Fecha, Reserva_CantNoches, Reserva_Cliente, 
+                                Reserva_Hotel)
+                         values(@codigo, @fecha_ingreso, @fecha_ingreso, @cant_noches, @cliente_id, @hotel_id)
+
+fetch cursor_migracion_reserva into @codigo, @fecha_ingreso, @cant_noches, @mail, @calle, @nro_calle, @ciudad
+end
+close cursor_migracion_reserva
+deallocate cursor_migracion_reserva
+ 
+GO	
+
+--RESERVA POR HABITACIÓN
+Declare
+@reserva numeric(18,0),
+@calle nvarchar(255),
+@nro_calle nvarchar(255),
+@ciudad nvarchar(255),
+@habitacion_numero numeric(18,0),
+@regimen nvarchar(255)
+Declare cursor_migracion_reserva_por_habitacion cursor
+	for (select Reserva_Codigo,
+		   Hotel_Calle, 
+		   Hotel_Nro_Calle,
+		   Hotel_Ciudad,
+		   Habitacion_Numero,
+		   Regimen_Descripcion
+	from gd_esquema.Maestra)
+Open cursor_migracion_reserva_por_habitacion
+fetch cursor_migracion_reserva_por_habitacion into @reserva, @calle, @nro_calle, @ciudad, @habitacion_numero, @regimen
+while(@@fetch_status=0)
+begin 	
+
+declare @hotel_id numeric(18,0)
+declare @habitacion_id numeric(18,0)
+declare @regimen_id numeric(18,0)
+
+set @hotel_id = (select Hotel_Id 
+                 from NENE_MALLOC.Hotel h 
+                 where h.Hotel_Calle = @calle 
+                   and h.Hotel_Nro_Calle = @nro_calle
+                   and h.Hotel_Ciudad = @ciudad)
+
+set @habitacion_id = (select Hotel_Id 
+					  from NENE_MALLOC.Hotel ho, NENE_MALLOC.Habitacion ha
+					  where ha.Habitacion_Hotel = @hotel_id
+                        and ha.Habitacion_Num = @habitacion_numero)
+                   
+set @regimen_id = (select r.Regimen_Id from NENE_MALLOC.Regimen r where r.Regimen_Desc = @regimen)
+
+Insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id, Regimen_Id)
+                                        values(@reserva,@habitacion_id,@regimen_id)
+
+fetch cursor_migracion_reserva_por_habitacion into @reserva, @calle, @nro_calle, @ciudad, @habitacion_numero, @regimen
+end
+close cursor_migracion_reserva_por_habitacion
+deallocate cursor_migracion_reserva_por_habitacion
+
+GO
 
 --Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion, 
 --Cliente_Telefono, Cliente_Nro_Documento, Cliente_Tipo_Doc
