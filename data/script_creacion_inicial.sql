@@ -293,7 +293,7 @@ GO
 Insert into NENE_MALLOC.Regimen(Regimen_Desc, Regimen_Precio)
                                (select distinct Regimen_Descripcion, Regimen_Precio
                                 from gd_esquema.Maestra)
-                                
+GO                                
 
 --TIPO DE HABITACIÓN
 
@@ -391,15 +391,15 @@ close cursor_migracion_hotel
 deallocate cursor_migracion_hotel
 GO
 
---CLIENTE, DATOS_PERSONALES, USUARIO, USUARIO_POR_ROL (ESTA TARDA 3 minutos!!!!)
+--CLIENTE, DATOS_PERSONALES, USUARIO, USUARIO_POR_ROL (ESTA TARDA 3 minutos!!!!) casi 1 min ahora
 
 Declare
 @nacionalidad nvarchar(255),
 @nombre nvarchar(255),
 @apellido nvarchar(255),
 --@telefono numeric(18,0),
---@tipo_doc nvarchar(30),
---@nro_doc numeric(18,0),
+@tipo_ident nvarchar(30),
+@nro_ident numeric(18,0),
 @mail nvarchar(255),
 @dom_calle nvarchar(255),
 @dom_nro numeric(18,0),
@@ -416,16 +416,17 @@ Declare cursor_migracion_cliente cursor
 						Cliente_Nro_Calle,
 						Cliente_Piso,
 						Cliente_Depto,
-						Cliente_Fecha_Nac
+						Cliente_Fecha_Nac,
+						Cliente_Pasaporte_Nro
 			   
 		from gd_esquema.Maestra)
 Open cursor_migracion_cliente
 fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @dom_calle,@dom_nro, 
-                                    @dom_piso, @dom_depto, @fecha_nac
+                                    @dom_piso, @dom_depto, @fecha_nac, @nro_ident
 while(@@fetch_status=0)
 begin 
 
-set @id_cli = (select MAX(Usuario_Id)from NENE_MALLOC.Usuario)
+/*set @id_cli = (select MAX(Usuario_Id)from NENE_MALLOC.Usuario)
 if (@id_cli is null)
 	begin
 	set @id_cli = 1
@@ -433,17 +434,23 @@ if (@id_cli is null)
 else 
 	begin 
 	set @id_cli= @id_cli +1
-	end
-	
+	end*/
+
+set @tipo_ident= 'Pasaporte'	
 --userpass es 123456 con sha256
 
 Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre,Datos_Apellido,Datos_Mail,Datos_Dom_Calle, Datos_Dom_Nro_Calle,
-                                         Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac)
+                                         Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac, Datos_Tipo_Ident, Datos_Nro_Ident)
                                   values(@nombre, @apellido,@mail,@dom_calle,@dom_nro,@dom_piso,
-                                         @dom_depto,@fecha_nac)
+                                         @dom_depto,@fecha_nac, @tipo_ident, @nro_ident)
                                       
 Insert into NENE_MALLOC.Cliente (Cliente_Datos, Cliente_Nacionalidad, Cliente_Rol)
                           values((select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales), @nacionalidad, 3) --HARDCODEADO EL ROL
+
+
+								----------------------------------------------------------------
+/*								
+--guarda con esto, los clientes no se loguean, no tienen usuario
                           
 Insert into NENE_MALLOC.Usuario(Usuario_datos, Usuario_name, Usuario_pass)
                          values((select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales),
@@ -452,10 +459,12 @@ Insert into NENE_MALLOC.Usuario(Usuario_datos, Usuario_name, Usuario_pass)
                          
 Insert into NENE_MALLOC.Usuario_Por_Rol(Usuario_Id, Rol_Id)
                                  values((select Max(Usuario_Id) from NENE_MALLOC.Usuario),
-                                        (select Rol_Id from NENE_MALLOC.Rol where Rol_Desc='Guest'))
+                                        (select Rol_Id from NENE_MALLOC.Rol where Rol_Desc='Guest'))*/
+
+								----------------------------------------------------------------
                                         
 fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @dom_calle,@dom_nro, 
-                                    @dom_piso, @dom_depto, @fecha_nac
+                                    @dom_piso, @dom_depto, @fecha_nac, @nro_ident
                                     
 end
 close cursor_migracion_cliente
@@ -465,7 +474,7 @@ GO
 
 
 --------------------------HASTA ACÁ CREO QUE MIGRA BIEN---------------------------------------------------------
---RESERVA(ESTA NO ESTÁ FUNCIONANDO POR EL ID_CLIENTE!!!!)
+--RESERVA(ESTA NO ESTÁ FUNCIONANDO POR EL ID_CLIENTE!!!!) Esta bien el id :S, el tema es que son 100 mil reservas y tarda demasiado, lo cancele y recien habia insertado 2 mil en 2min
 Declare
 @codigo numeric(18,0),
 @fecha_ingreso datetime,
@@ -502,7 +511,7 @@ set @hotel_id = (select h.Hotel_Id
 set @cliente_id = (select c.Cliente_Id 
                    from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d 
                    where d.Datos_Mail = @mail
-                     and d.Datos_Fecha_Nac = @nacimiento
+					 and d.Datos_Fecha_Nac = @nacimiento
                      and c.Cliente_Datos = d.Datos_Id)
                    	
 
