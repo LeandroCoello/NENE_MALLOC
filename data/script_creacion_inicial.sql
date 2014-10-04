@@ -474,7 +474,10 @@ GO
 
 
 --------------------------HASTA ACÁ CREO QUE MIGRA BIEN---------------------------------------------------------
---RESERVA(ESTA NO ESTÁ FUNCIONANDO POR EL ID_CLIENTE!!!!) Esta bien el id :S, el tema es que son 100 mil reservas y tarda demasiado, lo cancele y recien habia insertado 2 mil en 2min
+--RESERVA(ESTA NO ESTÁ FUNCIONANDO POR EL ID_CLIENTE!!!!) 
+
+
+/*
 Declare
 @codigo numeric(18,0),
 @fecha_ingreso datetime,
@@ -511,7 +514,7 @@ set @hotel_id = (select h.Hotel_Id
 set @cliente_id = (select c.Cliente_Id 
                    from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d 
                    where d.Datos_Mail = @mail
-					 and d.Datos_Fecha_Nac = @nacimiento
+					-- and d.Datos_Fecha_Nac = @nacimiento
                      and c.Cliente_Datos = d.Datos_Id)
                    	
 
@@ -523,9 +526,30 @@ fetch cursor_migracion_reserva into @codigo, @fecha_ingreso, @cant_noches, @mail
 end
 close cursor_migracion_reserva
 deallocate cursor_migracion_reserva
- 
+ */
 GO	
 
+--Nota: El cursor esta bien hecho, anda bien, el tema es que son 100 mil reservas y tarda demasiado, lo cancele y recien habia insertado 2 mil en 2min
+-- Resulta que para los clientes se inserta en Clientes y Datos Personales a la par, por lo tanto los Cliente_Id y Cliente_Datos coinciden (obvio que solo para la migracion)
+-- Entonces el problema estaba en que al buscar el id cliente tenia que pegarle a muchas tablas y con el cursor se le hacia largo, de ahi se me ocurrio usar insert masivo y la tabla Datos_Personales para sacar el Cliente_Id
+
+insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng, Reserva_Fecha, Reserva_Hotel, Reserva_Cliente) 
+	(select distinct g.Reserva_Codigo, g.Reserva_Cant_Noches, g.Reserva_Fecha_Inicio, g.Reserva_Fecha_Inicio,
+		(select h.Hotel_Id from NENE_MALLOC.Hotel h 
+				where h.Hotel_Calle=g.Hotel_Calle and
+					  h.Hotel_Nro_calle=g.Hotel_Nro_Calle and
+					  h.Hotel_Ciudad=g.Hotel_Ciudad),
+		(select d.Datos_Id from NENE_MALLOC.Datos_Personales d 
+				where d.Datos_Mail= g.Cliente_Mail and
+					  d.Datos_Fecha_Nac=g.Cliente_Fecha_Nac and
+					  d.Datos_Nro_Ident=g.Cliente_Pasaporte_Nro)
+		from gd_esquema.Maestra g)
+		order by Reserva_Codigo 
+GO
+
+
+--------------------------HASTA ACÁ MIGRA BIEN---------------------------------------------------------
+go
 --RESERVA POR HABITACIÓN
 Declare
 @reserva numeric(18,0),
