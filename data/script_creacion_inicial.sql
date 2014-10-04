@@ -548,9 +548,8 @@ insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng
 GO
 
 
---------------------------HASTA ACÁ MIGRA BIEN---------------------------------------------------------
-go
 --RESERVA POR HABITACIÓN
+/*
 Declare
 @reserva numeric(18,0),
 @calle nvarchar(255),
@@ -595,8 +594,27 @@ fetch cursor_migracion_reserva_por_habitacion into @reserva, @calle, @nro_calle,
 end
 close cursor_migracion_reserva_por_habitacion
 deallocate cursor_migracion_reserva_por_habitacion
-
+*/
 GO
+
+
+-- Con este pasaba lo mismo que con el de arriba :S
+insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id, Regimen_Id)
+			(select distinct g.Reserva_Codigo,
+				    (select h.Habitacion_Id from NENE_MALLOC.Habitacion h
+							where h.Habitacion_Num= g.Habitacion_Numero and
+								  h.Habitacion_Hotel=(select ho.Hotel_Id from NENE_MALLOC.Hotel ho
+														where ho.Hotel_Calle=g.Hotel_Calle and
+															  ho.Hotel_Nro_Calle=g.Hotel_Nro_Calle and
+															  ho.Hotel_Ciudad=g.Hotel_Ciudad) ),
+					(select r.Regimen_Id from NENE_MALLOC.Regimen r where r.Regimen_Desc = g.Regimen_Descripcion) 
+	from gd_esquema.Maestra g)
+	order by g.Reserva_Codigo
+GO
+
+--------------------------HASTA ACÁ MIGRA BIEN---------------------------------------------------------
+GO
+
 
 --ESTADIA, TIPO ITEM FACTURA, ESTADIA POR CLIENTE (HAY PROBLEMAS CON EL ID DE CLIENTE POR LOS CAMPOS REPETIDOS)
 Declare
