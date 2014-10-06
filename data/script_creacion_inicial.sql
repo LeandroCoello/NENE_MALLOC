@@ -397,7 +397,6 @@ Declare
 @nacionalidad nvarchar(255),
 @nombre nvarchar(255),
 @apellido nvarchar(255),
---@telefono numeric(18,0),
 @tipo_ident nvarchar(30),
 @nro_ident numeric(18,0),
 @mail nvarchar(255),
@@ -562,7 +561,7 @@ deallocate cursor_migracion_estadia
 
 GO
 
---CONSUMIBLE
+--CONSUMIBLE POR ESTADIA, ITEM FACTURA
 Declare 
 @codigo numeric(18,0),
 @item_cant numeric(18,0),
@@ -610,6 +609,3 @@ close cursor_migracion_consumible
 deallocate cursor_migracion_consumible
 
 GO
-
---Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion, 
---Cliente_Telefono, Cliente_Nro_Documento, Cliente_Tipo_Doc
