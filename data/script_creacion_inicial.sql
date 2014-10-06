@@ -142,6 +142,7 @@ CREATE TABLE NENE_MALLOC.Reserva(
 		Reserva_FechaIng datetime,
 		Reserva_CantNoches numeric(18,0), --de nuevo por la maestra, despues vemos cual sacamos si fecha fin o este
 		Reserva_Estado nvarchar(255),
+		Reserva_Regimen numeric(18,0) references NENE_MALLOC.Regimen(Regimen_Id),
 		Reserva_Hotel numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id)
 		)
 GO
@@ -150,7 +151,6 @@ CREATE TABLE NENE_MALLOC.Reserva_Por_Habitacion(
 		RPH_Id numeric(18,0) primary key identity, --le tuve que agregar esto porque si mandaba que Estadia_Reserva referenciara a Reserva Id de aca rompia porque habia dos pks
 		Reserva_Id numeric(18,0) references NENE_MALLOC.Reserva(Reserva_Id) not null,
 		Habitacion_Id numeric(18,0) references NENE_MALLOC.Habitacion(Habitacion_Id)not null,
-		Regimen_Id numeric(18,0) references NENE_MALLOC.Regimen(Regimen_Id)
 		Unique(Reserva_Id,Habitacion_Id)
 		)
 GO
@@ -162,7 +162,7 @@ GO
 
 CREATE TABLE NENE_MALLOC.Estadia(
 		Estadia_Id numeric(18,0) primary key references NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id),
-		Estadia_Reserva numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id)
+		Estadia_Reserva numeric(18,0) references NENE_MALLOC.Reserva(Reserva_Id)
 		)
 GO
 
@@ -180,10 +180,10 @@ CREATE TABLE NENE_MALLOC.Consumible(
 		)
 GO
 
-CREATE TABLE NENE_MALLOC.Consumible_Por_Estadia(
-		Consumible_Por_Estadia numeric(18,0) primary key references NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id),
+CREATE TABLE NENE_MALLOC.Consumible_Por_Habitacion(
+		Consumible_Por_Habitacion_Id numeric(18,0) primary key references NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id),
 		Consumible_Id numeric(18,0) references NENE_MALLOC.Consumible(Consumible_Id),
-		Estadia_Id numeric(18,0) references NENE_MALLOC.Estadia(Estadia_Id),
+		RPH_Id numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id),
 		Consumible_Cantidad numeric(18,0)
 		)
 GO
@@ -313,83 +313,27 @@ Insert into NENE_MALLOC.Hotel(Hotel_Calle, Hotel_Nro_Calle, Hotel_Ciudad, Hotel_
 GO     
 
 --REGIMEN POR HOTEL
-Declare
-@calle nvarchar(255),
-@nro_calle nvarchar(255),
-@ciudad nvarchar(255),
-@regimen nvarchar(255)
-Declare cursor_migracion_regimen_por_hotel cursor 
-	for (select distinct Hotel_Calle, 
-					     Hotel_Nro_Calle, 
-						 Hotel_Ciudad,
-						 Regimen_Descripcion
-		 from gd_esquema.Maestra)
-		 
-open cursor_migracion_regimen_por_hotel
-fetch cursor_migracion_regimen_por_hotel into @calle, @nro_calle, @ciudad, @regimen
-while(@@fetch_status=0)
-begin 
-					   
-declare @hotel_id numeric(18,0)
-set @hotel_id = (select Hotel_Id 
-                 from NENE_MALLOC.Hotel h 
-                 where h.Hotel_Calle = @calle 
-                   and h.Hotel_Nro_Calle = @nro_calle
-                   and h.Hotel_Ciudad = @ciudad)	
-		 
-Insert into NENE_MALLOC.Regimen_Por_Hotel(Regimen_Id, Hotel_Id) 
-                                  values ((select Regimen_Id from NENE_MALLOC.Regimen where Regimen_Desc = @regimen),
-                                          @hotel_id)       
- 
-fetch cursor_migracion_regimen_por_hotel into @calle, @nro_calle, @ciudad,@regimen
-end
-close cursor_migracion_regimen_por_hotel
-deallocate cursor_migracion_regimen_por_hotel
 
-GO
+Insert into NENE_MALLOC.Regimen_Por_Hotel(Hotel_Id, Regimen_Id)
+	(select distinct (select h.Hotel_Id from NENE_MALLOC.Hotel h 
+							where h.Hotel_Calle=g.Hotel_Calle and
+								  h.Hotel_Nro_Calle=g.Hotel_Nro_Calle and 
+								h.Hotel_Ciudad=g.Hotel_Ciudad),
+					 (select r.Regimen_Id from NENE_MALLOC.Regimen r 
+							where r.Regimen_Desc= g.Regimen_Descripcion)
+		 from gd_esquema.Maestra g)
                        
 --HABITACION
-Declare
-@calle nvarchar(255),
-@nro_calle nvarchar(255),
-@ciudad nvarchar(255),
-@habitacion_numero numeric(18,0),
-@habitacion_piso numeric(18,0),
-@habitacion_vista nvarchar(50),
-@habitacion_tipo numeric(18,0)
-Declare cursor_migracion_hotel cursor
-	for (select distinct Hotel_Calle, 
-						 Hotel_Nro_Calle, 
-						 Hotel_Ciudad,
-						 Habitacion_Numero,
-						 Habitacion_Piso,
-						 Habitacion_Frente,
-						 Habitacion_Tipo_Codigo
-		 from gd_esquema.Maestra)
-open cursor_migracion_hotel
-fetch cursor_migracion_hotel into @calle, @nro_calle, @ciudad,@habitacion_numero, @habitacion_piso, 
-                                  @habitacion_vista, @habitacion_tipo
-                                    					      
-while(@@fetch_status=0)
-begin 
-					   
-declare @hotel_id numeric(18,0)
-set @hotel_id = (select Hotel_Id 
-                 from NENE_MALLOC.Hotel h 
-                 where h.Hotel_Calle = @calle 
-                   and h.Hotel_Nro_Calle = @nro_calle
-                   and h.Hotel_Ciudad = @ciudad)		
-				
 Insert into NENE_MALLOC.Habitacion(Habitacion_Num, Habitacion_Piso, Habitacion_Hotel, Habitacion_Tipo, Habitacion_Vista)
-                            values(@habitacion_numero,@habitacion_piso, @hotel_id, @habitacion_tipo, @habitacion_vista)
-                                          
-fetch cursor_migracion_hotel into @calle, @nro_calle, @ciudad,@habitacion_numero, @habitacion_piso, 
-                                  @habitacion_vista, @habitacion_tipo
-                                    					      
-end
-close cursor_migracion_hotel
-deallocate cursor_migracion_hotel
-GO
+				(select distinct g.Habitacion_Numero,
+						 g.Habitacion_Piso,
+						 (select h.Hotel_Id from NENE_MALLOC.Hotel h 
+							where h.Hotel_Calle=g.Hotel_Calle and 
+								  h.Hotel_Nro_Calle=g.Hotel_Nro_Calle and 
+								  h.Hotel_Ciudad=g.Hotel_Ciudad),
+						 g.Habitacion_Tipo_Codigo,
+						 g.Habitacion_Frente
+		 from gd_esquema.Maestra g)
 
 --CLIENTE, DATOS_PERSONALES, USUARIO, USUARIO_POR_ROL (ESTA TARDA 3 minutos!!!!) casi 1 min ahora
 
@@ -451,12 +395,13 @@ GO
 
 --RESERVA
 insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng, Reserva_Fecha, Reserva_Hotel, 
-								Reserva_Cliente) 
+								Reserva_Regimen, Reserva_Cliente) 
 	(select distinct g.Reserva_Codigo, g.Reserva_Cant_Noches, g.Reserva_Fecha_Inicio, g.Reserva_Fecha_Inicio,
 		(select h.Hotel_Id from NENE_MALLOC.Hotel h 
 				where h.Hotel_Calle=g.Hotel_Calle and
 					  h.Hotel_Nro_calle=g.Hotel_Nro_Calle and
 					  h.Hotel_Ciudad=g.Hotel_Ciudad),
+		(select r.Regimen_Id from NENE_MALLOC.Regimen r where r.Regimen_Desc = g.Regimen_Descripcion),
 		(select d.Datos_Id from NENE_MALLOC.Datos_Personales d 
 				where d.Datos_Mail= g.Cliente_Mail and
 					  d.Datos_Fecha_Nac=g.Cliente_Fecha_Nac and
@@ -466,15 +411,14 @@ insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng
 GO
 
 --RESERVA POR HABITACIÓN
-insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id, Regimen_Id)
+insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id)
 			(select distinct g.Reserva_Codigo,
 				    (select h.Habitacion_Id from NENE_MALLOC.Habitacion h
 							where h.Habitacion_Num= g.Habitacion_Numero and
 								  h.Habitacion_Hotel=(select ho.Hotel_Id from NENE_MALLOC.Hotel ho
 														where ho.Hotel_Calle=g.Hotel_Calle and
 															  ho.Hotel_Nro_Calle=g.Hotel_Nro_Calle and
-															  ho.Hotel_Ciudad=g.Hotel_Ciudad) ),
-					(select r.Regimen_Id from NENE_MALLOC.Regimen r where r.Regimen_Desc = g.Regimen_Descripcion) 
+															  ho.Hotel_Ciudad=g.Hotel_Ciudad) ) 
 	from gd_esquema.Maestra g)
 	order by g.Reserva_Codigo
 GO
@@ -502,110 +446,118 @@ Insert into NENE_MALLOC.Consumible(Consumible_Id, Consumible_Desc, Consumible_pr
              where Consumible_Codigo is not null)
 GO
 
---------------------------HASTA ACÁ MIGRA BIEN---------------------------------------------------------
---MAS FLOW
-GO
-
-
-
-
---ESTADIA, TIPO ITEM FACTURA, ESTADIA POR CLIENTE (HAY PROBLEMAS CON EL ID DE CLIENTE POR LOS CAMPOS REPETIDOS)
+--ESTADIA, TIPO ITEM FACTURA, ESTADIA POR CLIENTE
 Declare
-@reserva_id numeric(18,0), 
-@mail nvarchar(255), 
-@nacimiento datetime,
-@pasaporte numeric(18,0)                   
+@reserva_id numeric(18,0)                  
 Declare cursor_migracion_estadia cursor
-	for (select distinct Reserva_Codigo, Cliente_Mail, Cliente_Fecha_Nac, Cliente_Pasaporte_Nro
+	for (select distinct Reserva_Codigo
          from gd_esquema.Maestra
          where Estadia_Cant_Noches is not null 
            and Estadia_Fecha_Inicio is not null)   
            
 Open cursor_migracion_estadia
-fetch cursor_migracion_estadia into @reserva_id, @mail, @nacimiento, @pasaporte
+fetch cursor_migracion_estadia into @reserva_id
                              
 while(@@fetch_status=0)
 begin 
 
 declare @id_tipo_fact numeric(18,0)
-set @id_tipo_fact = (select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura)
-if (@id_tipo_fact is null)
-	begin
-	set @id_tipo_fact = 1
-	end
-else 
-	begin 
-	set @id_tipo_fact= @id_tipo_fact +1
-	end
+set @id_tipo_fact = (ISNULL((select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura),-1)) + 1
 	
-declare @cliente_id numeric(18,0)
-set @cliente_id = (select d.Datos_Id
-                   from NENE_MALLOC.Datos_Personales d
-                   where d.Datos_Mail = @mail
-                     and d.Datos_Nro_Ident = @pasaporte)
-
 Insert into NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id) values (@id_tipo_fact)
 	
 Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_tipo_fact, @reserva_id)
 
-Insert into NENE_MALLOC.Estadia_Por_Cliente(Estadia_Id, Cliente_Id) values (@id_tipo_fact, @cliente_id)
-
-
-/*Que onda con esto? En la maestra solo facturan consumibles!!!!
-Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, Tipo_Item_Factura_Id, Item_Factura)
-                              values(@item_cant, @item_monto, @id_tipo_fact, @factura_id)  */
-fetch cursor_migracion_estadia into @reserva_id, @mail, @nacimiento, @pasaporte
+fetch cursor_migracion_estadia into @reserva_id
 end	
 close cursor_migracion_estadia
 deallocate cursor_migracion_estadia
 
 GO
 
---CONSUMIBLE POR ESTADIA, ITEM FACTURA
+--ESTADIA POR CLIENTE
+
+Insert into NENE_MALLOC.Estadia_Por_Cliente(Estadia_Id, Cliente_Id)
+	(select distinct 
+			(select e.Estadia_Id
+			 from NENE_MALLOC.Estadia e
+			 where e.Estadia_Reserva = g.Reserva_Codigo),
+			 (select d.Datos_Id from NENE_MALLOC.Datos_Personales d 
+			  where d.Datos_Mail= g.Cliente_Mail and
+			        d.Datos_Fecha_Nac=g.Cliente_Fecha_Nac and
+					d.Datos_Nro_Ident=g.Cliente_Pasaporte_Nro)
+         from gd_esquema.Maestra g
+         where g.Estadia_Cant_Noches is not null 
+           and g.Estadia_Fecha_Inicio is not null)  
+
+GO       
+
+--------------------------HASTA ACÁ MIGRA BIEN---------------------------------------------------------
+--MAS FLOW 3.51--
+GO
+
+
+ 
+--CONSUMIBLE POR HABITACION 2.42
+
 Declare 
 @codigo numeric(18,0),
 @item_cant numeric(18,0),
 @item_monto numeric(18,2),
 @factura_id numeric(18,0),
-@reserva_id numeric(18,0)
+@reserva_id numeric(18,0),
+@numero_habitacion numeric(18,0)
 Declare cursor_migracion_consumible cursor
-	for(select Consumible_Codigo, 
-	           Item_Factura_Cantidad,
-	           Item_Factura_Monto,
-	           Factura_Nro,
-	           Reserva_Codigo
+	for(select distinct Consumible_Codigo, 
+					    Item_Factura_Cantidad,
+					    Item_Factura_Monto,
+					    Factura_Nro,
+					    Reserva_Codigo,
+					    Habitacion_Numero
         from gd_esquema.Maestra
         where Consumible_Codigo is not null)
 
+           
 Open cursor_migracion_consumible
-fetch cursor_migracion_consumible into @codigo, @item_cant, @item_monto, @factura_id
+fetch cursor_migracion_consumible into @codigo, @item_cant, @item_monto, @factura_id, @reserva_id, @numero_habitacion
+                             
 while(@@fetch_status=0)
 begin 
 
 declare @id_tipo_fact numeric(18,0)
-set @id_tipo_fact = (select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura)
-if (@id_tipo_fact is null)
-	begin
-	set @id_tipo_fact = 1
-	end
-else 
-	begin 
-	set @id_tipo_fact= @id_tipo_fact +1
-	end
+set @id_tipo_fact = (ISNULL((select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura),-1)) + 1
 
-declare @estadia_id numeric(18,0)
-set @estadia_id = (select Estadia_Id from NENE_MALLOC.Estadia where Estadia_Reserva = @reserva_id)
+declare @reserva_por_habitacion numeric(18,0)
+set @reserva_por_habitacion = (select r.RPH_Id 
+							   from NENE_MALLOC.Reserva_Por_Habitacion r
+							   where @reserva_id = r.Reserva_Id and
+						             @numero_habitacion = r.Habitacion_Id)
 
-Insert into NENE_MALLOC.Consumible_Por_Estadia(Consumible_Por_Estadia, Consumible_Id, Estadia_Id, Consumible_Cantidad)
-                                        values(@id_tipo_fact, @codigo, @estadia_id, @item_cant)
+Insert into NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id) values (@id_tipo_fact)
+
+Insert into NENE_MALLOC.Consumible_Por_Habitacion(Consumible_Por_Habitacion_Id, Consumible_Id, RPH_Id, 
+												  Consumible_Cantidad)
+                                        values(@id_tipo_fact, @codigo, @reserva_por_habitacion, @item_cant)           
+
+fetch cursor_migracion_consumible into @codigo, @item_cant, @item_monto, @factura_id, @reserva_id, @numero_habitacion
+end
+close  cursor_migracion_consumible
+deallocate cursor_migracion_consumible                              
+GO
+
+--ITEM FACTURA
 
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, Tipo_Item_Factura_Id, Item_Factura)
-                              values(@item_cant, @item_monto, @id_tipo_fact, @factura_id)             
-
-/*Hay que saber que habitacion consumio que cosa*/                                           
-fetch cursor_migracion_consumible into @codigo, @item_cant, @item_monto, @factura_id
-end
-close cursor_migracion_consumible
-deallocate cursor_migracion_consumible
-
-GO
+	(select distinct g.Item_Factura_Cantidad,
+				     g.Item_Factura_Monto,
+				     (select e.Estadia_Id
+				      from NENE_MALLOC.Estadia e
+				      where e.Estadia_Reserva = g.Reserva_Codigo),
+					 g.Factura_Nro
+	 from gd_esquema.Maestra g
+	 where g.Item_Factura_Cantidad is not null and
+	       g.Estadia_Cant_Noches is not null and
+	       g.Estadia_Fecha_Inicio is not null)
+	       
+	       case when  g.Estadia_Cant_Noches is not null and g.Estadia_Fecha_Inicio is not null
+	            then
