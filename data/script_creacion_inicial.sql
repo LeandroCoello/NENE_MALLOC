@@ -426,16 +426,6 @@ fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @d
 while(@@fetch_status=0)
 begin 
 
-/*set @id_cli = (select MAX(Usuario_Id)from NENE_MALLOC.Usuario)
-if (@id_cli is null)
-	begin
-	set @id_cli = 1
-	end
-else 
-	begin 
-	set @id_cli= @id_cli +1
-	end*/
-
 set @tipo_ident= 'Pasaporte'	
 --userpass es 123456 con sha256
 
@@ -446,22 +436,6 @@ Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre,Datos_Apellido,Datos_Mail,
                                       
 Insert into NENE_MALLOC.Cliente (Cliente_Datos, Cliente_Nacionalidad, Cliente_Rol)
                           values((select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales), @nacionalidad, 3) --HARDCODEADO EL ROL
-
-
-								----------------------------------------------------------------
-/*								
---guarda con esto, los clientes no se loguean, no tienen usuario
-                          
-Insert into NENE_MALLOC.Usuario(Usuario_datos, Usuario_name, Usuario_pass)
-                         values((select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales),
-                         ('Usuario'+convert(varchar(30),@id_cli)),
-                         '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
-                         
-Insert into NENE_MALLOC.Usuario_Por_Rol(Usuario_Id, Rol_Id)
-                                 values((select Max(Usuario_Id) from NENE_MALLOC.Usuario),
-                                        (select Rol_Id from NENE_MALLOC.Rol where Rol_Desc='Guest'))*/
-
-								----------------------------------------------------------------
                                         
 fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @dom_calle,@dom_nro, 
                                     @dom_piso, @dom_depto, @fecha_nac, @nro_ident
@@ -472,68 +446,13 @@ deallocate cursor_migracion_cliente
  
 GO
 
-
---------------------------HASTA ACÁ CREO QUE MIGRA BIEN---------------------------------------------------------
---RESERVA(ESTA NO ESTÁ FUNCIONANDO POR EL ID_CLIENTE!!!!) 
-
-
-/*
-Declare
-@codigo numeric(18,0),
-@fecha_ingreso datetime,
-@cant_noches numeric(18,0),
-@mail nvarchar(255),
-@nacimiento datetime,
-@calle nvarchar(255),
-@nro_calle nvarchar(255),
-@ciudad nvarchar(255)
-Declare cursor_migracion_reserva cursor
-	for(select distinct Reserva_Codigo,
-						Reserva_Fecha_Inicio,
-						Reserva_Cant_Noches,
-						Cliente_Mail,
-						Cliente_Fecha_Nac,
-						Hotel_Calle, 
-						Hotel_Nro_Calle, 
-						Hotel_Ciudad 
-		from gd_esquema.Maestra)
-
-Open cursor_migracion_reserva
-fetch cursor_migracion_reserva into @codigo, @fecha_ingreso, @cant_noches, @mail, @nacimiento, @calle, @nro_calle, @ciudad
-
-while(@@fetch_status=0)
-begin 	
-
-declare @hotel_id numeric(18,0)
-declare @cliente_id numeric(18,0)
-set @hotel_id = (select h.Hotel_Id 
-                 from NENE_MALLOC.Hotel h 
-                 where h.Hotel_Calle = @calle 
-                   and h.Hotel_Nro_Calle = @nro_calle
-                   and h.Hotel_Ciudad = @ciudad)
-set @cliente_id = (select c.Cliente_Id 
-                   from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d 
-                   where d.Datos_Mail = @mail
-					-- and d.Datos_Fecha_Nac = @nacimiento
-                     and c.Cliente_Datos = d.Datos_Id)
-                   	
-
-Insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_FechaIng, Reserva_Fecha, Reserva_CantNoches, Reserva_Cliente, 
-                                Reserva_Hotel)
-                         values(@codigo, @fecha_ingreso, @fecha_ingreso, @cant_noches, @cliente_id, @hotel_id)
-
-fetch cursor_migracion_reserva into @codigo, @fecha_ingreso, @cant_noches, @mail, @nacimiento, @calle, @nro_calle, @ciudad
-end
-close cursor_migracion_reserva
-deallocate cursor_migracion_reserva
- */
-GO	
-
 --Nota: El cursor esta bien hecho, anda bien, el tema es que son 100 mil reservas y tarda demasiado, lo cancele y recien habia insertado 2 mil en 2min
 -- Resulta que para los clientes se inserta en Clientes y Datos Personales a la par, por lo tanto los Cliente_Id y Cliente_Datos coinciden (obvio que solo para la migracion)
 -- Entonces el problema estaba en que al buscar el id cliente tenia que pegarle a muchas tablas y con el cursor se le hacia largo, de ahi se me ocurrio usar insert masivo y la tabla Datos_Personales para sacar el Cliente_Id
 
-insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng, Reserva_Fecha, Reserva_Hotel, Reserva_Cliente) 
+--RESERVA
+insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng, Reserva_Fecha, Reserva_Hotel, 
+								Reserva_Cliente) 
 	(select distinct g.Reserva_Codigo, g.Reserva_Cant_Noches, g.Reserva_Fecha_Inicio, g.Reserva_Fecha_Inicio,
 		(select h.Hotel_Id from NENE_MALLOC.Hotel h 
 				where h.Hotel_Calle=g.Hotel_Calle and
@@ -547,58 +466,7 @@ insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng
 		order by Reserva_Codigo 
 GO
 
-
 --RESERVA POR HABITACIÓN
-/*
-Declare
-@reserva numeric(18,0),
-@calle nvarchar(255),
-@nro_calle nvarchar(255),
-@ciudad nvarchar(255),
-@habitacion_numero numeric(18,0),
-@regimen nvarchar(255)
-Declare cursor_migracion_reserva_por_habitacion cursor
-	for (select Reserva_Codigo,
-		   Hotel_Calle, 
-		   Hotel_Nro_Calle,
-		   Hotel_Ciudad,
-		   Habitacion_Numero,
-		   Regimen_Descripcion
-	from gd_esquema.Maestra)
-Open cursor_migracion_reserva_por_habitacion
-fetch cursor_migracion_reserva_por_habitacion into @reserva, @calle, @nro_calle, @ciudad, @habitacion_numero, @regimen
-while(@@fetch_status=0)
-begin 	
-
-declare @hotel_id numeric(18,0)
-declare @habitacion_id numeric(18,0)
-declare @regimen_id numeric(18,0)
-
-set @hotel_id = (select h.Hotel_Id 
-                 from NENE_MALLOC.Hotel h 
-                 where h.Hotel_Calle = @calle 
-                   and h.Hotel_Nro_Calle = @nro_calle
-                   and h.Hotel_Ciudad = @ciudad)
-
-set @habitacion_id = (select ha.Habitacion_Id 
-					  from NENE_MALLOC.Hotel ho, NENE_MALLOC.Habitacion ha
-					  where ha.Habitacion_Hotel = @hotel_id
-                        and ha.Habitacion_Num = @habitacion_numero)
-                   
-set @regimen_id = (select r.Regimen_Id from NENE_MALLOC.Regimen r where r.Regimen_Desc = @regimen)
-
-Insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id, Regimen_Id)
-                                        values(@reserva,@habitacion_id,@regimen_id)
-
-fetch cursor_migracion_reserva_por_habitacion into @reserva, @calle, @nro_calle, @ciudad, @habitacion_numero, @regimen
-end
-close cursor_migracion_reserva_por_habitacion
-deallocate cursor_migracion_reserva_por_habitacion
-*/
-GO
-
-
--- Con este pasaba lo mismo que con el de arriba :S
 insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id, Regimen_Id)
 			(select distinct g.Reserva_Codigo,
 				    (select h.Habitacion_Id from NENE_MALLOC.Habitacion h
@@ -612,23 +480,50 @@ insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id, Regime
 	order by g.Reserva_Codigo
 GO
 
---------------------------HASTA ACÁ MIGRA BIEN---------------------------------------------------------
+--FACTURA
+Insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha, Factura_Total)
+	(select distinct g.Factura_Nro,
+	                (select d.Datos_Id from NENE_MALLOC.Datos_Personales d 
+					 where d.Datos_Mail= g.Cliente_Mail and
+						   d.Datos_Fecha_Nac=g.Cliente_Fecha_Nac and
+					       d.Datos_Nro_Ident=g.Cliente_Pasaporte_Nro),
+					 g.Factura_Fecha,
+					 g.Factura_Total			       
+	 from gd_esquema.Maestra g
+	 where g.Factura_Nro is not null)
+	 order by g.Factura_Nro
 GO
+
+--CONSUMIBLE
+Insert into NENE_MALLOC.Consumible(Consumible_Id, Consumible_Desc, Consumible_precio)
+            (select distinct Consumible_Codigo,
+							 Consumible_Descripcion,
+							 Consumible_Precio
+             from gd_esquema.Maestra
+             where Consumible_Codigo is not null)
+GO
+
+--------------------------HASTA ACÁ MIGRA BIEN---------------------------------------------------------
+--MAS FLOW
+GO
+
+
 
 
 --ESTADIA, TIPO ITEM FACTURA, ESTADIA POR CLIENTE (HAY PROBLEMAS CON EL ID DE CLIENTE POR LOS CAMPOS REPETIDOS)
 Declare
 @reserva_id numeric(18,0), 
 @mail nvarchar(255), 
-@fecha datetime                   
+@nacimiento datetime,
+@pasaporte numeric(18,0)                   
 Declare cursor_migracion_estadia cursor
-	for (select distinct Reserva_Codigo, Cliente_Mail, Cliente_Fecha_Nac
+	for (select distinct Reserva_Codigo, Cliente_Mail, Cliente_Fecha_Nac, Cliente_Pasaporte_Nro
          from gd_esquema.Maestra
          where Estadia_Cant_Noches is not null 
            and Estadia_Fecha_Inicio is not null)   
            
 Open cursor_migracion_estadia
-fetch cursor_migracion_estadia into @reserva_id, @mail, @fecha
+fetch cursor_migracion_estadia into @reserva_id, @mail, @nacimiento, @pasaporte
                              
 while(@@fetch_status=0)
 begin 
@@ -645,11 +540,10 @@ else
 	end
 	
 declare @cliente_id numeric(18,0)
-set @cliente_id = (select c.Cliente_Id
-                   from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d
-                   where c.Cliente_Datos = d.Datos_Id
-                     and d.Datos_Mail = @mail
-                     and d.Datos_Fecha_Nac = @fecha)
+set @cliente_id = (select d.Datos_Id
+                   from NENE_MALLOC.Datos_Personales d
+                   where d.Datos_Mail = @mail
+                     and d.Datos_Nro_Ident = @pasaporte)
 
 Insert into NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id) values (@id_tipo_fact)
 	
@@ -661,7 +555,7 @@ Insert into NENE_MALLOC.Estadia_Por_Cliente(Estadia_Id, Cliente_Id) values (@id_
 /*Que onda con esto? En la maestra solo facturan consumibles!!!!
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, Tipo_Item_Factura_Id, Item_Factura)
                               values(@item_cant, @item_monto, @id_tipo_fact, @factura_id)  */
-fetch cursor_migracion_estadia into @reserva_id, @mail, @fecha
+fetch cursor_migracion_estadia into @reserva_id, @mail, @nacimiento, @pasaporte
 end	
 close cursor_migracion_estadia
 deallocate cursor_migracion_estadia
@@ -671,16 +565,12 @@ GO
 --CONSUMIBLE
 Declare 
 @codigo numeric(18,0),
-@descripcion nvarchar(255),
-@precio numeric(18,2),
 @item_cant numeric(18,0),
 @item_monto numeric(18,2),
 @factura_id numeric(18,0),
 @reserva_id numeric(18,0)
 Declare cursor_migracion_consumible cursor
 	for(select Consumible_Codigo, 
-	           Consumible_Descripcion, 
-	           Consumible_Precio,
 	           Item_Factura_Cantidad,
 	           Item_Factura_Monto,
 	           Factura_Nro,
@@ -689,7 +579,7 @@ Declare cursor_migracion_consumible cursor
         where Consumible_Codigo is not null)
 
 Open cursor_migracion_consumible
-fetch cursor_migracion_consumible into @codigo, @descripcion, @precio, @item_cant, @item_monto, @factura_id
+fetch cursor_migracion_consumible into @codigo, @item_cant, @item_monto, @factura_id
 while(@@fetch_status=0)
 begin 
 
@@ -706,9 +596,6 @@ else
 
 declare @estadia_id numeric(18,0)
 set @estadia_id = (select Estadia_Id from NENE_MALLOC.Estadia where Estadia_Reserva = @reserva_id)
-        
-Insert into NENE_MALLOC.Consumible(Consumible_Id, Consumible_Desc, Consumible_precio)
-                            values(@codigo, @descripcion, @precio)
 
 Insert into NENE_MALLOC.Consumible_Por_Estadia(Consumible_Por_Estadia, Consumible_Id, Estadia_Id, Consumible_Cantidad)
                                         values(@id_tipo_fact, @codigo, @estadia_id, @item_cant)
@@ -717,51 +604,12 @@ Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, 
                               values(@item_cant, @item_monto, @id_tipo_fact, @factura_id)             
 
 /*Hay que saber que habitacion consumio que cosa*/                                           
-fetch cursor_migracion_consumible into @codigo, @descripcion, @precio, @item_cant, @item_monto, @factura_id
+fetch cursor_migracion_consumible into @codigo, @item_cant, @item_monto, @factura_id
 end
 close cursor_migracion_consumible
 deallocate cursor_migracion_consumible
 
 GO
-
---FACTURA
-Declare 
-@codigo numeric(18,0),
-@cliente_mail nvarchar(255),
-@nacimiento datetime,
-@fecha datetime,
-@total numeric(18,2)
-Declare cursor_migracion_factura cursor
-	for(select distinct Factura_Nro,
-					    Cliente_Mail,
-					    Cliente_Fecha_Nac,
-					    Factura_Fecha,
-					    Factura_Total
-	    from gd_esquema.Maestra
-	    where Factura_Nro is not null)
-	    
-Open cursor_migracion_factura
-fetch cursor_migracion_factura into @codigo, @cliente_mail, @nacimiento, @fecha, @total
-while(@@fetch_status=0)
-begin 	
-
-declare @cliente_id numeric(18,0)
-set @cliente_id = (select c.Cliente_Id
-                   from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d 
-                   where c.Cliente_Datos = d.Datos_Id
-                     and d.Datos_Mail = @cliente_mail
-                     and d.Datos_Fecha_Nac = @nacimiento)
-
-Insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha, Factura_Total)
-                         values(@codigo, @cliente_id, @fecha, @total)
-
-fetch cursor_migracion_factura into @codigo, @cliente_mail, @nacimiento, @fecha, @total
-end
-close cursor_migracion_factura
-deallocate cursor_migracion_factura
-GO
-
-select * from NENE_MALLOC.Factura
 
 --Faltan en la maestra Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Pais, Hotel_Fecha_Creacion, 
 --Cliente_Telefono, Cliente_Nro_Documento, Cliente_Tipo_Doc
