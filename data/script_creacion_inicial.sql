@@ -550,14 +550,17 @@ GO
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, Tipo_Item_Factura_Id, Item_Factura)
 	(select distinct g.Item_Factura_Cantidad,
 				     g.Item_Factura_Monto,
-				     (select e.Estadia_Id
-				      from NENE_MALLOC.Estadia e
-				      where e.Estadia_Reserva = g.Reserva_Codigo),
+				     ((select case when g.Consumible_Codigo is not null
+									then (select c.Consumible_Por_Habitacion_Id
+										  from NENE_MALLOC.Consumible_Por_Habitacion c,NENE_MALLOC.Reserva_Por_Habitacion r
+									      where c.Consumible_Id = g.Consumible_Codigo and
+											    r.Reserva_Id=g.Reserva_Codigo)
+									else (select e.Estadia_Id
+										  from NENE_MALLOC.Estadia e
+											where e.Estadia_Reserva = g.Reserva_Codigo))),
 					 g.Factura_Nro
 	 from gd_esquema.Maestra g
 	 where g.Item_Factura_Cantidad is not null and
-	       g.Estadia_Cant_Noches is not null and
 	       g.Estadia_Fecha_Inicio is not null)
-	       
-	       case when  g.Estadia_Cant_Noches is not null and g.Estadia_Fecha_Inicio is not null
-	            then
+
+		 
