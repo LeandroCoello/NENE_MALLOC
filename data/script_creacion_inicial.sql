@@ -626,3 +626,90 @@ else
 end
 
 GO
+
+--ALTA DEL ROL
+
+create procedure NENE_MALLOC.alta_rol @rol nvarchar(255)
+
+as
+begin transaction
+	if exists(select Rol_Desc from NENE_MALLOC.Rol where Rol_Desc = @rol)
+		begin
+			rollback
+			raiserror('El rol ya existe',16,1)
+		end
+		
+	Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values ((select MAX(Rol_Id) from NENE_MALLOC.Rol) + 1,@rol)
+commit
+GO
+
+--BAJA DEL ROL
+create procedure NENE_MALLOC.baja_rol @rol nvarchar(255)
+as
+begin transaction
+	
+	update NENE_MALLOC.Rol set Rol_estado = 1
+	where Rol_Desc = @rol
+	
+commit 
+GO 
+
+-- ALTA DE FUNCIONALIDAD POR ROL.
+
+create procedure  NENE_MALLOC.alta_funcionalidad_por_rol @funcionalidad nvarchar(255) , @rol nvarchar(255)
+as
+begin transaction
+	
+	if ((select r.Rol_estado from NENE_MALLOC.Rol r where r.Rol_Desc = @rol) = 1)
+		begin
+			rollback
+			raiserror('El rol está dado de baja',16,1)
+		end
+		
+	if(not(exists(select f.Func_Id from NENE_MALLOC.Funcionalidad f where @funcionalidad = Func_Desc)))
+		begin 
+			Insert into NENE_MALLOC.Funcionalidad(Func_Id, Func_Desc) values ((select MAX(Func_Id) from NENE_MALLOC.Funcionalidad) + 1, @funcionalidad)
+		end
+	
+	Insert into NENE_MALLOC.Func_Por_Rol(Func_Id,Rol_Id) 
+	values ((select f.Func_Id from NENE_MALLOC.Funcionalidad f where f.Func_Desc = @funcionalidad),
+	        (select r.Rol_Id from NENE_MALLOC.Rol r where r.Rol_Desc = @rol))
+
+commit
+GO
+
+-- BAJA DE FUNCIONALIDAD POR ROL.
+
+create procedure  NENE_MALLOC.alta_funcionalidad_por_rol @funcionalidad nvarchar(255) , @rol nvarchar(255)
+as
+begin transaction
+	
+	declare @rol_id numeric(18,0)
+	declare @func_id numeric(18,0)
+	
+	set @rol_id = (select r.Rol_Id from NENE_MALLOC.Rol r where r.Rol_Desc = @rol)
+	set @func_id = (select f.Func_Id from NENE_MALLOC.Funcionalidad f where @funcionalidad = Func_Desc)
+	
+	if ((select r.Rol_estado from NENE_MALLOC.Rol r where r.Rol_Desc = @rol) = 1)
+		begin
+			rollback
+			raiserror('El rol está dado de baja',16,1)
+		end
+		
+	if (@rol_id is null)
+		begin
+			rollback
+			raiserror('El rol no existe',16,1)
+		end
+		
+	if(@func_id is null)
+		begin 
+			rollback
+			raiserror('La funcionalidad no existe',16,1)
+		end
+		
+	delete from NENE_MALLOC.Func_Por_Rol
+	where Rol_Id = @rol_id and Func_Id = @func_id
+
+commit
+GO
