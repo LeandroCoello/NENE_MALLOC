@@ -657,7 +657,7 @@ GO
 
 -- BAJA DE FUNCIONALIDAD POR ROL.
 
-create procedure  NENE_MALLOC.alta_funcionalidad_por_rol @funcionalidad nvarchar(255) , @rol nvarchar(255)
+create procedure  NENE_MALLOC.baja_funcionalidad_por_rol @funcionalidad nvarchar(255) , @rol nvarchar(255)
 as
 begin transaction
 	

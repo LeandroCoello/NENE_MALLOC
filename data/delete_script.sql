@@ -27,5 +27,10 @@ drop table [NENE_MALLOC].[Datos_Personales]
 GO
 
 drop procedure [NENE_MALLOC].[login_usuario]
+drop procedure [NENE_MALLOC].[alta_rol]
+drop procedure [NENE_MALLOC].[baja_rol]
+drop procedure [NENE_MALLOC].[alta_funcionalidad_por_rol]
+drop procedure [NENE_MALLOC].[baja_funcionalidad_por_rol]
+
 drop schema NENE_MALLOC
 GO
