@@ -419,8 +419,8 @@ insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id)
 														where ho.Hotel_Calle=g.Hotel_Calle and
 															  ho.Hotel_Nro_Calle=g.Hotel_Nro_Calle and
 															  ho.Hotel_Ciudad=g.Hotel_Ciudad) ) 
-	from gd_esquema.Maestra g)
-	order by g.Reserva_Codigo
+				from gd_esquema.Maestra g)
+				order by g.Reserva_Codigo
 GO
 
 --FACTURA
@@ -462,7 +462,7 @@ while(@@fetch_status=0)
 begin 
 
 declare @id_tipo_fact numeric(18,0)
-set @id_tipo_fact = (ISNULL((select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura),-1)) + 1
+set @id_tipo_fact = (ISNULL((select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura),0)) + 1
 	
 Insert into NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id) values (@id_tipo_fact)
 	
@@ -519,13 +519,14 @@ while(@@fetch_status=0)
 begin 
 
 declare @id_tipo_fact numeric(18,0)
-set @id_tipo_fact = (ISNULL((select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura),-1)) + 1
+set @id_tipo_fact = (ISNULL((select MAX(Tipo_Item_Factura_Id)from NENE_MALLOC.Tipo_Item_Factura),0)) + 1
 
 declare @reserva_por_habitacion numeric(18,0)
 set @reserva_por_habitacion = (select r.RPH_Id 
-							   from NENE_MALLOC.Reserva_Por_Habitacion r
+							   from NENE_MALLOC.Reserva_Por_Habitacion r,NENE_MALLOC.Habitacion h
 							   where @reserva_id = r.Reserva_Id and
-						             @numero_habitacion = r.Habitacion_Id)
+									 r.Habitacion_Id=h.Habitacion_Id and
+						             @numero_habitacion = h.Habitacion_Num)
 
 Insert into NENE_MALLOC.Tipo_Item_Factura(Tipo_Item_Factura_Id) values (@id_tipo_fact)
 
@@ -538,6 +539,7 @@ end
 close  cursor_migracion_consumible
 deallocate cursor_migracion_consumible                              
 GO
+
 
 --ITEM FACTURA
 
