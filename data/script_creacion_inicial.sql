@@ -368,9 +368,8 @@ update NENE_MALLOC.Cliente
 GO
 
 
---Nota: El cursor esta bien hecho, anda bien, el tema es que son 100 mil reservas y tarda demasiado, lo cancele y recien habia insertado 2 mil en 2min
+
 -- Resulta que para los clientes se inserta en Clientes y Datos Personales a la par, por lo tanto los Cliente_Id y Cliente_Datos coinciden (obvio que solo para la migracion)
--- Entonces el problema estaba en que al buscar el id cliente tenia que pegarle a muchas tablas y con el cursor se le hacia largo, de ahi se me ocurrio usar insert masivo y la tabla Datos_Personales para sacar el Cliente_Id
 
 --RESERVA
 insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng, Reserva_Fecha, Reserva_Hotel, 
@@ -387,6 +386,12 @@ insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng
 					  d.Datos_Nro_Ident=g.Cliente_Pasaporte_Nro)
 		from gd_esquema.Maestra g)
 		order by Reserva_Codigo 
+
+update NENE_MALLOC.Reserva
+	set Reserva_Estado= 'Efectivizada'
+		from (select distinct Reserva_Codigo from gd_esquema.Maestra where Estadia_Fecha_Inicio is not null)t
+			where Reserva_Id=t.Reserva_Codigo
+
 GO
 
 --RESERVA POR HABITACIÓN
