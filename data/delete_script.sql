@@ -26,5 +26,6 @@ drop table [NENE_MALLOC].[Rol]
 drop table [NENE_MALLOC].[Datos_Personales]
 GO
 
+drop procedure [NENE_MALLOC].[login_usuario]
 drop schema NENE_MALLOC
 GO

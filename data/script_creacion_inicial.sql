@@ -48,6 +48,8 @@ CREATE TABLE NENE_MALLOC.Usuario(
 		Usuario_pass nvarchar (255),
 		Usuario_Intentos numeric (18,0) default 0,
 		Usuario_estado bit default 0,
+		Usuario_Deshabilitado bit default 0,
+		USuario_Baja bit default 0,
 		Usuario_datos numeric(18,0) references NENE_MALLOC.Datos_Personales(Datos_Id)
 		)
 GO
@@ -544,8 +546,8 @@ GO
 --ITEM FACTURA
 
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, Tipo_Item_Factura_Id, Item_Factura)
-	(select distinct g.Item_Factura_Cantidad,
-				     g.Item_Factura_Monto,
+	(select  g.Item_Factura_Cantidad,
+				     g.Item_Factura_Monto ,
 				     (select case g.Consumible_Codigo when NULL
 								  then (select c.Consumible_Por_Habitacion_Id
 										from NENE_MALLOC.Consumible_Por_Habitacion c, NENE_MALLOC.Reserva_Por_Habitacion r
@@ -560,4 +562,67 @@ Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, 
 	       g.Estadia_Fecha_Inicio is not null and
 	       g.Estadia_Cant_Noches is not null)
 	       
+GO
+
+------------------------------STORE PROCEDURES---------------------------------------------
+
+
+--LOGIN
+
+create Procedure NENE_MALLOC.login_usuario @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
+as 
+begin
+set @return=0 --El usuario ingresa correctamente
+if exists (select Usuario_name from NENE_MALLOC.Usuario where Usuario_name=@usuario and Usuario_pass=@userpass)
+	begin 
+	update NENE_MALLOC.Usuario 
+	set Usuario_Intentos = 0
+	where Usuario_name = @usuario;
+	declare @deshabilitado bit
+	declare @baja bit
+	set @deshabilitado = (select Usuario_Deshabilitado from NENE_MALLOC.Usuario where @usuario=Usuario_name)
+	set @baja = (select Usuario_Baja from NENE_MALLOC.Usuario where @usuario=Usuario_name)
+		if (@deshabilitado=1)
+		begin
+		   raiserror('El usuario esta deshabilitado.',16,1)	
+		   set @return=1 --El usuario no ingresa por estar deshabilitado
+		   return
+		end
+		else
+			if(@baja=1)
+			begin
+				raiserror('El usuario esta dado de baja.',16,1)
+				set @return=2 --El usuario no ingresa por estar dado de baja
+				return
+			end
+	end
+else
+	begin
+		if exists (select Usuario_name from NENE_MALLOC.Usuario where Usuario_name=@usuario and Usuario_pass!=@userpass)
+		begin
+			if((select Usuario_Intentos from NENE_MALLOC.Usuario where @usuario = Usuario_name) = 2)
+			begin
+				
+				raiserror('La contraseña ingresada no es correcta y el usuario quedo inhabilitado',16,1)
+				update NENE_MALLOC.Usuario set Usuario_Deshabilitado = 1
+				where Usuario_name = @usuario
+				set @return = 1
+			end
+			else
+			begin
+				update NENE_MALLOC.Usuario set Usuario_Intentos = Usuario_Intentos + 1
+				where Usuario_name = @usuario;
+				raiserror('La contraseña ingresada no es correcta.',16,1)
+				set @return = 3 --El usuario no ingresa por ingresar una contraseña incorrecta
+				return
+			end
+		end
+		else
+		begin
+			raiserror ('El usuario no existe.',16,1)
+			set @return = 4 --El usuario no existe
+		end
+	end
+end
+
 GO
