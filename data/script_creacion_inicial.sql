@@ -324,6 +324,7 @@ Insert into NENE_MALLOC.Regimen_Por_Hotel(Hotel_Id, Regimen_Id)
 					 (select r.Regimen_Id from NENE_MALLOC.Regimen r 
 							where r.Regimen_Desc= g.Regimen_Descripcion)
 		 from gd_esquema.Maestra g)
+GO
                        
 --HABITACION
 Insert into NENE_MALLOC.Habitacion(Habitacion_Num, Habitacion_Piso, Habitacion_Hotel, Habitacion_Tipo, Habitacion_Vista)
@@ -336,25 +337,14 @@ Insert into NENE_MALLOC.Habitacion(Habitacion_Num, Habitacion_Piso, Habitacion_H
 						 g.Habitacion_Tipo_Codigo,
 						 g.Habitacion_Frente
 		 from gd_esquema.Maestra g)
+GO
+ 
 
---CLIENTE, DATOS_PERSONALES, USUARIO, USUARIO_POR_ROL (ESTA TARDA 3 minutos!!!!) casi 1 min ahora
+--CLIENTE, DATOS_PERSONALES
 
-Declare
-@nacionalidad nvarchar(255),
-@nombre nvarchar(255),
-@apellido nvarchar(255),
-@tipo_ident nvarchar(30),
-@nro_ident numeric(18,0),
-@mail nvarchar(255),
-@dom_calle nvarchar(255),
-@dom_nro numeric(18,0),
-@dom_piso numeric(18,0),
-@dom_depto nvarchar(50),
-@fecha_nac datetime,
-@id_cli numeric(18,0)
-Declare cursor_migracion_cliente cursor
-	for(select distinct Cliente_Nacionalidad,
-						Cliente_Nombre,
+Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre,Datos_Apellido,Datos_Mail,Datos_Dom_Calle, Datos_Dom_Nro_Calle,
+                                         Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac, Datos_Tipo_Ident, Datos_Nro_Ident)
+			(select distinct Cliente_Nombre,
 					    Cliente_Apellido,
 						Cliente_Mail,
 						Cliente_Dom_Calle,
@@ -362,34 +352,21 @@ Declare cursor_migracion_cliente cursor
 						Cliente_Piso,
 						Cliente_Depto,
 						Cliente_Fecha_Nac,
+						'Pasaporte',
 						Cliente_Pasaporte_Nro
-			   
-		from gd_esquema.Maestra)
-Open cursor_migracion_cliente
-fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @dom_calle,@dom_nro, 
-                                    @dom_piso, @dom_depto, @fecha_nac, @nro_ident
-while(@@fetch_status=0)
-begin 
+					from gd_esquema.Maestra)
 
-set @tipo_ident= 'Pasaporte'	
---userpass es 123456 con sha256
+Insert into NENE_MALLOC.Cliente (Cliente_Nacionalidad, Cliente_Rol)
+(select Cliente_Nacionalidad, 3
+		from gd_esquema.Maestra 
+			group by Cliente_Mail,Cliente_Fecha_Nac,Cliente_Pasaporte_Nro,Cliente_Nacionalidad)
 
-Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre,Datos_Apellido,Datos_Mail,Datos_Dom_Calle, Datos_Dom_Nro_Calle,
-                                         Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac, Datos_Tipo_Ident, Datos_Nro_Ident)
-                                  values(@nombre, @apellido,@mail,@dom_calle,@dom_nro,@dom_piso,
-                                         @dom_depto,@fecha_nac, @tipo_ident, @nro_ident)
-                                      
-Insert into NENE_MALLOC.Cliente (Cliente_Datos, Cliente_Nacionalidad, Cliente_Rol)
-                          values((select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales), @nacionalidad, 3) --HARDCODEADO EL ROL
-                                        
-fetch cursor_migracion_cliente into @nacionalidad, @nombre, @apellido, @mail, @dom_calle,@dom_nro, 
-                                    @dom_piso, @dom_depto, @fecha_nac, @nro_ident
-                                    
-end
-close cursor_migracion_cliente
-deallocate cursor_migracion_cliente
- 
+update NENE_MALLOC.Cliente
+	set Cliente_Datos=s.datos_id
+	from  (select d.Datos_Id datos_id from NENE_MALLOC.Datos_Personales d)s
+		where datos_id=Cliente_Id
 GO
+
 
 --Nota: El cursor esta bien hecho, anda bien, el tema es que son 100 mil reservas y tarda demasiado, lo cancele y recien habia insertado 2 mil en 2min
 -- Resulta que para los clientes se inserta en Clientes y Datos Personales a la par, por lo tanto los Cliente_Id y Cliente_Datos coinciden (obvio que solo para la migracion)
