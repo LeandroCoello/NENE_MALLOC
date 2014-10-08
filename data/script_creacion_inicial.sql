@@ -609,22 +609,6 @@ end
 
 GO
 
---ALTA DEL ROL
-
-create procedure NENE_MALLOC.alta_rol @rol nvarchar(255)
-
-as
-begin transaction
-	if exists(select Rol_Desc from NENE_MALLOC.Rol where Rol_Desc = @rol)
-		begin
-			rollback
-			raiserror('El rol ya existe',16,1)
-		end
-		
-	Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values ((select MAX(Rol_Id) from NENE_MALLOC.Rol) + 1,@rol)
-commit
-GO
-
 --BAJA DEL ROL
 create procedure NENE_MALLOC.baja_rol @rol nvarchar(255)
 as
@@ -695,3 +679,81 @@ begin transaction
 
 commit
 GO
+
+--ALTA DE USUARIO
+
+create procedure NENE_MALLOC.alta_usuario @username varchar(30), @pass nvarchar(255), @rol nvarchar(255), @nombre nvarchar(255), 
+										  @apellido nvarchar(255), @telefono numeric(18,0), @tipo_ident nvarchar(30),
+										  @nro_ident numeric(18,0), @mail nvarchar(255), @calle nvarchar(255),
+										  @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
+										  @fecha_nacimiento nvarchar(15), @hotel numeric(18,0)
+as
+begin transaction
+	
+	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Mail = @mail)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese mail',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Telefono = @telefono)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese telefono',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Tipo_Ident = @tipo_ident and Datos_Nro_Ident = @nro_ident)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese tipo y numero de documento',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Usuario u where u.Usuario_name = @username)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese nombre de usuario',16,1)
+			return
+		end		
+		
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha_nacimiento
+	Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre, Datos_Apellido, Datos_Telefono, Datos_Tipo_Ident,
+											 Datos_Nro_Ident, Datos_Mail, Datos_Dom_Calle, Datos_Dom_Nro_Calle,
+											 Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac)
+									  values(@nombre, @apellido, @telefono, @tipo_ident, @nro_ident, @mail,
+									         @calle, @nro_calle, @piso, @depto, @fecha_correcta)
+									         
+    Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_pass, Usuario_datos)
+                             values(@username, @pass, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
+                             
+    declare @usuario_id numeric(18,0)                    
+    set @usuario_id = (select MAX(Usuario_Id) from NENE_MALLOC.Usuario)     
+    Insert into NENE_MALLOC.Usuario_Por_Hotel(Hotel_Id, Usuario_Id) values (@hotel,@usuario_id)
+                                      
+    Insert into NENE_MALLOC.Usuario_Por_Rol(Rol_Id, Usuario_Id) 
+                                      values ((select Rol_Id from NENE_MALLOC.Rol where Rol_Desc = @rol),@usuario_id)
+
+commit
+GO
+
+
+--------------------------------TRIGGERS-----------------------------------------------------
+
+--ALTA DEL ROL
+
+create trigger NENE_MALLOC.alta_rol on NENE_MALLOC.Rol
+instead of insert
+as
+begin
+	if exists(select Rol_Desc from NENE_MALLOC.Rol, Inserted i where Rol_Desc = i.Rol_Desc)
+		begin
+			raiserror('El rol ya existe',16,1)
+		end
+	else
+		Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values ((select MAX(Rol_Id) from NENE_MALLOC.Rol) + 1,(select i.Rol_Desc from Inserted i))
+end 
+GO
+
