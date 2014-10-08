@@ -6,7 +6,7 @@ using System.Data;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 
-namespace FrbaCommerce.Sistema
+namespace FrbaHotel.Sistema
 {
     class Inicio
     {

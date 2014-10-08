@@ -10,7 +10,7 @@ using System.Configuration;
 using System.Windows.Forms;
 
 
-namespace FrbaCommerce.Sistema
+namespace FrbaHotel.Sistema
 {
     public class SQLConnector
     {

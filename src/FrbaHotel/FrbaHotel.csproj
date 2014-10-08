@@ -84,6 +84,18 @@
     <Compile Include="Cancelar Reserva\Cancelar Reserva.Designer.cs">
       <DependentUpon>Cancelar Reserva.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login\EleccionRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login\EleccionRol.Designer.cs">
+      <DependentUpon>EleccionRol.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menu Principal\MenuPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menu Principal\MenuPrincipal.Designer.cs">
+      <DependentUpon>MenuPrincipal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Principal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,9 +188,10 @@
     <Compile Include="Registrar Estadia\RegEstadia.Designer.cs">
       <DependentUpon>RegEstadia.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sistema\" />
+    <Compile Include="Sistema\Administrador.cs" />
+    <Compile Include="Sistema\Inicio.cs" />
+    <Compile Include="Sistema\SQLConnector.cs" />
+    <Compile Include="Sistema\UsuarioLogueado.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

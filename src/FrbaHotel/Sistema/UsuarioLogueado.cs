@@ -5,7 +5,7 @@ using System.Text;
 using System.Data;
 
 
-namespace FrbaCommerce.Sistema
+namespace FrbaHotel.Sistema
 {
     public class UsuarioLogueado
     {
@@ -41,18 +41,5 @@ namespace FrbaCommerce.Sistema
             }
             return rolesAsignados;
         }
-        public List<Publicacion> conseguirPublicaciones()
-        {
-            string queryRoles = "SELECT R.Rol_Desc FROM SQL_O.Publicacion P,SQL_O.Tipo T,SQL_O.Usuario U"
-                                + "WHERE U.Username ='" + nombreUsuario + "'"
-                                + "and P.Pub_Duenio = U.User_Id";                            
-            return null;
-        }
-
-        public Item_Factura conseguirCompra()
-        {
-            return null;
-        }
-
     }
 }

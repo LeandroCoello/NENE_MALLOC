@@ -15,5 +15,23 @@ namespace FrbaHotel
         {
             InitializeComponent();
         }
+
+        private void btnExecRegistro_Click(object sender, EventArgs e)
+        {
+            FrbaHotel.Registrar_Estadia.RegEstadia levantarEstadia = new FrbaHotel.Registrar_Estadia.RegEstadia();
+            this.Hide();
+            levantarEstadia.ShowDialog();
+            this.Show();
+            
+        }
+
+        private void btnExecLogin_Click(object sender, EventArgs e)
+        {
+            FrbaHotel.Login.Login levantarLogeo = new FrbaHotel.Login.Login();
+            this.Hide();
+            levantarLogeo.ShowDialog();
+            this.Show();
+        }
+
     }
 }
