@@ -748,7 +748,7 @@ create trigger NENE_MALLOC.alta_rol on NENE_MALLOC.Rol
 instead of insert
 as
 begin
-	if exists(select Rol_Desc from NENE_MALLOC.Rol, Inserted i where Rol_Desc = i.Rol_Desc)
+	if exists(select r.Rol_Desc from NENE_MALLOC.Rol r, Inserted i where r.Rol_Desc = i.Rol_Desc)
 		begin
 			raiserror('El rol ya existe',16,1)
 		end

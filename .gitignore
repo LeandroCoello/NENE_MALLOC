@@ -5,3 +5,4 @@ src/FrbaHotel/obj
 *.pdb
 *.cache
 src/FrbaHotel.suo
+*.rsx
