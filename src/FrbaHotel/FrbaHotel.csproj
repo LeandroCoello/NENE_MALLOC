@@ -72,11 +72,47 @@
     <Compile Include="ABM de Rol\ABMRol.Designer.cs">
       <DependentUpon>ABMRol.cs</DependentUpon>
     </Compile>
+    <Compile Include="ABM de Rol\AltaRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Rol\AltaRol.Designer.cs">
+      <DependentUpon>AltaRol.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Rol\BajaRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Rol\BajaRol.Designer.cs">
+      <DependentUpon>BajaRol.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Rol\ModificarRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Rol\ModificarRol.Designer.cs">
+      <DependentUpon>ModificarRol.cs</DependentUpon>
+    </Compile>
     <Compile Include="ABM de Usuario\ABMUsuario.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ABM de Usuario\ABMUsuario.Designer.cs">
       <DependentUpon>ABMUsuario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Usuario\AltaUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Usuario\AltaUsuario.Designer.cs">
+      <DependentUpon>AltaUsuario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Usuario\BajaUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Usuario\BajaUsuario.Designer.cs">
+      <DependentUpon>BajaUsuario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Usuario\ModificarUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Usuario\ModificarUsuario.Designer.cs">
+      <DependentUpon>ModificarUsuario.cs</DependentUpon>
     </Compile>
     <Compile Include="Cancelar Reserva\Cancelar Reserva.cs">
       <SubType>Form</SubType>
@@ -134,8 +170,20 @@
     <EmbeddedResource Include="ABM de Rol\ABMRol.resx">
       <DependentUpon>ABMRol.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Rol\AltaRol.resx">
+      <DependentUpon>AltaRol.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Rol\BajaRol.resx">
+      <DependentUpon>BajaRol.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Rol\ModificarRol.resx">
+      <DependentUpon>ModificarRol.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM de Usuario\ABMUsuario.resx">
       <DependentUpon>ABMUsuario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Usuario\AltaUsuario.resx">
+      <DependentUpon>AltaUsuario.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Cancelar Reserva\Cancelar Reserva.resx">
       <DependentUpon>Cancelar Reserva.cs</DependentUpon>
