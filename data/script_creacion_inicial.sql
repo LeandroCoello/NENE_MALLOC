@@ -739,6 +739,53 @@ begin transaction
 commit
 GO
 
+--ALTA DE HOTEL
+
+create procedure NENE_MALLOC.alta_hotel @nombre nvarchar(255), @mail nvarchar(255), @telefono numeric(18,0),
+                                        @calle nvarchar(255), @nro_calle numeric(18,0), @ciudad nvarchar(255),
+                                        @pais nvarchar(255), @fecha_creacion datetime, @estrellas numeric(18,0),
+                                        @recarga_estrella numeric(18,0)
+
+as
+begin transaction
+	
+	if exists(select *  from NENE_MALLOC.Hotel h where h.Hotel_Nombre = @nombre)
+		begin
+			rollback
+			raiserror('Ya existe un hotel con este nombre',16,1)
+			return
+		end
+
+	if exists(select *  from NENE_MALLOC.Hotel h where h.Hotel_Mail = @mail)
+		begin
+			rollback
+			raiserror('Ya existe un hotel con este mail',16,1)
+			return
+		end
+
+	if exists(select *  from NENE_MALLOC.Hotel h where h.Hotel_Telefono = @telefono)
+		begin
+			rollback
+			raiserror('Ya existe un hotel con este telefono',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Hotel h where h.Hotel_Ciudad = @ciudad and
+	                                                   h.Hotel_Pais = @pais and
+	                                                   h.Hotel_Calle = @calle and
+	                                                   h.Hotel_Nro_Calle = @nro_calle)
+		begin
+			rollback
+			raiserror('Ya existe un hotel en esta direccion',16,1)
+			return
+		end	
+		
+	Insert into NENE_MALLOC.Hotel(Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Calle, Hotel_Nro_Calle, 
+	                              Hotel_Ciudad, Hotel_Pais, Hotel_Fecha_Creacion, Hotel_Cant_Est, Hotel_Recarga_Estrella)
+		                   values(@nombre, @mail, @telefono, @calle, @nro_calle, @ciudad, @pais, @fecha_creacion,
+		                          @estrellas, @recarga_estrella)	                 
+commit
+GO
 
 --------------------------------TRIGGERS-----------------------------------------------------
 
