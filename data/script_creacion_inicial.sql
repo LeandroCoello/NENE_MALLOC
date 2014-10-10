@@ -787,10 +787,32 @@ begin transaction
 commit
 GO
 
+--ALTA DE HABITACION
+
+create procedure NENE_MALLOC.alta_habitacion @numero numeric(18,0), @piso numeric(18,0), @hotel numeric(18,0),
+                                             @tipo numeric(18,0), @vista nvarchar(50), @descripcion nvarchar(255)
+as
+begin transaction
+
+	if exists(select h.Habitacion_Id from NENE_MALLOC.Habitacion h where h.Habitacion_Num = @numero and
+	                                                                     h.Habitacion_Piso = @piso and
+	                                                                     h.Habitacion_Hotel = @hotel)
+		begin
+			rollback
+			raiserror('La habitacion ya existe en el hotel',16,1)
+			return
+		end
+	
+	Insert into NENE_MALLOC.Habitacion(Habitacion_Num, Habitacion_Piso, Habitacion_Hotel, Habitacion_Tipo,
+	                                   Habitacion_Vista, Habitacion_Desc) 
+	                            values(@numero, @piso, @hotel, @tipo, @vista, @descripcion)                                                                    
+	
+commit 
+GO
+
 --------------------------------TRIGGERS-----------------------------------------------------
 
 --ALTA DEL ROL
-
 create trigger NENE_MALLOC.alta_rol on NENE_MALLOC.Rol
 instead of insert
 as
@@ -804,3 +826,9 @@ begin
 end 
 GO
 
+
+/*
+Los siguientes procedimientos/triggers no los desarrollamos así los hacen los chicos:
+-BAJA ROL
+-BAJA USUARIO
+-BAJA DE USUARIO POR HOTEL
