@@ -547,9 +547,9 @@ Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, 
 GO
 
 ------------------------------STORE PROCEDURES---------------------------------------------
+--IMPORTANTE!! FORMATO DE STRING DE FECHAS TIENE QUE SER AAAAMMDD PARA QUE LO PODAMOS ASIGNAR DIRECTAMENTE A UN DATETIME.
 
-
---LOGIN
+--LOGIN (TESTEADOS TODOS LOS CASOS)
 
 create Procedure NENE_MALLOC.login_usuario @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
 as 
@@ -680,7 +680,7 @@ begin transaction
 commit
 GO
 
---ALTA DE USUARIO
+--ALTA DE USUARIO (TESTEADOS TODOS LOS CASOS)
 
 create procedure NENE_MALLOC.alta_usuario @username varchar(30), @pass nvarchar(255), @rol nvarchar(255), @nombre nvarchar(255), 
 										  @apellido nvarchar(255), @telefono numeric(18,0), @tipo_ident nvarchar(30),
@@ -690,6 +690,20 @@ create procedure NENE_MALLOC.alta_usuario @username varchar(30), @pass nvarchar(
 as
 begin transaction
 	
+	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Tipo_Ident = @tipo_ident and Datos_Nro_Ident = @nro_ident)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese tipo y numero de documento',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Usuario u where u.Usuario_name = @username)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese nombre de usuario',16,1)
+			return
+		end		
+
 	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Mail = @mail)
 		begin
 			rollback
@@ -704,19 +718,6 @@ begin transaction
 			return
 		end
 		
-	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Tipo_Ident = @tipo_ident and Datos_Nro_Ident = @nro_ident)
-		begin
-			rollback
-			raiserror('Ya existe un usuario con ese tipo y numero de documento',16,1)
-			return
-		end
-		
-	if exists(select *  from NENE_MALLOC.Usuario u where u.Usuario_name = @username)
-		begin
-			rollback
-			raiserror('Ya existe un usuario con ese nombre de usuario',16,1)
-			return
-		end		
 		
 	declare @fecha_correcta datetime
 	set @fecha_correcta = @fecha_nacimiento
@@ -739,11 +740,57 @@ begin transaction
 commit
 GO
 
+--ALTA DE CLIENTE (TESTEADOS TODOS LOS CASOS)
+
+create procedure NENE_MALLOC.alta_cliente @nombre nvarchar(255), @apellido nvarchar(255), @telefono numeric(18,0), 
+										  @tipo_ident nvarchar(30), @nro_ident numeric(18,0), @mail nvarchar(255), 
+										  @calle nvarchar(255), @nro_calle numeric(18,0), @piso numeric(18,0), 
+										  @depto nvarchar(50), @fecha_nacimiento nvarchar(15), @nacionalidad nvarchar(255)
+as
+begin transaction
+	
+		
+	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Tipo_Ident = @tipo_ident and Datos_Nro_Ident = @nro_ident)
+		begin
+			rollback
+			raiserror('Ya existe un cliente con ese tipo y numero de identificacion.',16,1)
+			return
+		end
+
+	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Mail = @mail)
+		begin
+			rollback
+			raiserror('Ya existe un cliente con ese mail.',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Datos_Personales d where d.Datos_Telefono = @telefono)
+		begin
+			rollback
+			raiserror('Ya existe un cliente con ese telefono.',16,1)
+			return
+		end
+		
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha_nacimiento
+	
+	Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre, Datos_Apellido, Datos_Telefono, Datos_Tipo_Ident,
+											 Datos_Nro_Ident, Datos_Mail, Datos_Dom_Calle, Datos_Dom_Nro_Calle,
+											 Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac)
+									  values(@nombre, @apellido, @telefono, @tipo_ident, @nro_ident, @mail,
+									         @calle, @nro_calle, @piso, @depto, @fecha_correcta)
+									         
+    Insert into NENE_MALLOC.Cliente(Cliente_Nacionalidad, Cliente_Rol , Cliente_Datos)
+                             values(@nacionalidad, 3, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
+                             
+commit
+GO
+
 --ALTA DE HOTEL
 
 create procedure NENE_MALLOC.alta_hotel @nombre nvarchar(255), @mail nvarchar(255), @telefono numeric(18,0),
                                         @calle nvarchar(255), @nro_calle numeric(18,0), @ciudad nvarchar(255),
-                                        @pais nvarchar(255), @fecha_creacion datetime, @estrellas numeric(18,0),
+                                        @pais nvarchar(255), @fecha_creacion nvarchar(15), @estrellas numeric(18,0),
                                         @recarga_estrella numeric(18,0)
 
 as
@@ -780,9 +827,12 @@ begin transaction
 			return
 		end	
 		
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha_creacion
+		
 	Insert into NENE_MALLOC.Hotel(Hotel_Nombre, Hotel_Mail, Hotel_Telefono, Hotel_Calle, Hotel_Nro_Calle, 
 	                              Hotel_Ciudad, Hotel_Pais, Hotel_Fecha_Creacion, Hotel_Cant_Est, Hotel_Recarga_Estrella)
-		                   values(@nombre, @mail, @telefono, @calle, @nro_calle, @ciudad, @pais, @fecha_creacion,
+		                   values(@nombre, @mail, @telefono, @calle, @nro_calle, @ciudad, @pais, @fecha_correcta,
 		                          @estrellas, @recarga_estrella)	                 
 commit
 GO
