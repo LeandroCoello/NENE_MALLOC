@@ -54,11 +54,47 @@
     <Compile Include="ABM de Cliente\ABMCliente.Designer.cs">
       <DependentUpon>ABMCliente.cs</DependentUpon>
     </Compile>
+    <Compile Include="ABM de Cliente\AltaCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Cliente\AltaCliente.Designer.cs">
+      <DependentUpon>AltaCliente.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Cliente\BajaCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Cliente\BajaCliente.Designer.cs">
+      <DependentUpon>BajaCliente.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Cliente\ModifCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Cliente\ModifCliente.Designer.cs">
+      <DependentUpon>ModifCliente.cs</DependentUpon>
+    </Compile>
     <Compile Include="ABM de Habitacion\ABMHabitacion.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ABM de Habitacion\ABMHabitacion.Designer.cs">
       <DependentUpon>ABMHabitacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Habitacion\AltaHabitacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Habitacion\BajaHabitacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Habitacion\BajaHabitacion.Designer.cs">
+      <DependentUpon>BajaHabitacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Habitacion\HabitacionAlta.Designer.cs">
+      <DependentUpon>AltaHabitacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Habitacion\ModifHabitacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Habitacion\ModifHabitacion.Designer.cs">
+      <DependentUpon>ModifHabitacion.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM de Regimen\ABMRegimen.cs">
       <SubType>Form</SubType>
@@ -160,6 +196,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ABM de Cliente\ABMCliente.resx">
       <DependentUpon>ABMCliente.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Cliente\BajaCliente.resx">
+      <DependentUpon>BajaCliente.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ABM de Habitacion\ABMHabitacion.resx">
       <DependentUpon>ABMHabitacion.cs</DependentUpon>

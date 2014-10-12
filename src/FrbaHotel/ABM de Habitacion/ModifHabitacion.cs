@@ -7,14 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaHotel.Cancelar_Reserva
+namespace FrbaHotel.ABM_de_Habitacion
 {
-    public partial class Form1 : Form
+    public partial class ModifHabitacion : Form
     {
-        public Form1()
+        public ModifHabitacion()
         {
             InitializeComponent();
         }
-
     }
 }
