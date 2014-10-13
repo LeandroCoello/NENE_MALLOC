@@ -15,15 +15,14 @@ namespace FrbaHotel.Login
 {
     public partial class Login : Form
     {
-        string passHasheada;
         int contadorDeIntentos = 0;
         private Inicio inicio;
         private UsuarioLogueado userLog;
         private List<string> roles = new List<string>();
-        public Login(/*SQLConnector connection*/)
+        public Login(SQLConnector connection)
         {
             InitializeComponent();
-            /*inicio = new Inicio(connection);*/
+            inicio = new Inicio(connection);
         }
 
         private void btnAceptar_Click(object sender, EventArgs e)
@@ -48,16 +47,20 @@ namespace FrbaHotel.Login
                roles = userLog.conseguirRolesUsuario();
                      if (roles.Count() > 1)
                          {
-                           EleccionRol levantarEleccionRol = new EleccionRol();
+                           EleccionRol levantarEleccionRol = new EleccionRol(roles);
                          }
                      else {
-                         Menu_Principal.MenuPrincipal levantarMenu = new FrbaHotel.Menu_Principal.MenuPrincipal();
+                         Menu_Principal.MenuPrincipal levantarMenu = new FrbaHotel.Menu_Principal.MenuPrincipal(roles.First());
+                         contadorDeIntentos = 0;
+                         this.Hide();
+                         levantarMenu.ShowDialog();
                       }
             }
             else
             {
                 MessageBox.Show("Se ha alcanazo el maximo de intentos de login, usuario inhabilitado");
                 btnAceptar.Enabled = false;
+                /*Baja logica del sistema tambien ????*/
             }
         }
 

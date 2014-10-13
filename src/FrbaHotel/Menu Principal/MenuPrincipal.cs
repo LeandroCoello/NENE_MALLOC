@@ -11,7 +11,7 @@ namespace FrbaHotel.Menu_Principal
 {
     public partial class MenuPrincipal : Form
     {
-        public MenuPrincipal()
+        public MenuPrincipal(string rolElegido)
         {
             InitializeComponent();
         }

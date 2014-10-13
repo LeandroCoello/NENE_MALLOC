@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace FrbaHotel.ABM_de_Usuario
 {
-    public partial class BajaPantallaFinal : Form
+    public partial class PantallaListado : Form
     {
-        public BajaPantallaFinal()
+        public PantallaListado()
         {
             InitializeComponent();
         }
