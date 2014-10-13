@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using System.Text;
 
 namespace FrbaHotel.Sistema
 {
     public class Administrador
     {
+        SQLConnector conexion = new SQLConnector();
         public List<String> vendedoresConMayorFacturacion()
         {
             return null;
@@ -18,6 +20,17 @@ namespace FrbaHotel.Sistema
         public List<String> clientesConMayorCantidadDePublicacionesSinCalificar()
         {
             return null;
+        }
+        public List<String> rolesSistema()
+        {
+            string queryRoles = "SELECT R.Rol_Desc FROM NENE_MALLOC.Rol R GROUP BY R.Rol_Desc";
+            DataTable roles = conexion.consulta(queryRoles);
+            List<string> rolesSistema = new List<string>();
+            foreach (DataRow row in roles.Rows)
+            {
+                rolesSistema.Add((string)row[0]);
+            }
+            return rolesSistema;
         }
     }
 }

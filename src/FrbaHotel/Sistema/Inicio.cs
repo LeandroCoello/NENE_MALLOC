@@ -43,7 +43,7 @@ namespace FrbaHotel.Sistema
             return null;
         }
 
-        private string SHA256Encripta(string input)
+        public string SHA256Encripta(string input)
         {
             SHA256Managed provider = new SHA256Managed();
 

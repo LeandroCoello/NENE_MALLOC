@@ -45,7 +45,7 @@ namespace FrbaHotel.Login
                 {
                     MessageBox.Show(exception.Message);
                 }
-               roles = userLog.conseguirRoles();
+               roles = userLog.conseguirRolesUsuario();
                      if (roles.Count() > 1)
                          {
                            EleccionRol levantarEleccionRol = new EleccionRol();

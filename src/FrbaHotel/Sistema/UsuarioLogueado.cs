@@ -26,9 +26,9 @@ namespace FrbaHotel.Sistema
             return contraseñaHash;
         }
 
-        public List<String> conseguirRoles()
+        public List<String> conseguirRolesUsuario()
         {
-            string queryRoles = "SELECT R.Rol_Desc FROM SQL_O.Rol R,SQL_O.Usuarios_Por_Rol UR,SQL_O.Usuario U"
+            string queryRoles = "SELECT R.Rol_Desc FROM NENE_MALLOC.Rol R,NENE_MALLOC.Usuarios_Por_Rol UR,NENE_MALLOC.Usuario U"
                                 + "WHERE U.Username ='" + nombreUsuario + "'"
                                 + "and UR.UserId = U.User_Id"
                                 + "and UR.Rol_Cod = R.Rol_Cod"
@@ -41,5 +41,6 @@ namespace FrbaHotel.Sistema
             }
             return rolesAsignados;
         }
+
     }
 }
