@@ -113,6 +113,7 @@
             this.btnAceptarCancel.TabIndex = 8;
             this.btnAceptarCancel.Text = "Aceptar";
             this.btnAceptarCancel.UseVisualStyleBackColor = true;
+            this.btnAceptarCancel.Click += new System.EventHandler(this.btnAceptarCancel_Click);
             // 
             // Form1
             // 

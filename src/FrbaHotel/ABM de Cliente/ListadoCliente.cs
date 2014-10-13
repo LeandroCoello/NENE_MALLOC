@@ -7,19 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FrbaHotel.Cancelar_Reserva
+namespace FrbaHotel.ABM_de_Cliente
 {
-    public partial class Form1 : Form
+    public partial class ListadoCliente : Form
     {
-        public Form1()
+        public ListadoCliente()
         {
             InitializeComponent();
         }
-
-        private void btnAceptarCancel_Click(object sender, EventArgs e)
-        {
-            /*LLAMAR AL SQL VALIDANDO DATOS*/
-        }
-
     }
 }
