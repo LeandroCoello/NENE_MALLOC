@@ -307,6 +307,9 @@
     <Compile Include="Sistema\SQLConnector.cs" />
     <Compile Include="Sistema\UsuarioLogueado.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ABM de Hotel\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

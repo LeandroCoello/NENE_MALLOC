@@ -15,5 +15,6 @@ namespace FrbaHotel.ABM_de_Rol
         {
             InitializeComponent();
         }
+
     }
 }

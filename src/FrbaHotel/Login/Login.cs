@@ -63,6 +63,5 @@ namespace FrbaHotel.Login
                 /*Baja logica del sistema tambien ????*/
             }
         }
-
     }
 }
