@@ -49,7 +49,7 @@ CREATE TABLE NENE_MALLOC.Usuario(
 		Usuario_Intentos numeric (18,0) default 0,
 		Usuario_estado bit default 0,
 		Usuario_Deshabilitado bit default 0,
-		USuario_Baja bit default 0,
+		Usuario_Baja bit default 0,
 		Usuario_datos numeric(18,0) references NENE_MALLOC.Datos_Personales(Datos_Id)
 		)
 GO
@@ -614,11 +614,29 @@ create procedure NENE_MALLOC.baja_rol @rol nvarchar(255)
 as
 begin transaction
 	
-	update NENE_MALLOC.Rol set Rol_estado = 1
-	where Rol_Desc = @rol
+	update NENE_MALLOC.Rol
+		 set Rol_estado = 1
+		 where Rol_Desc = @rol
 	
 commit 
 GO 
+
+--MODIFICACION DE ROL
+create procedure NENE_MALLOC.modificacion_rol @rol_id numeric(18,0), @descripcion nvarchar(255)
+as
+begin transaction
+	
+	if exists(select r.Rol_Desc from NENE_MALLOC.Rol r 
+				where r.Rol_Desc = @descripcion)
+		begin
+			raiserror('El rol ya existe',16,1)
+		end
+	
+	update NENE_MALLOC.Rol  
+		set Rol_Desc = @descripcion
+		where Rol_Id = @rol_id
+commit
+GO
 
 -- ALTA DE FUNCIONALIDAD POR ROL.
 
@@ -740,6 +758,85 @@ begin transaction
 commit
 GO
 
+--MODIFICACION USUARIO
+create procedure NENE_MALLOC.modificacion_usuario @username varchar(30), @pass nvarchar(255), @rol nvarchar(255), @nombre nvarchar(255), 
+										  @apellido nvarchar(255), @telefono numeric(18,0), @tipo_ident nvarchar(30),
+										  @nro_ident numeric(18,0), @mail nvarchar(255), @calle nvarchar(255),
+										  @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
+										  @fecha_nacimiento nvarchar(15), @hotel numeric(18,0), @usuario_id numeric(18,0)
+as
+begin transaction
+	
+	if exists(select *  from NENE_MALLOC.Datos_Personales d, NENE_MALLOC.Usuario u 
+				where u.Usuario_datos = d.Datos_Id and
+					  d.Datos_Tipo_Ident = @tipo_ident and 
+					  d.Datos_Nro_Ident = @nro_ident and
+					  u.Usuario_Id != @usuario_id)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese tipo y numero de documento',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Usuario u
+				 where u.Usuario_name = @username and
+					   u.Usuario_Id != @usuario_id)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese nombre de usuario',16,1)
+			return
+		end		
+
+	if exists(select *  from NENE_MALLOC.Datos_Personales d, NENE_MALLOC.Usuario u 
+				where u.Usuario_datos = d.Datos_Id and
+					  d.Datos_Mail = @mail and
+					  u.Usuario_Id != @usuario_id)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese mail',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Datos_Personales d, NENE_MALLOC.Usuario u 
+				where u.Usuario_datos = d.Datos_Id and
+					  d.Datos_Telefono = @telefono and
+					  u.Usuario_Id != @usuario_id)
+		begin
+			rollback
+			raiserror('Ya existe un usuario con ese telefono',16,1)
+			return
+		end
+		
+		
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha_nacimiento
+	declare @datos_id numeric(18,0)
+	set @datos_id = (select u.Usuario_datos from NENE_MALLOC.Usuario u
+						where u.Usuario_Id = @usuario_id)
+	
+	
+	update NENE_MALLOC.Datos_Personales
+		set Datos_Nombre = @nombre,
+			Datos_Apellido = @apellido,
+			Datos_Telefono = @telefono,
+			Datos_Tipo_Ident = @tipo_ident,
+			Datos_Nro_Ident = @nro_ident,
+			Datos_Mail = @mail,
+			Datos_Dom_Calle = @calle, 
+			Datos_Dom_Nro_Calle = @nro_calle,
+			Datos_Dom_Piso = @piso, 
+			Datos_Dom_Depto = @depto, 
+			Datos_Fecha_Nac = @fecha_correcta		
+		where Datos_Id = @datos_id
+	
+	update NENE_MALLOC.Usuario
+		set Usuario_name = @username,
+			Usuario_pass = @pass
+		where Usuario_Id = @usuario_id
+									         
+commit
+GO
+
 --ALTA DE CLIENTE (TESTEADOS TODOS LOS CASOS)
 
 create procedure NENE_MALLOC.alta_cliente @nombre nvarchar(255), @apellido nvarchar(255), @telefono numeric(18,0), 
@@ -783,6 +880,74 @@ begin transaction
     Insert into NENE_MALLOC.Cliente(Cliente_Nacionalidad, Cliente_Rol , Cliente_Datos)
                              values(@nacionalidad, 3, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
                              
+commit
+GO
+
+--MODIFICACION CLIENTE
+create procedure NENE_MALLOC.modificacion_cliente @nombre nvarchar(255), @apellido nvarchar(255), @telefono numeric(18,0), 
+												  @tipo_ident nvarchar(30), @nro_ident numeric(18,0), @mail nvarchar(255), 
+												  @calle nvarchar(255), @nro_calle numeric(18,0), @piso numeric(18,0), 
+												  @depto nvarchar(50), @fecha_nacimiento nvarchar(15), @nacionalidad nvarchar(255),
+												  @cliente_id numeric(18,0)
+as
+begin transaction
+	
+		
+	if exists(select *  from NENE_MALLOC.Datos_Personales d, NENE_MALLOC.Cliente c 
+				where c.Cliente_Datos = d.Datos_Id and
+					  d.Datos_Tipo_Ident = @tipo_ident and 
+					  d.Datos_Nro_Ident = @nro_ident and
+					  c.Cliente_Id != @cliente_id)
+		begin
+			rollback
+			raiserror('Ya existe un cliente con ese tipo y numero de identificacion.',16,1)
+			return
+		end
+
+	if exists(select *  from NENE_MALLOC.Datos_Personales d, NENE_MALLOC.Cliente c 
+				where c.Cliente_Datos = d.Datos_Id and
+					  d.Datos_Mail = @mail and
+					  c.Cliente_Id != @cliente_id)
+		begin
+			rollback
+			raiserror('Ya existe un cliente con ese mail.',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Datos_Personales d, NENE_MALLOC.Cliente c 
+				where c.Cliente_Datos = d.Datos_Id and
+					  d.Datos_Telefono = @telefono and
+					  c.Cliente_Id != @cliente_id)
+		begin
+			rollback
+			raiserror('Ya existe un cliente con ese telefono.',16,1)
+			return
+		end
+		
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha_nacimiento
+	declare @datos_id numeric(18,0)
+	set @datos_id = (select c.Cliente_Datos from NENE_MALLOC.Cliente c
+						where c.Cliente_Id = @cliente_id )
+	
+	update NENE_MALLOC.Datos_Personales
+	set Datos_Nombre = @nombre,
+			Datos_Apellido = @apellido,
+			Datos_Telefono = @telefono,
+			Datos_Tipo_Ident = @tipo_ident,
+			Datos_Nro_Ident = @nro_ident,
+			Datos_Mail = @mail,
+			Datos_Dom_Calle = @calle, 
+			Datos_Dom_Nro_Calle = @nro_calle,
+			Datos_Dom_Piso = @piso, 
+			Datos_Dom_Depto = @depto, 
+			Datos_Fecha_Nac = @fecha_correcta		
+		where Datos_Id = @datos_id
+		
+	update NENE_MALLOC.Cliente
+		set Cliente_Nacionalidad = @nacionalidad
+		where Cliente_Id = @cliente_id
+
 commit
 GO
 
@@ -876,6 +1041,106 @@ begin
 end 
 GO
 
+--------------------------------FUNCIONES-----------------------------------------------------
+
+
+--------------------------LISTADO ESTADÍSTICO---------------------------------------------------
+
+
+--HOTELES CON MAYOR CANTIDAD DE RESERVAS CANCELADAS
+create function hoteles_reservas_mas_canceladas (@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+returns @tabla table (hotel_nombre nvarchar(255),
+					  hotel_mail nvarchar(255),
+					  hotel_telefono numeric(18,0),
+					  hotel_ciudad nvarchar(255),
+					  hotel_pais nvarchar(255) )
+	as begin 
+	
+	
+	set @tabla = (select top 5 h.Hotel_Nombre, h.Hotel_Mail, h.Hotel_Telefono, h.Hotel_Ciudad, h.Hotel_Pais
+				  from NENE_MALLOC.Reserva r, NENE_MALLOC.Hotel h
+						where r.Reserva_Estado='Cancelada' and 
+							  r.Reserva_Hotel=h.Hotel_Id and
+							  year(r.Reserva_Fecha)=@anio and
+							  month(r.Reserva_Fecha) between @mesInicio and @mesFin
+								group by h.Hotel_Id,h.Hotel_Nombre, h.Hotel_Mail, h.Hotel_Telefono, h.Hotel_Ciudad, h.Hotel_Pais
+								order by count(r.Reserva_Id))
+	
+	return 
+end
+GO
+
+--HOTELES CON MAYOR CANTIDAD DE CONSUMIBLES FACTURADOS
+create function hoteles_consumibles_facturados(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+returns @tabla table (hotel_nombre nvarchar(255),
+					  hotel_mail nvarchar(255),
+					  hotel_telefono numeric(18,0),
+					  hotel_ciudad nvarchar(255),
+					  hotel_pais nvarchar(255) )
+	as begin 
+	
+	
+	set @tabla = (select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+				  from NENE_MALLOC.Reserva_Por_Habitacion r, NENE_MALLOC.Hotel ho, NENE_MALLOC.Habitacion ha,
+				       NENE_MALLOC.Consumible_Por_Habitacion c, NENE_MALLOC.Factura f, NENE_MALLOC.Item_Factura i
+				  where c.RPH_Id = r.RPH_Id and
+				        r.Habitacion_Id = ha.Habitacion_Id and
+				        ha.Habitacion_Hotel = ho.Hotel_Id and
+				        i.Item_Factura = f.Factura_Id and
+				        i.Tipo_Item_Factura_Id = c.Consumible_Por_Habitacion_Id and
+						year(f.Factura_Fecha)=@anio and
+						month(f.Factura_Fecha) between @mesInicio and @mesFin
+				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+				  order by count(c.Consumible_Por_Habitacion_Id))
+	
+	return 
+end
+GO
+
+
+--HOTELES CON MAYOR CANTIDAD DE DIAS FUERA DE SERVICIO
+create function hoteles_fuera_de_servicio(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+returns @tabla table (hotel_nombre nvarchar(255),
+					  hotel_mail nvarchar(255),
+					  hotel_telefono numeric(18,0),
+					  hotel_ciudad nvarchar(255),
+					  hotel_pais nvarchar(255) )
+	as begin 
+	
+	
+	set @tabla = (select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+				  from NENE_MALLOC.Hotel ho, NENE_MALLOC.Periodos_De_Cierre p
+				  where p.Periodo_Hotel = ho.Hotel_Id and
+						year(p.Periodo_FechaInicio)=@anio and
+						month(p.Periodo_FechaInicio) between @mesInicio and @mesFin
+				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin)))
+
+	return 
+end
+GO
+
+--HABITACIONES CON MAYOR CANTIDAD DE DÍAS Y VECES QUE FUERON OCUPADAS
+create function habitaciones_más_ocupadas(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+returns @tabla table (hotel_nombre nvarchar(255),
+					  hotel_mail nvarchar(255),
+					  hotel_telefono numeric(18,0),
+					  hotel_ciudad nvarchar(255),
+					  hotel_pais nvarchar(255) )
+	as begin 
+	
+	
+	set @tabla = (select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+				  from NENE_MALLOC.Hotel ho, NENE_MALLOC.Periodos_De_Cierre p
+				  where p.Periodo_Hotel = ho.Hotel_Id and
+						year(p.Periodo_FechaInicio)=@anio and
+						month(p.Periodo_FechaInicio) between @mesInicio and @mesFin
+				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin)))
+
+	return 
+end
+GO
 
 /*
 Los siguientes procedimientos/triggers no los desarrollamos así los hacen los chicos:
