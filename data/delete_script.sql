@@ -34,9 +34,19 @@ drop procedure [NENE_MALLOC].[alta_usuario]
 drop procedure [NENE_MALLOC].[alta_hotel]
 drop procedure [NENE_MALLOC].[alta_habitacion]
 drop procedure [NENE_MALLOC].[alta_cliente]
+drop procedure [NENE_MALLOC].[modificacion_usuario]
+drop procedure [NENE_MALLOC].[modificacion_cliente]
+drop procedure [NENE_MALLOC].[modificacion_hotel]
+drop procedure [NENE_MALLOC].[modificacion_habitacion]
 GO
 
 drop trigger [NENE_MALLOC].[alta_rol]
+GO
+
+drop function [NENE_MALLOC].[hoteles_reservas_mas_canceladas]
+drop function [NENE_MALLOC].[hoteles_consumibles_facturados]
+drop function [NENE_MALLOC].[hoteles_fuera_de_servicio]
+drop function [NENE_MALLOC].[habitaciones_más_ocupadas]
 GO
 
 

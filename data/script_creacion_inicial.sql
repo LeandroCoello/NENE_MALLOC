@@ -1002,6 +1002,73 @@ begin transaction
 commit
 GO
 
+--MODIFICACIÓN DE HOTEL
+
+create procedure NENE_MALLOC.modificacion_hotel @nombre nvarchar(255), @mail nvarchar(255), @telefono numeric(18,0),
+												@calle nvarchar(255), @nro_calle numeric(18,0), @ciudad nvarchar(255),
+												@pais nvarchar(255), @fecha_creacion nvarchar(15), @estrellas numeric(18,0),
+												@recarga_estrella numeric(18,0), @hotel_id numeric(18,0)
+
+as
+begin transaction
+	
+	if exists(select *  from NENE_MALLOC.Hotel h 
+				where h.Hotel_Nombre = @nombre and
+				      h.Hotel_Id != @hotel_id)
+		begin
+			rollback
+			raiserror('Ya existe un hotel con este nombre',16,1)
+			return
+		end
+
+	if exists(select *  from NENE_MALLOC.Hotel h 
+				where h.Hotel_Mail = @mail and
+				      h.Hotel_Id != @hotel_id)
+		begin
+			rollback
+			raiserror('Ya existe un hotel con este mail',16,1)
+			return
+		end
+
+	if exists(select *  from NENE_MALLOC.Hotel h 
+				where h.Hotel_Telefono = @telefono and
+				      h.Hotel_Id != @hotel_id)
+		begin
+			rollback
+			raiserror('Ya existe un hotel con este telefono',16,1)
+			return
+		end
+		
+	if exists(select *  from NENE_MALLOC.Hotel h where h.Hotel_Ciudad = @ciudad and
+	                                                   h.Hotel_Pais = @pais and
+	                                                   h.Hotel_Calle = @calle and
+	                                                   h.Hotel_Nro_Calle = @nro_calle and
+													   h.Hotel_Id != @hotel_id)
+		begin
+			rollback
+			raiserror('Ya existe un hotel en esta direccion',16,1)
+			return
+		end	
+		
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha_creacion
+
+	update NENE_MALLOC.Hotel
+	set Hotel_Nombre = @nombre,
+	    Hotel_Mail = @mail,
+	    Hotel_Telefono = @telefono,
+	    Hotel_Calle = @calle,
+	    Hotel_Nro_Calle = @nro_calle,
+	    Hotel_Ciudad = @ciudad,
+	    Hotel_Pais = @pais,
+	    Hotel_Fecha_Creacion = @fecha_correcta,
+	    Hotel_Cant_Est = @estrellas,
+	    Hotel_Recarga_Estrella = @recarga_estrella		
+		where Hotel_Id = @hotel_id		
+                 
+commit
+GO
+
 --ALTA DE HABITACION
 
 create procedure NENE_MALLOC.alta_habitacion @numero numeric(18,0), @piso numeric(18,0), @hotel numeric(18,0),
@@ -1022,6 +1089,37 @@ begin transaction
 	                                   Habitacion_Vista, Habitacion_Desc) 
 	                            values(@numero, @piso, @hotel, @tipo, @vista, @descripcion)                                                                    
 	
+commit 
+GO
+
+--MODIFICACIÓN DE HABITACIÓN
+
+create procedure NENE_MALLOC.modificacion_habitacion @numero numeric(18,0), @piso numeric(18,0), @hotel numeric(18,0),
+													 @tipo numeric(18,0), @vista nvarchar(50), @descripcion nvarchar(255),
+													 @habitacion_id numeric(18,0)
+as
+begin transaction
+
+	if exists(select h.Habitacion_Id from NENE_MALLOC.Habitacion h where h.Habitacion_Num = @numero and
+	                                                                     h.Habitacion_Piso = @piso and
+	                                                                     h.Habitacion_Hotel = @hotel and
+	                                                                     h.Habitacion_Id != @habitacion_id)
+		begin
+			rollback
+			raiserror('La habitacion ya existe en el hotel',16,1)
+			return
+		end
+		
+		
+		update NENE_MALLOC.Habitacion
+		set Habitacion_Num = @numero,
+		    Habitacion_Piso = @piso,
+		    Habitacion_Hotel = @hotel,
+		    Habitacion_Tipo = @tipo,
+		    Habitacion_Vista = @vista,
+		    Habitacion_Desc = @descripcion		
+		where Habitacion_Id = @habitacion_id		
+                 
 commit 
 GO
 
