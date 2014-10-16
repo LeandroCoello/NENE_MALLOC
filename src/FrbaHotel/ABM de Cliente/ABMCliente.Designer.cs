@@ -61,6 +61,7 @@
             this.btnBaja.TabIndex = 2;
             this.btnBaja.Text = "Baja";
             this.btnBaja.UseVisualStyleBackColor = true;
+            this.btnBaja.Click += new System.EventHandler(this.btnBaja_Click);
             // 
             // ABMCliente
             // 

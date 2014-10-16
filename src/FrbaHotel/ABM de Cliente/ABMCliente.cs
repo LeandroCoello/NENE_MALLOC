@@ -27,7 +27,18 @@ namespace FrbaHotel.ABM_de_Cliente
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
+            ListadoCliente levantarListado = new ListadoCliente("modificar");
+            this.Hide();
+            levantarListado.Show();
+            this.Show();
+        }
 
+        private void btnBaja_Click(object sender, EventArgs e)
+        {
+            ListadoCliente levantarListado = new ListadoCliente("baja");
+            this.Hide();
+            levantarListado.Show();
+            this.Show();
         }
     }
 }

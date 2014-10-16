@@ -33,7 +33,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dGVListadoSeleccionados = new System.Windows.Forms.DataGridView();
             this.btnLimpieza = new System.Windows.Forms.Button();
             this.btnBusqueda = new System.Windows.Forms.Button();
             this.txtNom = new System.Windows.Forms.TextBox();
@@ -41,7 +41,13 @@
             this.txtMail = new System.Windows.Forms.TextBox();
             this.cBtipoIdent = new System.Windows.Forms.ComboBox();
             this.txtNDoc = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Mail = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NroDoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TipoDoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnSeleccion = new System.Windows.Forms.DataGridViewButtonColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dGVListadoSeleccionados)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -65,7 +71,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(199, 9);
+            this.label3.Location = new System.Drawing.Point(457, 13);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 2;
@@ -74,7 +80,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(199, 45);
+            this.label4.Location = new System.Drawing.Point(457, 49);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 13);
             this.label4.TabIndex = 3;
@@ -89,13 +95,21 @@
             this.label5.TabIndex = 4;
             this.label5.Text = "Mail:";
             // 
-            // dataGridView1
+            // dGVListadoSeleccionados
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 138);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(490, 369);
-            this.dataGridView1.TabIndex = 5;
+            this.dGVListadoSeleccionados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dGVListadoSeleccionados.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Nombre,
+            this.Apellido,
+            this.Mail,
+            this.NroDoc,
+            this.TipoDoc,
+            this.btnSeleccion});
+            this.dGVListadoSeleccionados.Location = new System.Drawing.Point(12, 138);
+            this.dGVListadoSeleccionados.Name = "dGVListadoSeleccionados";
+            this.dGVListadoSeleccionados.Size = new System.Drawing.Size(643, 369);
+            this.dGVListadoSeleccionados.TabIndex = 5;
+            this.dGVListadoSeleccionados.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dGVListadoSeleccionados_CellContentClick);
             // 
             // btnLimpieza
             // 
@@ -105,15 +119,17 @@
             this.btnLimpieza.TabIndex = 6;
             this.btnLimpieza.Text = "Limpiar";
             this.btnLimpieza.UseVisualStyleBackColor = true;
+            this.btnLimpieza.Click += new System.EventHandler(this.btnLimpieza_Click);
             // 
             // btnBusqueda
             // 
-            this.btnBusqueda.Location = new System.Drawing.Point(296, 109);
+            this.btnBusqueda.Location = new System.Drawing.Point(580, 109);
             this.btnBusqueda.Name = "btnBusqueda";
             this.btnBusqueda.Size = new System.Drawing.Size(75, 23);
             this.btnBusqueda.TabIndex = 7;
             this.btnBusqueda.Text = "Buscar";
             this.btnBusqueda.UseVisualStyleBackColor = true;
+            this.btnBusqueda.Click += new System.EventHandler(this.btnBusqueda_Click);
             // 
             // txtNom
             // 
@@ -139,23 +155,53 @@
             // cBtipoIdent
             // 
             this.cBtipoIdent.FormattingEnabled = true;
-            this.cBtipoIdent.Location = new System.Drawing.Point(274, 6);
+            this.cBtipoIdent.Location = new System.Drawing.Point(532, 10);
             this.cBtipoIdent.Name = "cBtipoIdent";
             this.cBtipoIdent.Size = new System.Drawing.Size(121, 21);
             this.cBtipoIdent.TabIndex = 11;
             // 
             // txtNDoc
             // 
-            this.txtNDoc.Location = new System.Drawing.Point(274, 42);
+            this.txtNDoc.Location = new System.Drawing.Point(532, 46);
             this.txtNDoc.Name = "txtNDoc";
             this.txtNDoc.Size = new System.Drawing.Size(100, 20);
             this.txtNDoc.TabIndex = 12;
+            // 
+            // Nombre
+            // 
+            this.Nombre.HeaderText = "Nombre";
+            this.Nombre.Name = "Nombre";
+            // 
+            // Apellido
+            // 
+            this.Apellido.HeaderText = "Apellido";
+            this.Apellido.Name = "Apellido";
+            // 
+            // Mail
+            // 
+            this.Mail.HeaderText = "Mail";
+            this.Mail.Name = "Mail";
+            // 
+            // NroDoc
+            // 
+            this.NroDoc.HeaderText = "Nro Doc";
+            this.NroDoc.Name = "NroDoc";
+            // 
+            // TipoDoc
+            // 
+            this.TipoDoc.HeaderText = "Tipo Documento";
+            this.TipoDoc.Name = "TipoDoc";
+            // 
+            // btnSeleccion
+            // 
+            this.btnSeleccion.HeaderText = "Seleccionar";
+            this.btnSeleccion.Name = "btnSeleccion";
             // 
             // ListadoCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 553);
+            this.ClientSize = new System.Drawing.Size(670, 553);
             this.Controls.Add(this.txtNDoc);
             this.Controls.Add(this.cBtipoIdent);
             this.Controls.Add(this.txtMail);
@@ -163,7 +209,7 @@
             this.Controls.Add(this.txtNom);
             this.Controls.Add(this.btnBusqueda);
             this.Controls.Add(this.btnLimpieza);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dGVListadoSeleccionados);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -171,7 +217,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ListadoCliente";
             this.Text = "ListadoCliente";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dGVListadoSeleccionados)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -184,7 +230,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dGVListadoSeleccionados;
         private System.Windows.Forms.Button btnLimpieza;
         private System.Windows.Forms.Button btnBusqueda;
         private System.Windows.Forms.TextBox txtNom;
@@ -192,5 +238,11 @@
         private System.Windows.Forms.TextBox txtMail;
         private System.Windows.Forms.ComboBox cBtipoIdent;
         private System.Windows.Forms.TextBox txtNDoc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Apellido;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Mail;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NroDoc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TipoDoc;
+        private System.Windows.Forms.DataGridViewButtonColumn btnSeleccion;
     }
 }
