@@ -73,7 +73,6 @@
             this.Controls.Add(this.btnAlta);
             this.Name = "ABMUsuario";
             this.Text = "ABM Usuario";
-            this.Load += new System.EventHandler(this.ABMUsuario_Load);
             this.ResumeLayout(false);
 
         }
