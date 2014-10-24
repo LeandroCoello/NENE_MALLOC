@@ -15,5 +15,11 @@ namespace FrbaHotel.ABM_de_Cliente
         {
             InitializeComponent();
         }
+
+        private void btnBaja_Click(object sender, EventArgs e)
+        {
+            /*ARMAR LOGICA*/
+        }
+
     }
 }

@@ -218,6 +218,9 @@
     <EmbeddedResource Include="ABM de Cliente\ListadoCliente.resx">
       <DependentUpon>ListadoCliente.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Cliente\ModifCliente.resx">
+      <DependentUpon>ModifCliente.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM de Habitacion\ABMHabitacion.resx">
       <DependentUpon>ABMHabitacion.cs</DependentUpon>
     </EmbeddedResource>
