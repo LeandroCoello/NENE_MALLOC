@@ -41,12 +41,6 @@
             this.txtMail = new System.Windows.Forms.TextBox();
             this.cBtipoIdent = new System.Windows.Forms.ComboBox();
             this.txtNDoc = new System.Windows.Forms.TextBox();
-            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mail = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.NroDoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TipoDoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnSeleccion = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dGVListadoSeleccionados)).BeginInit();
             this.SuspendLayout();
             // 
@@ -98,13 +92,6 @@
             // dGVListadoSeleccionados
             // 
             this.dGVListadoSeleccionados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGVListadoSeleccionados.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Nombre,
-            this.Apellido,
-            this.Mail,
-            this.NroDoc,
-            this.TipoDoc,
-            this.btnSeleccion});
             this.dGVListadoSeleccionados.Location = new System.Drawing.Point(12, 138);
             this.dGVListadoSeleccionados.Name = "dGVListadoSeleccionados";
             this.dGVListadoSeleccionados.Size = new System.Drawing.Size(643, 369);
@@ -167,36 +154,6 @@
             this.txtNDoc.Size = new System.Drawing.Size(100, 20);
             this.txtNDoc.TabIndex = 12;
             // 
-            // Nombre
-            // 
-            this.Nombre.HeaderText = "Nombre";
-            this.Nombre.Name = "Nombre";
-            // 
-            // Apellido
-            // 
-            this.Apellido.HeaderText = "Apellido";
-            this.Apellido.Name = "Apellido";
-            // 
-            // Mail
-            // 
-            this.Mail.HeaderText = "Mail";
-            this.Mail.Name = "Mail";
-            // 
-            // NroDoc
-            // 
-            this.NroDoc.HeaderText = "Nro Doc";
-            this.NroDoc.Name = "NroDoc";
-            // 
-            // TipoDoc
-            // 
-            this.TipoDoc.HeaderText = "Tipo Documento";
-            this.TipoDoc.Name = "TipoDoc";
-            // 
-            // btnSeleccion
-            // 
-            this.btnSeleccion.HeaderText = "Seleccionar";
-            this.btnSeleccion.Name = "btnSeleccion";
-            // 
             // ListadoCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -238,11 +195,5 @@
         private System.Windows.Forms.TextBox txtMail;
         private System.Windows.Forms.ComboBox cBtipoIdent;
         private System.Windows.Forms.TextBox txtNDoc;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Apellido;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Mail;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NroDoc;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TipoDoc;
-        private System.Windows.Forms.DataGridViewButtonColumn btnSeleccion;
     }
 }

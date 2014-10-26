@@ -26,18 +26,18 @@ namespace FrbaHotel.ABM_de_Rol
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            ModificarRol levantarModif = new ModificarRol();
+            ListadoRol levantarListado = new ListadoRol("modificar");
             this.Hide();
-            levantarModif.ShowDialog();
+            levantarListado.Show();
             this.Show();
         }
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            BajaRol levantarBaja = new BajaRol();
+            ListadoRol levantarListado = new ListadoRol("baja");
             this.Hide();
-            levantarBaja.ShowDialog();
-            this.Show();
+            levantarListado.Show();
+            this.Show(); 
         }
     }
 }

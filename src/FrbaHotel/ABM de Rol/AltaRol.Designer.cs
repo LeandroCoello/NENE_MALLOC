@@ -110,6 +110,7 @@
             this.btnCrearRol.TabIndex = 7;
             this.btnCrearRol.Text = "Crear";
             this.btnCrearRol.UseVisualStyleBackColor = true;
+            this.btnCrearRol.Click += new System.EventHandler(this.btnCrearRol_Click);
             // 
             // AltaRol
             // 

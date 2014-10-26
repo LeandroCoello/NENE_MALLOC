@@ -32,25 +32,24 @@ namespace FrbaHotel.Listado_Estadistico
 
 
         private void btnLanzarConsulta_Click(object sender, EventArgs e)
-        {
-            /*ESPERAR A QUE LOS BEPIS DE SQL LO TENGAN TERMINADO*/
-            string queryListado = "SELECT TOP 5 * FROM NENE_MALLOC.Hotel";
+        {    
             string queryFinal;
             switch (cBListado.SelectedItem.ToString()) 
             {  
                 case "Hoteles con mayor cantidad de reservas canceladas":
-                    queryFinal = queryListado+"";
+                    queryFinal = "exec hoteles_reservas_mas_canceladas GO";
                     dGVListEsta.DataSource = conector.consulta(queryFinal);
-
                     break;
                 case "Hoteles con mayor cantidad de consumibles facturados":
-
+                    queryFinal = "exec hoteles_consumibles_facturados GO";
+                    dGVListEsta.DataSource = conector.consulta(queryFinal);
                     break;
                 case "Hoteles con mayor cantidad de días fuera de servicio":
-
+                    queryFinal = "exec hoteles_fuera_de_servicio GO";
+                    dGVListEsta.DataSource = conector.consulta(queryFinal);
                     break;
                 case "Habitaciones con mayor cantidad de días y veces que fueron ocupadas":
-
+                    queryFinal = "exec habitaciones_mas_ocupadas GO";
                     break;
                 default:
 

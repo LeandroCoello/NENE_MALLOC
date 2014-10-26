@@ -35,7 +35,7 @@
             this.txtNroReserva = new System.Windows.Forms.TextBox();
             this.txtNUsuario = new System.Windows.Forms.TextBox();
             this.txtFecCancel = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtMotivo = new System.Windows.Forms.TextBox();
             this.btnAceptarCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -94,16 +94,17 @@
             this.txtFecCancel.Enabled = false;
             this.txtFecCancel.Location = new System.Drawing.Point(120, 205);
             this.txtFecCancel.Name = "txtFecCancel";
+            this.txtFecCancel.ReadOnly = true;
             this.txtFecCancel.Size = new System.Drawing.Size(104, 20);
             this.txtFecCancel.TabIndex = 6;
             // 
-            // textBox1
+            // txtMotivo
             // 
-            this.textBox1.Location = new System.Drawing.Point(15, 52);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(246, 111);
-            this.textBox1.TabIndex = 7;
+            this.txtMotivo.Location = new System.Drawing.Point(15, 52);
+            this.txtMotivo.Multiline = true;
+            this.txtMotivo.Name = "txtMotivo";
+            this.txtMotivo.Size = new System.Drawing.Size(246, 111);
+            this.txtMotivo.TabIndex = 7;
             // 
             // btnAceptarCancel
             // 
@@ -121,7 +122,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(289, 306);
             this.Controls.Add(this.btnAceptarCancel);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtMotivo);
             this.Controls.Add(this.txtFecCancel);
             this.Controls.Add(this.txtNUsuario);
             this.Controls.Add(this.txtNroReserva);
@@ -145,7 +146,7 @@
         private System.Windows.Forms.TextBox txtNroReserva;
         private System.Windows.Forms.TextBox txtNUsuario;
         private System.Windows.Forms.TextBox txtFecCancel;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtMotivo;
         private System.Windows.Forms.Button btnAceptarCancel;
     }
 }
