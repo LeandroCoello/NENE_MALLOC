@@ -7,19 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-
 namespace FrbaHotel.ABM_de_Hotel
 {
-    public partial class ABMHotel : Form
+    public partial class ListadoHotel : Form
     {
-        public ABMHotel()
+        public ListadoHotel()
         {
             InitializeComponent();
-        }
-
-        private void btnAlta_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

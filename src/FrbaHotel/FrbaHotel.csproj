@@ -96,11 +96,47 @@
     <Compile Include="ABM de Habitacion\HabitacionAlta.Designer.cs">
       <DependentUpon>AltaHabitacion.cs</DependentUpon>
     </Compile>
+    <Compile Include="ABM de Habitacion\ListadoHabitacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Habitacion\ListadoHabitacion.Designer.cs">
+      <DependentUpon>ListadoHabitacion.cs</DependentUpon>
+    </Compile>
     <Compile Include="ABM de Habitacion\ModifHabitacion.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ABM de Habitacion\ModifHabitacion.Designer.cs">
       <DependentUpon>ModifHabitacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Hotel\ABMHotel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Hotel\ABMHotel.Designer.cs">
+      <DependentUpon>ABMHotel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Hotel\AltaHotel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Hotel\AltaHotel.Designer.cs">
+      <DependentUpon>AltaHotel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Hotel\BajaHotel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Hotel\BajaHotel.Designer.cs">
+      <DependentUpon>BajaHotel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Hotel\ListadoHotel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Hotel\ListadoHotel.Designer.cs">
+      <DependentUpon>ListadoHotel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Hotel\ModifHotel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Hotel\ModifHotel.Designer.cs">
+      <DependentUpon>ModifHotel.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM de Regimen\ABMRegimen.cs">
       <SubType>Form</SubType>
@@ -125,6 +161,12 @@
     </Compile>
     <Compile Include="ABM de Rol\BajaRol.Designer.cs">
       <DependentUpon>BajaRol.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Rol\ListadoRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Rol\ListadoRol.Designer.cs">
+      <DependentUpon>ListadoRol.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM de Rol\ModificarRol.cs">
       <SubType>Form</SubType>
@@ -224,6 +266,18 @@
     <EmbeddedResource Include="ABM de Habitacion\ABMHabitacion.resx">
       <DependentUpon>ABMHabitacion.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Habitacion\AltaHabitacion.resx">
+      <DependentUpon>AltaHabitacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Habitacion\BajaHabitacion.resx">
+      <DependentUpon>BajaHabitacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Habitacion\ListadoHabitacion.resx">
+      <DependentUpon>ListadoHabitacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Hotel\ABMHotel.resx">
+      <DependentUpon>ABMHotel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM de Regimen\ABMRegimen.resx">
       <DependentUpon>ABMRegimen.cs</DependentUpon>
     </EmbeddedResource>
@@ -235,6 +289,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ABM de Rol\BajaRol.resx">
       <DependentUpon>BajaRol.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Rol\ListadoRol.resx">
+      <DependentUpon>ListadoRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ABM de Rol\ModificarRol.resx">
       <DependentUpon>ModificarRol.cs</DependentUpon>
@@ -309,9 +366,6 @@
     <Compile Include="Sistema\Inicio.cs" />
     <Compile Include="Sistema\SQLConnector.cs" />
     <Compile Include="Sistema\UsuarioLogueado.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ABM de Hotel\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
