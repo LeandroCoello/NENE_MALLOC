@@ -38,6 +38,7 @@ drop procedure [NENE_MALLOC].[modificacion_usuario]
 drop procedure [NENE_MALLOC].[modificacion_cliente]
 drop procedure [NENE_MALLOC].[modificacion_hotel]
 drop procedure [NENE_MALLOC].[modificacion_habitacion]
+drop procedure [NENE_MALLOC].[modificacion_rol]
 GO
 
 drop trigger [NENE_MALLOC].[alta_rol]

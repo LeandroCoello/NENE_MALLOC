@@ -133,7 +133,6 @@ CREATE TABLE NENE_MALLOC.Cliente(
 		Cliente_Datos numeric(18,0) references NENE_MALLOC.Datos_Personales(Datos_Id),
 		Cliente_Nacionalidad nvarchar(255),
 		Cliente_Deshabilitado bit default 0,
-		Cliente_Rol numeric(18,0) references NENE_MALLOC.Rol(Rol_Id)
 		)
 GO		
 
@@ -356,8 +355,8 @@ Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre,Datos_Apellido,Datos_Mail,
 						Cliente_Pasaporte_Nro
 					from gd_esquema.Maestra)
 
-Insert into NENE_MALLOC.Cliente (Cliente_Nacionalidad, Cliente_Rol)
-(select Cliente_Nacionalidad, 3
+Insert into NENE_MALLOC.Cliente (Cliente_Nacionalidad)
+(select Cliente_Nacionalidad
 		from gd_esquema.Maestra 
 			group by Cliente_Mail,Cliente_Fecha_Nac,Cliente_Pasaporte_Nro,Cliente_Nacionalidad)
 
@@ -877,8 +876,8 @@ begin transaction
 									  values(@nombre, @apellido, @telefono, @tipo_ident, @nro_ident, @mail,
 									         @calle, @nro_calle, @piso, @depto, @fecha_correcta)
 									         
-    Insert into NENE_MALLOC.Cliente(Cliente_Nacionalidad, Cliente_Rol , Cliente_Datos)
-                             values(@nacionalidad, 3, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
+    Insert into NENE_MALLOC.Cliente(Cliente_Nacionalidad, Cliente_Datos)
+                             values(@nacionalidad, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
                              
 commit
 GO
@@ -1146,7 +1145,7 @@ GO
 
 
 --HOTELES CON MAYOR CANTIDAD DE RESERVAS CANCELADAS
-create function hoteles_reservas_mas_canceladas (@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+create function NENE_MALLOC.hoteles_reservas_mas_canceladas (@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (hotel_nombre nvarchar(255),
 					  hotel_mail nvarchar(255),
 					  hotel_telefono numeric(18,0),
@@ -1155,21 +1154,22 @@ returns @tabla table (hotel_nombre nvarchar(255),
 	as begin 
 	
 	
-	set @tabla = (select top 5 h.Hotel_Nombre, h.Hotel_Mail, h.Hotel_Telefono, h.Hotel_Ciudad, h.Hotel_Pais
+	insert into @tabla (hotel_nombre, hotel_mail, hotel_telefono, hotel_ciudad, hotel_pais)
+			(select top 5 h.Hotel_Nombre, h.Hotel_Mail, h.Hotel_Telefono, h.Hotel_Ciudad, h.Hotel_Pais
 				  from NENE_MALLOC.Reserva r, NENE_MALLOC.Hotel h
 						where r.Reserva_Estado='Cancelada' and 
 							  r.Reserva_Hotel=h.Hotel_Id and
 							  year(r.Reserva_Fecha)=@anio and
 							  month(r.Reserva_Fecha) between @mesInicio and @mesFin
-								group by h.Hotel_Id,h.Hotel_Nombre, h.Hotel_Mail, h.Hotel_Telefono, h.Hotel_Ciudad, h.Hotel_Pais
-								order by count(r.Reserva_Id))
+								group by h.Hotel_Id,h.Hotel_Nombre, h.Hotel_Mail, h.Hotel_Telefono, h.Hotel_Ciudad, h.Hotel_Pais)
+								order by count(r.Reserva_Id)
 	
 	return 
 end
 GO
 
 --HOTELES CON MAYOR CANTIDAD DE CONSUMIBLES FACTURADOS
-create function hoteles_consumibles_facturados(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+create function NENE_MALLOC.hoteles_consumibles_facturados(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (hotel_nombre nvarchar(255),
 					  hotel_mail nvarchar(255),
 					  hotel_telefono numeric(18,0),
@@ -1178,7 +1178,8 @@ returns @tabla table (hotel_nombre nvarchar(255),
 	as begin 
 	
 	
-	set @tabla = (select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+	insert into @tabla (hotel_nombre, hotel_mail, hotel_telefono, hotel_ciudad, hotel_pais)
+			(select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
 				  from NENE_MALLOC.Reserva_Por_Habitacion r, NENE_MALLOC.Hotel ho, NENE_MALLOC.Habitacion ha,
 				       NENE_MALLOC.Consumible_Por_Habitacion c, NENE_MALLOC.Factura f, NENE_MALLOC.Item_Factura i
 				  where c.RPH_Id = r.RPH_Id and
@@ -1188,8 +1189,8 @@ returns @tabla table (hotel_nombre nvarchar(255),
 				        i.Tipo_Item_Factura_Id = c.Consumible_Por_Habitacion_Id and
 						year(f.Factura_Fecha)=@anio and
 						month(f.Factura_Fecha) between @mesInicio and @mesFin
-				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
-				  order by count(c.Consumible_Por_Habitacion_Id))
+				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
+				  order by count(c.Consumible_Por_Habitacion_Id)
 	
 	return 
 end
@@ -1197,7 +1198,7 @@ GO
 
 
 --HOTELES CON MAYOR CANTIDAD DE DIAS FUERA DE SERVICIO
-create function hoteles_fuera_de_servicio(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+create function NENE_MALLOC.hoteles_fuera_de_servicio(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (hotel_nombre nvarchar(255),
 					  hotel_mail nvarchar(255),
 					  hotel_telefono numeric(18,0),
@@ -1206,20 +1207,21 @@ returns @tabla table (hotel_nombre nvarchar(255),
 	as begin 
 	
 	
-	set @tabla = (select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+	insert into @tabla (hotel_nombre, hotel_mail, hotel_telefono, hotel_ciudad, hotel_pais)
+			(select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
 				  from NENE_MALLOC.Hotel ho, NENE_MALLOC.Periodos_De_Cierre p
 				  where p.Periodo_Hotel = ho.Hotel_Id and
 						year(p.Periodo_FechaInicio)=@anio and
 						month(p.Periodo_FechaInicio) between @mesInicio and @mesFin
-				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
-				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin)))
+				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
+				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin))
 
 	return 
 end
 GO
 
 --HABITACIONES CON MAYOR CANTIDAD DE DÍAS Y VECES QUE FUERON OCUPADAS
-create function habitaciones_más_ocupadas(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+create function NENE_MALLOC.habitaciones_más_ocupadas(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (hotel_nombre nvarchar(255),
 					  hotel_mail nvarchar(255),
 					  hotel_telefono numeric(18,0),
@@ -1228,13 +1230,14 @@ returns @tabla table (hotel_nombre nvarchar(255),
 	as begin 
 	
 	
-	set @tabla = (select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
+	insert into @tabla (hotel_nombre, hotel_mail, hotel_telefono, hotel_ciudad, hotel_pais)
+			(select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
 				  from NENE_MALLOC.Hotel ho, NENE_MALLOC.Periodos_De_Cierre p
 				  where p.Periodo_Hotel = ho.Hotel_Id and
 						year(p.Periodo_FechaInicio)=@anio and
 						month(p.Periodo_FechaInicio) between @mesInicio and @mesFin
-				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
-				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin)))
+				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
+				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin))
 
 	return 
 end
@@ -1245,3 +1248,10 @@ Los siguientes procedimientos/triggers no los desarrollamos así los hacen los ch
 -BAJA ROL
 -BAJA USUARIO
 -BAJA DE USUARIO POR HOTEL
+
+Lei esto en uno de los mails que puso el ayudante:
+"En cuanto al guest, estaría muyyyyyyyyyyy mal asignarselo a todos los clientes por justamente del guest al no hacer 
+login no se puede identificar a la persona, es alguien que hace uso del sistema y ahce la reserva en nombre de alguien 
+que dice ser o supone ser la misma persona que realiza la reserva."
+
+*/
