@@ -1,8 +1,7 @@
 use GD2C2014
 go 
 
-drop table [NENE_MALLOC].[Usuario_Por_Hotel]
-drop table [NENE_MALLOC].[Usuario_Por_Rol]
+drop table [NENE_MALLOC].[Usuario_Por_Rol_Por_Hotel]
 drop table [NENE_MALLOC].[Func_Por_Rol]
 drop table [NENE_MALLOC].[Funcionalidad]
 drop table [NENE_MALLOC].[Regimen_Por_Hotel]

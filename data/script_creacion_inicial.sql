@@ -54,14 +54,6 @@ CREATE TABLE NENE_MALLOC.Usuario(
 		)
 GO
 
-CREATE TABLE NENE_MALLOC.Usuario_Por_Rol(
-		Usuario_Id numeric(18,0) references NENE_MALLOC.Usuario(Usuario_Id),
-		Rol_Id numeric(18,0) references NENE_MALLOC.Rol(Rol_Id)
-		Primary Key(Usuario_Id,Rol_Id)
-	
-	)
-GO
-
 CREATE TABLE NENE_MALLOC.Hotel(
 		Hotel_Id numeric(18,0) primary key identity,
 		Hotel_Nombre nvarchar(255) default '',
@@ -78,11 +70,13 @@ CREATE TABLE NENE_MALLOC.Hotel(
 		)
 GO
 
-CREATE TABLE NENE_MALLOC.Usuario_Por_Hotel(
-		Hotel_Id numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id),
+CREATE TABLE NENE_MALLOC.Usuario_Por_Rol_Por_Hotel(
 		Usuario_Id numeric(18,0) references NENE_MALLOC.Usuario(Usuario_Id),
-		Primary Key (Hotel_Id,Usuario_Id)
-		)
+		Hotel_Id numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id),
+		Rol_Id numeric(18,0) references NENE_MALLOC.Rol(Rol_Id)
+		Primary Key(Usuario_Id, Hotel_Id, Rol_Id)
+	
+	)
 GO
 
 CREATE TABLE NENE_MALLOC.Periodos_De_Cierre(
@@ -248,6 +242,7 @@ Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (25,'Registrar C
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (26,'Emitir Factura')
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (27,'Listado Estadístico')
 GO
+
 
 --FUNCIONALIDAD POR ROL
 
@@ -747,12 +742,11 @@ begin transaction
     Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_pass, Usuario_datos)
                              values(@username, @pass, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
                              
-    declare @usuario_id numeric(18,0)                    
-    set @usuario_id = (select MAX(Usuario_Id) from NENE_MALLOC.Usuario)     
-    Insert into NENE_MALLOC.Usuario_Por_Hotel(Hotel_Id, Usuario_Id) values (@hotel,@usuario_id)
-                                      
-    Insert into NENE_MALLOC.Usuario_Por_Rol(Rol_Id, Usuario_Id) 
-                                      values ((select Rol_Id from NENE_MALLOC.Rol where Rol_Desc = @rol),@usuario_id)
+        
+    Insert into NENE_MALLOC.Usuario_Por_Rol_Por_Hotel(Usuario_Id, Hotel_Id, Rol_Id) 
+			values ((select MAX(Usuario_Id) from NENE_MALLOC.Usuario), 
+					@hotel, 
+					(select Rol_Id from NENE_MALLOC.Rol where Rol_Desc = @rol) )
 
 commit
 GO
@@ -1248,6 +1242,7 @@ Los siguientes procedimientos/triggers no los desarrollamos así los hacen los ch
 -BAJA ROL
 -BAJA USUARIO
 -BAJA DE USUARIO POR HOTEL
+-Modificacion de Usuario_Por_Rol_Por_Hotel
 
 Lei esto en uno de los mails que puso el ayudante:
 "En cuanto al guest, estaría muyyyyyyyyyyy mal asignarselo a todos los clientes por justamente del guest al no hacer 
