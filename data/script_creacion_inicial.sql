@@ -523,7 +523,7 @@ close  cursor_migracion_consumible
 deallocate cursor_migracion_consumible                              
 GO
 
-select * from NENE_MALLOC.Consumible_Por_Habitacion
+
 --ITEM FACTURA
 
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, Tipo_Item_Factura_Id, Item_Factura)
@@ -1170,7 +1170,7 @@ returns @tabla table (hotel_nombre nvarchar(255),
 end
 GO
 
---HOTELES CON MAYOR CANTIDAD DE CONSUMIBLES FACTURADOS
+--HOTELES CON MAYOR CANTIDAD DE CONSUMIBLES FACTURADOS (hasta aca llegue)
 create function NENE_MALLOC.hoteles_consumibles_facturados(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (hotel_nombre nvarchar(255),
 					  hotel_mail nvarchar(255),
