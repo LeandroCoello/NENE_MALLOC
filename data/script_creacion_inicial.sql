@@ -187,7 +187,8 @@ CREATE TABLE NENE_MALLOC.Factura(
 		Factura_Id numeric(18,0) primary key,
 		Factura_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
 		Factura_Fecha datetime,
-		Factura_Total numeric(18,2)
+		Factura_Total numeric(18,2),
+		Factura_Hotel numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id)
 		)
 GO
 
@@ -402,14 +403,18 @@ insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id)
 GO
 
 --FACTURA
-Insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha, Factura_Total)
+Insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha, Factura_Total, Factura_Hotel)
 	(select distinct g.Factura_Nro,
 	                (select d.Datos_Id from NENE_MALLOC.Datos_Personales d 
 					 where d.Datos_Mail= g.Cliente_Mail and
 						   d.Datos_Fecha_Nac=g.Cliente_Fecha_Nac and
 					       d.Datos_Nro_Ident=g.Cliente_Pasaporte_Nro),
 					 g.Factura_Fecha,
-					 g.Factura_Total			       
+					 g.Factura_Total,
+					 (select ho.Hotel_Id from NENE_MALLOC.Hotel ho 
+						where ho.Hotel_Calle = g.Hotel_Calle and
+							  ho.Hotel_Ciudad = g.Hotel_Ciudad and
+							  ho.Hotel_Nro_Calle = g.Hotel_Nro_Calle)			       
 	 from gd_esquema.Maestra g
 	 where g.Factura_Nro is not null)
 	 order by g.Factura_Nro
@@ -518,27 +523,30 @@ close  cursor_migracion_consumible
 deallocate cursor_migracion_consumible                              
 GO
 
-
+select * from NENE_MALLOC.Consumible_Por_Habitacion
 --ITEM FACTURA
 
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Cantidad, Item_Factura_Monto, Tipo_Item_Factura_Id, Item_Factura)
 	(select  g.Item_Factura_Cantidad,
-				     g.Item_Factura_Monto ,
-				     (select case g.Consumible_Codigo when NULL
+		     g.Item_Factura_Monto ,
+			 (select case when g.Consumible_Codigo is not null
 								  then (select c.Consumible_Por_Habitacion_Id
 										from NENE_MALLOC.Consumible_Por_Habitacion c, NENE_MALLOC.Reserva_Por_Habitacion r
 									    where c.Consumible_Id = g.Consumible_Codigo and
-											  r.Reserva_Id=g.Reserva_Codigo)
+											  c.RPH_Id = r.RPH_Id and
+											  r.Reserva_Id = g.Reserva_Codigo)
 								  else (select e.Estadia_Id
 										from NENE_MALLOC.Estadia e
 									    where e.Estadia_Reserva = g.Reserva_Codigo) end),
-					 g.Factura_Nro
+			  g.Factura_Nro
 	 from gd_esquema.Maestra g
 	 where g.Item_Factura_Cantidad is not null and
 	       g.Estadia_Fecha_Inicio is not null and
 	       g.Estadia_Cant_Noches is not null)
 	       
 GO
+
+			     
 
 ------------------------------STORE PROCEDURES---------------------------------------------
 --IMPORTANTE!! FORMATO DE STRING DE FECHAS TIENE QUE SER AAAAMMDD PARA QUE LO PODAMOS ASIGNAR DIRECTAMENTE A UN DATETIME.
