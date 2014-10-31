@@ -424,15 +424,20 @@ GO
 
 --ESTADIA, TIPO ITEM FACTURA, ESTADIA POR CLIENTE
 Declare
-@reserva_id numeric(18,0)                  
+@reserva_id numeric(18,0),   
+@item_cant numeric(18,0),
+@item_monto numeric(18,2),
+@fact_num numeric(18,0)             
 Declare cursor_migracion_estadia cursor
-	for (select distinct Reserva_Codigo
+	for (select Reserva_Codigo, Item_Factura_Cantidad, Item_Factura_Monto, Factura_Nro
          from gd_esquema.Maestra
-         where Estadia_Cant_Noches is not null 
-           and Estadia_Fecha_Inicio is not null)   
+         where Estadia_Cant_Noches is not null and
+			   Estadia_Fecha_Inicio is not null and
+			   Item_Factura_Cantidad is not null and
+			   Consumible_Codigo is null)   
            
 Open cursor_migracion_estadia
-fetch cursor_migracion_estadia into @reserva_id
+fetch cursor_migracion_estadia into @reserva_id, @item_cant, @item_monto, @fact_num
                              
 while(@@fetch_status=0)
 begin 
@@ -440,31 +445,15 @@ begin
 declare @id_item_fact numeric(18,0)
 set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
 	
-Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id) values (@id_item_fact)
+Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto, Item_Factura) 
+					values (@id_item_fact, @item_cant, @item_monto, @fact_num)
 	
 Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_item_fact, @reserva_id)
 
-fetch cursor_migracion_estadia into @reserva_id
+fetch cursor_migracion_estadia into @reserva_id, @item_cant, @item_monto, @fact_num
 end	
 close cursor_migracion_estadia
 deallocate cursor_migracion_estadia
-
--- En el cursor inserto en item factura la estadia sola, no importa si esta facturada o no
--- Ahora en este update modifico los item factura de las estadias que ya estan facturadas
-
-update NENE_MALLOC.Item_Factura
-	set Item_Factura_Cantidad = t.Item_Factura_Cantidad,
-		Item_Factura_Monto = t.Item_Factura_Monto,
-		Item_Factura = t.Factura_Nro	
-	from (select distinct Reserva_Codigo, Item_Factura_Cantidad, Item_Factura_Monto, Factura_Nro
-         from gd_esquema.Maestra
-         where Estadia_Cant_Noches is not null and
-			   Estadia_Fecha_Inicio is not null and
-			   Consumible_Codigo is null and
-			   Item_Factura_Cantidad is not null) t, NENE_MALLOC.Estadia e
-		where e.Estadia_Reserva = t.Reserva_Codigo and
-			  e.Estadia_Id = Item_Factura_Id
-
 GO
 
 
