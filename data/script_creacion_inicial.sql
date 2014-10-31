@@ -518,6 +518,23 @@ fetch cursor_migracion_consumible into @codigo, @item_cant, @item_monto, @factur
 end
 close  cursor_migracion_consumible
 deallocate cursor_migracion_consumible                              
+
+/*
+--Arreglo de (precio estadia* cant_noches)
+
+update NENE_MALLOC.Item_Factura
+	set Item_Factura_Monto = Item_Factura_Monto*r.Reserva_CantNoches
+	from NENE_MALLOC.Estadia e, NENE_MALLOC.Reserva r
+		where e.Estadia_Reserva = r.Reserva_Id and
+			  Item_Factura_Id = e.Estadia_Id
+			  
+--Arreglo del factura monto total
+
+update NENE_MALLOC.Factura
+	set Factura_Total = (select SUM(i.Item_Factura_Monto) from NENE_MALLOC.Item_Factura i
+							where i.Item_Factura = Factura_Id)
+*/
+
 GO
 			     
 
@@ -1197,22 +1214,31 @@ GO
 
 --HABITACIONES CON MAYOR CANTIDAD DE DÍAS Y VECES QUE FUERON OCUPADAS
 create function NENE_MALLOC.habitaciones_más_ocupadas(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
-returns @tabla table (hotel_nombre nvarchar(255),
-					  hotel_mail nvarchar(255),
-					  hotel_telefono numeric(18,0),
+returns @tabla table (habitacion_num numeric(18,0),
+					  habitacion_piso numeric(18,0),
+					  descripcion_tipo nvarchar(255),
+					  habitacion_desc nvarchar(255),
+					  hotel_nombre nvarchar(255),
 					  hotel_ciudad nvarchar(255),
 					  hotel_pais nvarchar(255) )
 	as begin 
 	
 	
-	insert into @tabla (hotel_nombre, hotel_mail, hotel_telefono, hotel_ciudad, hotel_pais)
-			(select top 5 ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais
-				  from NENE_MALLOC.Hotel ho, NENE_MALLOC.Periodos_De_Cierre p
-				  where p.Periodo_Hotel = ho.Hotel_Id and
-						year(p.Periodo_FechaInicio)=@anio and
-						month(p.Periodo_FechaInicio) between @mesInicio and @mesFin
-				  group by ho.Hotel_Id, ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
-				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin))
+	insert into @tabla (habitacion_num, habitacion_piso, descripcion_tipo, habitacion_desc, hotel_nombre, hotel_ciudad, hotel_pais)
+			(select top 5 ha.Habitacion_Num, ha.Habitacion_Piso, t.Tipo_Hab_Desc, ha.Habitacion_Desc, 
+						  ho.Hotel_Nombre, ho.Hotel_Ciudad, ho.Hotel_Pais
+					from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Habitacion ha, 
+					     NENE_MALLOC.Hotel ho, NENE_MALLOC.Tipo_Habitacion t
+					where year(r.Reserva_Fecha)=@anio and
+						  month(r.Reserva_Fecha) between @mesInicio and @mesFin and
+						  r.Reserva_Id = rph.Reserva_Id and
+						  ha.Habitacion_Id = rph.Habitacion_Id and
+						  ha.Habitacion_Hotel = ho.Hotel_Id and
+						  ha.Habitacion_Tipo = t.Tipo_Hab_Id
+					group by ha.Habitacion_Id, ha.Habitacion_Num, ha.Habitacion_Piso, t.Tipo_Hab_Desc, ha.Habitacion_Desc, 
+							 ho.Hotel_Nombre, ho.Hotel_Ciudad, ho.Hotel_Pais)
+					order by SUM(r.Reserva_CantNoches)desc, COUNT(rph.RPH_Id) desc
+		
 
 	return 
 end
