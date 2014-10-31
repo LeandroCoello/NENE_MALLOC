@@ -45,7 +45,8 @@ GO
 drop function [NENE_MALLOC].[hoteles_reservas_mas_canceladas]
 drop function [NENE_MALLOC].[hoteles_consumibles_facturados]
 drop function [NENE_MALLOC].[hoteles_fuera_de_servicio]
-drop function [NENE_MALLOC].[habitaciones_más_ocupadas]
+drop function [NENE_MALLOC].[habitaciones_mas_ocupadas]
+drop function [NENE_MALLOC].[clientes_mas_puntos]
 GO
 
 

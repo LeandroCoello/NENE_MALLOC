@@ -38,6 +38,7 @@ CREATE TABLE NENE_MALLOC.Datos_Personales(
 		Datos_Dom_Nro_Calle numeric(18,0),
 		Datos_Dom_Piso numeric(18,0),
 		Datos_Dom_Depto nvarchar(50),
+		Datos_Pais_Origen nvarchar(50),
 		Datos_Fecha_Nac datetime
 		)
 GO
@@ -1213,7 +1214,7 @@ end
 GO
 
 --HABITACIONES CON MAYOR CANTIDAD DE DÍAS Y VECES QUE FUERON OCUPADAS
-create function NENE_MALLOC.habitaciones_más_ocupadas(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+create function NENE_MALLOC.habitaciones_mas_ocupadas(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (habitacion_num numeric(18,0),
 					  habitacion_piso numeric(18,0),
 					  descripcion_tipo nvarchar(255),
@@ -1243,6 +1244,41 @@ returns @tabla table (habitacion_num numeric(18,0),
 	return 
 end
 GO
+
+
+--CLIENTES CON MAS PUNTOS
+
+create function NENE_MALLOC.clientes_mas_puntos(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
+returns @tabla table (nombre nvarchar(255),
+					  apellido nvarchar(255),
+					  tipo_ident nvarchar(30),
+					  nro_ident numeric(18,0),
+					  nacionalidad nvarchar(255))
+	as begin 
+	
+	
+	insert into @tabla (nombre, apellido, tipo_ident, nro_ident, nacionalidad)
+			(select top 5 d.Datos_Nombre, d.Datos_Apellido, d.Datos_Tipo_Ident, d.Datos_Nro_Ident, c.Cliente_Nacionalidad
+		from NENE_MALLOC.Cliente c, NENE_MALLOC.Datos_Personales d
+			 where c.Cliente_Datos = d.Datos_Id)
+		order by ((select floor(SUM(i.Item_Factura_Monto)/10)  from NENE_MALLOC.Factura f, NENE_MALLOC.Item_Factura i
+			where f.Factura_Cliente = c.Cliente_Id and
+				  year(f.Factura_Fecha)=@anio and
+				  month(f.Factura_Fecha) between @mesInicio and @mesFin and
+				  i.Item_Factura = f.Factura_Id and
+				  i.Item_Factura_Id in (select e.Estadia_Id from NENE_MALLOC.Estadia e))+
+		(select floor(SUM(i.Item_Factura_Monto)/5)  from NENE_MALLOC.Factura f, NENE_MALLOC.Item_Factura i
+			where f.Factura_Cliente = c.Cliente_Id and
+				  year(f.Factura_Fecha)=@anio and
+				  month(f.Factura_Fecha) between @mesInicio and @mesFin and
+				  i.Item_Factura = f.Factura_Id and
+				  i.Item_Factura_Id in (select c.Consumible_Por_Habitacion_Id from NENE_MALLOC.Consumible_Por_Habitacion c))) desc
+		
+
+	return 
+end
+GO
+
 
 /*
 Los siguientes procedimientos/triggers no los desarrollamos así los hacen los chicos:
