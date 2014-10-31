@@ -162,8 +162,7 @@ CREATE TABLE NENE_MALLOC.Factura(
 		Factura_Id numeric(18,0) primary key,
 		Factura_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
 		Factura_Fecha datetime,
-		Factura_Total numeric(18,2),
-		Factura_Hotel numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id)
+		Factura_Total numeric(18,2)
 		)
 GO
 
@@ -396,18 +395,14 @@ insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id)
 GO
 
 --FACTURA
-Insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha, Factura_Total, Factura_Hotel)
+Insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha, Factura_Total)
 	(select distinct g.Factura_Nro,
 	                (select d.Datos_Id from NENE_MALLOC.Datos_Personales d 
 					 where d.Datos_Mail= g.Cliente_Mail and
 						   d.Datos_Fecha_Nac=g.Cliente_Fecha_Nac and
 					       d.Datos_Nro_Ident=g.Cliente_Pasaporte_Nro),
 					 g.Factura_Fecha,
-					 g.Factura_Total,
-					 (select ho.Hotel_Id from NENE_MALLOC.Hotel ho 
-						where ho.Hotel_Calle = g.Hotel_Calle and
-							  ho.Hotel_Ciudad = g.Hotel_Ciudad and
-							  ho.Hotel_Nro_Calle = g.Hotel_Nro_Calle)			       
+					 g.Factura_Total			       
 	 from gd_esquema.Maestra g
 	 where g.Factura_Nro is not null)
 	 order by g.Factura_Nro
@@ -1142,13 +1137,13 @@ returns @tabla table (hotel_nombre nvarchar(255),
 							  year(r.Reserva_Fecha)=@anio and
 							  month(r.Reserva_Fecha) between @mesInicio and @mesFin
 								group by h.Hotel_Id,h.Hotel_Nombre, h.Hotel_Mail, h.Hotel_Telefono, h.Hotel_Ciudad, h.Hotel_Pais)
-								order by count(r.Reserva_Id)
+								order by count(r.Reserva_Id) desc
 	
 	return 
 end
 GO
 
---HOTELES CON MAYOR CANTIDAD DE CONSUMIBLES FACTURADOS (hasta aca llegue)
+--HOTELES CON MAYOR CANTIDAD DE CONSUMIBLES FACTURADOS
 create function NENE_MALLOC.hoteles_consumibles_facturados(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (hotel_nombre nvarchar(255),
 					  hotel_mail nvarchar(255),
@@ -1166,11 +1161,11 @@ returns @tabla table (hotel_nombre nvarchar(255),
 				        r.Habitacion_Id = ha.Habitacion_Id and
 				        ha.Habitacion_Hotel = ho.Hotel_Id and
 				        i.Item_Factura = f.Factura_Id and
-				        i.Tipo_Item_Factura_Id = c.Consumible_Por_Habitacion_Id and
+				        i.Item_Factura_Id = c.Consumible_Por_Habitacion_Id and
 						year(f.Factura_Fecha)=@anio and
 						month(f.Factura_Fecha) between @mesInicio and @mesFin
-				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
-				  order by count(c.Consumible_Por_Habitacion_Id)
+				  group by ho.Hotel_Id ,ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
+				  order by count(c.Consumible_Por_Habitacion_Id) desc
 	
 	return 
 end
@@ -1193,8 +1188,8 @@ returns @tabla table (hotel_nombre nvarchar(255),
 				  where p.Periodo_Hotel = ho.Hotel_Id and
 						year(p.Periodo_FechaInicio)=@anio and
 						month(p.Periodo_FechaInicio) between @mesInicio and @mesFin
-				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
-				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin))
+				  group by ho.Hotel_Id,ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
+				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin)) desc
 
 	return 
 end
@@ -1216,7 +1211,7 @@ returns @tabla table (hotel_nombre nvarchar(255),
 				  where p.Periodo_Hotel = ho.Hotel_Id and
 						year(p.Periodo_FechaInicio)=@anio and
 						month(p.Periodo_FechaInicio) between @mesInicio and @mesFin
-				  group by ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
+				  group by ho.Hotel_Id, ho.Hotel_Nombre, ho.Hotel_Mail, ho.Hotel_Telefono, ho.Hotel_Ciudad, ho.Hotel_Pais)
 				  order by SUM(DATEDIFF(DAY,p.Periodo_FechaInicio,p.Periodo_FechaFin))
 
 	return 
