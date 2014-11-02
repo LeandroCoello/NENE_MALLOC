@@ -172,7 +172,7 @@ CREATE TABLE NENE_MALLOC.Factura(
 		Factura_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
 		Factura_Fecha datetime,
 		Factura_Total numeric(18,2),
-		Factura_Tarjeta numeric(18,0) references NENE_MALLOC.Datos_Tarjeta(Datos_Tarjeta_Id)
+		Factura_Tarjeta numeric(18,0) references NENE_MALLOC.Datos_Tarjeta(Datos_Tarjeta_Id)--si esta en null es efectivo
 		)
 GO
 
@@ -181,7 +181,7 @@ CREATE TABLE NENE_MALLOC.Item_Factura(
 		Item_Factura_Id numeric(18,0) primary key,
 		Item_Factura_Cantidad numeric(18,0) default 1,
 		Item_Factura_Monto numeric(18,2),
-		Item_Factura numeric(18,0) references NENE_MALLOC.Factura(Factura_Id) --si esta en null es efectivo
+		Item_Factura numeric(18,0) references NENE_MALLOC.Factura(Factura_Id) 
 		)
 GO
 
@@ -459,7 +459,7 @@ set @rph_id = (select rph.RPH_Id from NENE_MALLOC.Reserva_Por_Habitacion rph
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto, Item_Factura) 
 					values (@id_item_fact, @item_cant, @item_monto, @fact_num)
 	
-Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_item_fact,@rph_id)
+Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_RPH) values(@id_item_fact,@rph_id)
 
 fetch cursor_migracion_estadia into @reserva_id, @item_cant, @item_monto, @fact_num, @habitacion_id
 end	
@@ -523,9 +523,11 @@ deallocate cursor_migracion_consumible
 
 update NENE_MALLOC.Item_Factura
 	set Item_Factura_Monto = Item_Factura_Monto*r.Reserva_CantNoches
-	from NENE_MALLOC.Estadia e, NENE_MALLOC.Reserva r
-		where e.Estadia_Reserva = r.Reserva_Id and
-			  Item_Factura_Id = e.Estadia_Id
+	from NENE_MALLOC.Estadia e, NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+		where Item_Factura_Id = e.Estadia_Id and
+			  e.Estadia_RPH = rph.RPH_Id and
+			  rph.Reserva_Id = r.Reserva_Id
+
 			  
 --Arreglo del factura monto total
 
