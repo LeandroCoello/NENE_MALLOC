@@ -40,6 +40,9 @@ drop procedure [NENE_MALLOC].[modificacion_hotel]
 drop procedure [NENE_MALLOC].[modificacion_habitacion]
 drop procedure [NENE_MALLOC].[modificacion_rol]
 drop procedure [NENE_MALLOC].[generar_estadia]
+drop procedure [NENE_MALLOC].[alta_consumible_habitacion]
+drop procedure [NENE_MALLOC].[generar_factura]
+drop procedure [NENE_MALLOC].[agregar_items]
 GO
 
 drop function [NENE_MALLOC].[hoteles_reservas_mas_canceladas]

@@ -1133,13 +1133,85 @@ set @item_monto = (select ((reg.Regimen_Precio*tipo.Tipo_Hab_Porc)+(ho.Hotel_Rec
 
 	
 	Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
-					values (@id_item_fact, @cant_noches, @item_monto)
+					values (@id_item_fact, 1, @item_monto)
 	
 
 	Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_item_fact,@rph_id)
 	
 commit 
 GO
+
+--AGREGAR CONSUMIBLE POR HABITACION - ITEM FACTURA de Consumible
+
+create procedure NENE_MALLOC.alta_consumible_habitacion @rph_id numeric(18,0), @consumible_id numeric(18,0), @cant numeric(5,0)
+as
+begin transaction
+
+declare @id_item_fact numeric(18,0)
+set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
+
+	
+	Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
+					values (@id_item_fact, @cant, 
+							(select c.Consumible_precio*@cant from NENE_MALLOC.Consumible c
+									where c.Consumible_Id = @consumible_id))
+	
+
+	Insert into NENE_MALLOC.Consumible_Por_Habitacion(Consumible_Id, RPH_Id, Consumible_Cantidad) 
+					values(@id_item_fact, @rph_id, @cant)
+	
+commit 
+GO
+
+--GENERAR FACTURA
+
+create procedure NENE_MALLOC.generar_factura @cliente_id numeric(18,0), @fecha nvarchar(15), @fact_nro numeric(18,0) out
+as
+begin transaction
+
+set @fact_nro = (ISNULL((select MAX(f.Factura_Id)from NENE_MALLOC.Factura f),0)) + 1
+
+declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha
+
+	insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha)
+					values(@fact_nro, @cliente_id, @fecha_correcta)
+	
+	return @fact_nro
+commit 
+GO
+
+--AGREGAR ITEMS A FACTURA -- duda
+
+create procedure NENE_MALLOC.agregar_items @fact_nro numeric(18,0), @rph_id numeric(18,0)
+as
+begin transaction
+
+
+update NENE_MALLOC.Item_Factura
+	set Item_Factura = @fact_nro
+		where Item_Factura_Id in (select e.Estadia_Id from NENE_MALLOC.Estadia e where e.Estadia_RPH = @rph_id) or
+			  Item_Factura_Id in (select c.Consumible_Por_Habitacion_Id from NENE_MALLOC.Consumible_Por_Habitacion c where c.RPH_Id = @rph_id)
+
+
+-- si es all inclusive no le cobramos los consumibles, solo la estadia
+
+update NENE_MALLOC.Factura
+	set Factura_Total = (select case when (select reg.Regimen_Desc from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Regimen reg
+												where rph.RPH_Id = @rph_id and
+													  r.Reserva_Id = rph.Reserva_Id and
+													  r.Reserva_Regimen = Regimen_Id) in ('All inclusive', 'All Inclusive moderado')
+													  then (select i.Item_Factura_Monto 
+																from NENE_MALLOC.Item_Factura i 
+																where i.Item_Factura = @fact_nro and
+																	  i.Item_Factura_Id in 
+																	  (select e.Estadia_Id from NENE_MALLOC.Estadia e))
+								else (select SUM(i.Item_Factura_Monto) from NENE_MALLOC.Item_Factura i
+											where i.Item_Factura = @fact_nro)
+								end)
+commit 
+GO
+
 
 --------------------------------TRIGGERS-----------------------------------------------------
 
