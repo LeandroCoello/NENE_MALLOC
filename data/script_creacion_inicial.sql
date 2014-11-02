@@ -186,16 +186,10 @@ GO
 
 CREATE TABLE NENE_MALLOC.Estadia(
 		Estadia_Id numeric(18,0) primary key references NENE_MALLOC.Item_Factura(Item_Factura_Id),
-		Estadia_Reserva numeric(18,0) references NENE_MALLOC.Reserva(Reserva_Id)
+		Estadia_RPH numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id)
 		)
 GO
 
-CREATE TABLE NENE_MALLOC.Estadia_Por_Cliente(
-		Cliente_Id numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
-		Estadia_Id numeric(18,0) references NENE_MALLOC.Estadia(Estadia_Id),
-		Primary Key (Cliente_Id,Estadia_Id)
-		)
-GO
 
 -- Migración de datos
 
@@ -418,57 +412,52 @@ Insert into NENE_MALLOC.Consumible(Consumible_Id, Consumible_Desc, Consumible_pr
              where Consumible_Codigo is not null)
 GO
 
---ESTADIA, TIPO ITEM FACTURA, ESTADIA POR CLIENTE
+--ESTADIA, TIPO ITEM FACTURA
 Declare
 @reserva_id numeric(18,0),   
 @item_cant numeric(18,0),
 @item_monto numeric(18,2),
-@fact_num numeric(18,0)             
+@fact_num numeric(18,0),
+@habitacion_id numeric(18,0)             
 Declare cursor_migracion_estadia cursor
-	for (select Reserva_Codigo, Item_Factura_Cantidad, Item_Factura_Monto, Factura_Nro
-         from gd_esquema.Maestra
-         where Estadia_Cant_Noches is not null and
-			   Estadia_Fecha_Inicio is not null and
-			   Item_Factura_Cantidad is not null and
-			   Consumible_Codigo is null)   
+	for (select g.Reserva_Codigo, g.Item_Factura_Cantidad, g.Item_Factura_Monto, g.Factura_Nro,
+         (select h.Habitacion_Id from NENE_MALLOC.Habitacion h
+							where h.Habitacion_Num= g.Habitacion_Numero and
+								  h.Habitacion_Hotel=(select ho.Hotel_Id from NENE_MALLOC.Hotel ho
+														where ho.Hotel_Calle=g.Hotel_Calle and
+															  ho.Hotel_Nro_Calle=g.Hotel_Nro_Calle and
+															  ho.Hotel_Ciudad=g.Hotel_Ciudad) )
+         from gd_esquema.Maestra g
+         where g.Estadia_Cant_Noches is not null and
+			   g.Estadia_Fecha_Inicio is not null and
+			   g.Item_Factura_Cantidad is not null and
+			   g.Consumible_Codigo is null)   
            
 Open cursor_migracion_estadia
-fetch cursor_migracion_estadia into @reserva_id, @item_cant, @item_monto, @fact_num
+fetch cursor_migracion_estadia into @reserva_id, @item_cant, @item_monto, @fact_num, @habitacion_id
                              
 while(@@fetch_status=0)
 begin 
 
 declare @id_item_fact numeric(18,0)
 set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
-	
+
+declare @rph_id numeric(18,0)
+set @rph_id = (select rph.RPH_Id from NENE_MALLOC.Reserva_Por_Habitacion rph
+					where rph.Reserva_Id = @reserva_id and
+						  rph.Habitacion_Id = @habitacion_id)
+						  	
 Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto, Item_Factura) 
 					values (@id_item_fact, @item_cant, @item_monto, @fact_num)
 	
-Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_item_fact, @reserva_id)
+Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_item_fact,@rph_id)
 
-fetch cursor_migracion_estadia into @reserva_id, @item_cant, @item_monto, @fact_num
+fetch cursor_migracion_estadia into @reserva_id, @item_cant, @item_monto, @fact_num, @habitacion_id
 end	
 close cursor_migracion_estadia
 deallocate cursor_migracion_estadia
 GO
 
-
---ESTADIA POR CLIENTE
-
-Insert into NENE_MALLOC.Estadia_Por_Cliente(Estadia_Id, Cliente_Id)
-	(select distinct 
-			(select e.Estadia_Id
-			 from NENE_MALLOC.Estadia e
-			 where e.Estadia_Reserva = g.Reserva_Codigo),
-			 (select d.Datos_Id from NENE_MALLOC.Datos_Personales d 
-			  where d.Datos_Mail= g.Cliente_Mail and
-			        d.Datos_Fecha_Nac=g.Cliente_Fecha_Nac and
-					d.Datos_Nro_Ident=g.Cliente_Pasaporte_Nro)
-         from gd_esquema.Maestra g
-         where g.Estadia_Cant_Noches is not null 
-           and g.Estadia_Fecha_Inicio is not null)  
-
-GO       
 
 --CONSUMIBLE POR HABITACION 2.42
 -- Los consumibles estan siempre facturados
@@ -1112,6 +1101,43 @@ begin transaction
 		    Habitacion_Desc = @descripcion		
 		where Habitacion_Id = @habitacion_id		
                  
+commit 
+GO
+
+--GENERAR ESTADIA - ITEM FACTURA de Estadia
+
+create procedure NENE_MALLOC.generar_estadia @rph_id numeric(18,0)
+as
+begin transaction
+
+declare @id_item_fact numeric(18,0)
+set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
+
+declare @cant_noches numeric(18,0)
+set @cant_noches = (select r.Reserva_CantNoches from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+						where rph.RPH_Id = @rph_id and
+							  r.Reserva_Id = rph.Reserva_Id)
+
+declare @item_monto numeric(18,2)
+--(Regimen_precio*habitacion_tipo_porcentual)+(hotel_recarga_estrellas*hotel_cant_estrellas))
+set @item_monto = (select ((reg.Regimen_Precio*tipo.Tipo_Hab_Porc)+(ho.Hotel_Recarga_Estrella*ho.Hotel_Cant_Est))*@cant_noches
+					 from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Habitacion ha, NENE_MALLOC.Hotel ho, 
+						  NENE_MALLOC.Regimen reg, NENE_MALLOC.Reserva r, NENE_MALLOC.Tipo_Habitacion tipo
+						  where rph.RPH_Id = @rph_id and
+							    rph.Habitacion_Id = ha.Habitacion_Id and
+							    ho.Hotel_Id = ha.Habitacion_Hotel and
+							    ha.Habitacion_Tipo = tipo.Tipo_Hab_Id and
+							    rph.Reserva_Id = r.Reserva_Id and
+							    r.Reserva_Regimen = reg.Regimen_Id)
+
+
+	
+	Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
+					values (@id_item_fact, @cant_noches, @item_monto)
+	
+
+	Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_item_fact,@rph_id)
+	
 commit 
 GO
 
