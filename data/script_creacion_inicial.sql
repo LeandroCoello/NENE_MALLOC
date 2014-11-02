@@ -158,12 +158,21 @@ CREATE TABLE NENE_MALLOC.Consumible(
 		)
 GO
 
+CREATE TABLE NENE_MALLOC.Datos_Tarjeta(
+	Datos_Tarjeta_Id numeric(18,0) Primary Key identity,
+	Datos_Tarjeta_Nro numeric(16,0),
+	Datos_Duenio_Tarjeta nvarchar(80),
+	Datos_Tarjeta_Fecha_Venc datetime,
+	Datos_Tipo_Tarjeta nvarchar(30)
+	)
+GO
 
 CREATE TABLE NENE_MALLOC.Factura(
 		Factura_Id numeric(18,0) primary key,
 		Factura_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
 		Factura_Fecha datetime,
-		Factura_Total numeric(18,2)
+		Factura_Total numeric(18,2),
+		Factura_Tarjeta numeric(18,0) references NENE_MALLOC.Datos_Tarjeta(Datos_Tarjeta_Id)
 		)
 GO
 
@@ -172,7 +181,7 @@ CREATE TABLE NENE_MALLOC.Item_Factura(
 		Item_Factura_Id numeric(18,0) primary key,
 		Item_Factura_Cantidad numeric(18,0) default 1,
 		Item_Factura_Monto numeric(18,2),
-		Item_Factura numeric(18,0) references NENE_MALLOC.Factura(Factura_Id)
+		Item_Factura numeric(18,0) references NENE_MALLOC.Factura(Factura_Id) --si esta en null es efectivo
 		)
 GO
 
@@ -1136,7 +1145,7 @@ set @item_monto = (select ((reg.Regimen_Precio*tipo.Tipo_Hab_Porc)+(ho.Hotel_Rec
 					values (@id_item_fact, 1, @item_monto)
 	
 
-	Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_Reserva) values(@id_item_fact,@rph_id)
+	Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_RPH) values(@id_item_fact,@rph_id)
 	
 commit 
 GO
