@@ -518,23 +518,16 @@ end
 close  cursor_migracion_consumible
 deallocate cursor_migracion_consumible                              
 
-/*
---Arreglo de (precio estadia* cant_noches)
-
 update NENE_MALLOC.Item_Factura
-	set Item_Factura_Monto = Item_Factura_Monto*r.Reserva_CantNoches
+	set Item_Factura_Monto = Item_Factura_Monto * r.Reserva_CantNoches
 	from NENE_MALLOC.Estadia e, NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
-		where Item_Factura_Id = e.Estadia_Id and
-			  e.Estadia_RPH = rph.RPH_Id and
-			  rph.Reserva_Id = r.Reserva_Id
-
-			  
---Arreglo del factura monto total
+	where Item_Factura_Id = e.Estadia_Id and
+	      e.Estadia_RPH = rph.RPH_Id and
+		  rph.Reserva_Id = r.Reserva_Id
 
 update NENE_MALLOC.Factura
 	set Factura_Total = (select SUM(i.Item_Factura_Monto) from NENE_MALLOC.Item_Factura i
-							where i.Item_Factura = Factura_Id)
-*/
+						 where i.Item_Factura = Factura_Id)
 
 GO
 			     
@@ -834,7 +827,8 @@ GO
 create procedure NENE_MALLOC.alta_cliente @nombre nvarchar(255), @apellido nvarchar(255), @telefono numeric(18,0), 
 										  @tipo_ident nvarchar(30), @nro_ident numeric(18,0), @mail nvarchar(255), 
 										  @calle nvarchar(255), @nro_calle numeric(18,0), @piso numeric(18,0), 
-										  @depto nvarchar(50), @fecha_nacimiento nvarchar(15), @nacionalidad nvarchar(255)
+										  @depto nvarchar(50), @fecha_nacimiento nvarchar(15), @nacionalidad nvarchar(255),
+										  @id_cliente numeric(18,0) out
 as
 begin transaction
 	
@@ -871,7 +865,9 @@ begin transaction
 									         
     Insert into NENE_MALLOC.Cliente(Cliente_Nacionalidad, Cliente_Datos)
                              values(@nacionalidad, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
-                             
+     
+    set @id_cliente = (select MAX(c.Cliente_Id) from Cliente c)
+    return @id_cliente                         
 commit
 GO
 
@@ -1115,6 +1111,72 @@ begin transaction
 commit 
 GO
 
+--GENERAR RESERVA 
+
+create procedure NENE_MALLOC.generar_reserva @fecha_reserva nvarchar(15), @fecha_desde nvarchar(15),
+		                                     @fecha_hasta nvarchar(15), @tipo_regimen numeric(18,0), 
+		                                     @id_cliente numeric(18,0), @id_hotel numeric(18,0),
+		                                     @user_reservador numeric(18,0), @id_reserva numeric(18,0) out		                                     		                                     
+as
+begin transaction
+	declare 
+	@fecha_reserva_correcta datetime,
+	@fecha_desde_correcta datetime,
+	@fecha_hasta_correcta datetime,
+	@cant_noches numeric(18,0)
+	set @fecha_reserva_correcta = @fecha_reserva
+	set @fecha_desde_correcta = @fecha_desde
+	set @fecha_hasta_correcta = @fecha_hasta
+	set @cant_noches = DATEDIFF(DAY,@fecha_desde_correcta,@fecha_hasta_correcta)
+	set @id_reserva = (select MAX(r.Reserva_Id) from Reserva r) + 1
+	
+	if exists (select p.Periodo_Id
+			   from NENE_MALLOC.Periodos_De_Cierre p
+			   where p.Periodo_Hotel = @id_hotel and
+	                 (@fecha_desde_correcta between p.Periodo_FechaInicio and p.Periodo_FechaFin or
+	                  @fecha_hasta_correcta between p.Periodo_FechaInicio and p.Periodo_FechaFin))
+		rollback
+	
+	
+	Insert into NENE_MALLOC.Reserva(Reserva_Id,Reserva_Cliente,Reserva_Fecha,Reserva_FechaIng,Reserva_CantNoches,
+	                                Reserva_Estado,Reserva_Regimen,Reserva_Hotel)
+	                         values(@id_reserva, @id_cliente, @fecha_reserva_correcta, @fecha_desde_correcta, @cant_noches,
+	                                'Correcta', @tipo_regimen, @id_hotel)
+    --FALTA EL INSERT A LOG DE RESERVA                          
+	return @id_reserva
+commit 
+GO
+
+--MODIFICAR_RESERVA
+
+create procedure NENE_MALLOC.modificar_reserva @fecha_modificacion nvarchar(15), @fecha_desde nvarchar(15),
+											   @fecha_hasta nvarchar(15), @tipo_regimen numeric(18,0), 
+		                                       @id_cliente numeric(18,0), @user_reservador numeric(18,0),
+		                                       @reserva_id numeric(18,0), @id_hotel numeric(18,0)
+
+as
+begin transaction
+	declare
+	@fecha_modificacion_correcta datetime,
+	@fecha_desde_correcta datetime,
+	@fecha_hasta_correcta datetime,
+	@cant_noches numeric(18,0)
+	set @fecha_modificacion_correcta = @fecha_modificacion
+	set @fecha_desde_correcta = @fecha_desde
+	set @fecha_hasta_correcta = @fecha_hasta
+	set @cant_noches = DATEDIFF(DAY,@fecha_desde_correcta,@fecha_hasta_correcta)
+	
+	UPDATE Reserva
+	set Reserva_CantNoches = @cant_noches,
+	    Reserva_FechaIng = @fecha_desde_correcta,
+	    Reserva_Regimen = @tipo_regimen,
+	    Reserva_Estado = 'Modificada',
+	    Reserva_Hotel = @id_hotel
+	where Reserva_Id = @reserva_id
+    --FALTA EL INSERT A LOG DE RESERVA  	
+commit 
+GO
+
 --GENERAR ESTADIA - ITEM FACTURA de Estadia
 
 create procedure NENE_MALLOC.generar_estadia @rph_id numeric(18,0)
@@ -1149,6 +1211,13 @@ set @item_monto = (select ((reg.Regimen_Precio*tipo.Tipo_Hab_Porc)+(ho.Hotel_Rec
 
 	Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_RPH) values(@id_item_fact,@rph_id)
 	
+	declare @reserva_id numeric(18,0)
+	set @reserva_id = (select r.Reserva_Id from Reserva_Por_Habitacion r where r.RPH_Id = @rph_id)
+	
+	UPDATE Reserva
+	set Reserva_Estado = 'Efectivizada'
+	where Reserva_Id = @reserva_id
+	 
 commit 
 GO
 
