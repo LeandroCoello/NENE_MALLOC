@@ -391,7 +391,10 @@ update NENE_MALLOC.Reserva
 	set Reserva_Estado= 'Efectivizada'
 		from (select distinct Reserva_Codigo from gd_esquema.Maestra where Estadia_Fecha_Inicio is not null)t
 			where Reserva_Id=t.Reserva_Codigo
-
+			
+update NENE_MALLOC.Reserva
+	set Reserva_Estado= 'Correcta'
+		where Reserva_Estado is null
 GO
 
 --RESERVA POR HABITACIÓN
@@ -1145,7 +1148,9 @@ begin transaction
 			   from NENE_MALLOC.Periodos_De_Cierre p
 			   where p.Periodo_Hotel = @id_hotel and
 	                 (@fecha_desde_correcta between p.Periodo_FechaInicio and p.Periodo_FechaFin or
-	                  @fecha_hasta_correcta between p.Periodo_FechaInicio and p.Periodo_FechaFin))
+	                  @fecha_hasta_correcta between p.Periodo_FechaInicio and p.Periodo_FechaFin or 
+	                  p.Periodo_FechaInicio between @fecha_desde_correcta and @fecha_hasta_correcta or
+	                  p.Periodo_FechaFin between @fecha_desde_correcta and @fecha_hasta_correcta))
 		rollback
 	
 	
@@ -1299,6 +1304,24 @@ update NENE_MALLOC.Factura
 commit 
 GO
 
+--AGREGAR TARJETA A FACTURA
+
+create procedure NENE_MALLOC.agregar_tarjeta @fact_nro numeric(18,0), @tarjeta_nro numeric(16,0), @duenio nvarchar(80), 
+											 @tarjeta_fecha_venc nvarchar(15), @tipo_tarjeta nvarchar(30)
+as begin transaction
+
+declare @fecha_correcta datetime
+	set @fecha_correcta = @tarjeta_fecha_venc
+
+	Insert into NENE_MALLOC.Datos_Tarjeta(Datos_Tarjeta_Nro, Datos_Duenio_Tarjeta, Datos_Tarjeta_Fecha_Venc, Datos_Tipo_Tarjeta)
+						values(@tarjeta_nro, @duenio, @fecha_correcta, @tipo_tarjeta)
+	
+	Update NENE_MALLOC.Factura
+		set Factura_Tarjeta = (select MAX(Datos_Tarjeta_Id) from NENE_MALLOC.Datos_Tarjeta) 
+			where Factura_Id = @fact_nro
+	
+commit
+GO
 
 --------------------------------TRIGGERS-----------------------------------------------------
 
