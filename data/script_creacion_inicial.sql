@@ -151,6 +151,14 @@ CREATE TABLE NENE_MALLOC.Reserva_Por_Habitacion(
 		)
 GO
 
+CREATE TABLE NENE_MALLOC.Log_Reserva(
+		Log_Reserva_id numeric(18,0) primary key identity,
+        Log_Fecha datetime,
+        Log_Descripcion nvarchar(50),
+        Log_Reservador numeric(18,0),
+        Log_Reserva numeric(18,0)
+        )
+
 CREATE TABLE NENE_MALLOC.Consumible(
 		Consumible_Id numeric(18,0) primary key,
 		Consumible_Desc nvarchar(255),
@@ -1142,7 +1150,9 @@ begin transaction
 	                                Reserva_Estado,Reserva_Regimen,Reserva_Hotel)
 	                         values(@id_reserva, @id_cliente, @fecha_reserva_correcta, @fecha_desde_correcta, @cant_noches,
 	                                'Correcta', @tipo_regimen, @id_hotel)
-    --FALTA EL INSERT A LOG DE RESERVA                          
+    
+    Insert into NENE_MALLOC.Log_Reserva(Log_Fecha, Log_Reservador, Log_Descripcion, Log_Reserva) 
+                                 values(@fecha_reserva_correcta, @user_reservador, 'Nueva Reserva', @id_reserva)                      
 	return @id_reserva
 commit 
 GO
@@ -1173,7 +1183,9 @@ begin transaction
 	    Reserva_Estado = 'Modificada',
 	    Reserva_Hotel = @id_hotel
 	where Reserva_Id = @reserva_id
-    --FALTA EL INSERT A LOG DE RESERVA  	
+	
+	 Insert into NENE_MALLOC.Log_Reserva(Log_Fecha, Log_Reservador, Log_Descripcion, Log_Reserva) 
+                                 values(@fecha_modificacion_correcta, @user_reservador, 'Modificacion Reserva', @reserva_id)                      
 commit 
 GO
 
