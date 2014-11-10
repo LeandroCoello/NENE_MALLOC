@@ -158,6 +158,7 @@ CREATE TABLE NENE_MALLOC.Log_Reserva(
         Log_Reservador numeric(18,0),
         Log_Reserva numeric(18,0)
         )
+GO
 
 CREATE TABLE NENE_MALLOC.Consumible(
 		Consumible_Id numeric(18,0) primary key,
@@ -1119,6 +1120,8 @@ begin transaction
 commit 
 GO
 
+
+
 --GENERAR RESERVA 
 
 create procedure NENE_MALLOC.generar_reserva @fecha_reserva nvarchar(15), @fecha_desde nvarchar(15),
@@ -1195,41 +1198,33 @@ create procedure NENE_MALLOC.generar_estadia @rph_id numeric(18,0)
 as
 begin transaction
 
-declare @id_item_fact numeric(18,0)
-set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
+	declare @id_item_fact numeric(18,0)
+	set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
 
-declare @cant_noches numeric(18,0)
-set @cant_noches = (select r.Reserva_CantNoches from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+	declare @cant_noches numeric(18,0)
+	set @cant_noches = (select r.Reserva_CantNoches 
+						from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
 						where rph.RPH_Id = @rph_id and
 							  r.Reserva_Id = rph.Reserva_Id)
 
-declare @item_monto numeric(18,2)
---(Regimen_precio*habitacion_tipo_porcentual)+(hotel_recarga_estrellas*hotel_cant_estrellas))
-set @item_monto = (select ((reg.Regimen_Precio*tipo.Tipo_Hab_Porc)+(ho.Hotel_Recarga_Estrella*ho.Hotel_Cant_Est))*@cant_noches
-					 from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Habitacion ha, NENE_MALLOC.Hotel ho, 
-						  NENE_MALLOC.Regimen reg, NENE_MALLOC.Reserva r, NENE_MALLOC.Tipo_Habitacion tipo
-						  where rph.RPH_Id = @rph_id and
-							    rph.Habitacion_Id = ha.Habitacion_Id and
-							    ho.Hotel_Id = ha.Habitacion_Hotel and
-							    ha.Habitacion_Tipo = tipo.Tipo_Hab_Id and
-							    rph.Reserva_Id = r.Reserva_Id and
-							    r.Reserva_Regimen = reg.Regimen_Id)
+	declare @item_monto numeric(18,2)
+	set @item_monto = NENE_MALLOC.costo_estadia (@rph_id, @cant_noches)
 
 
-	
-	Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
-					values (@id_item_fact, 1, @item_monto)
-	
+		
+		Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
+						values (@id_item_fact, 1, @item_monto)
+		
 
-	Insert into NENE_MALLOC.Estadia(Estadia_Id,Estadia_RPH) values(@id_item_fact,@rph_id)
-	
-	declare @reserva_id numeric(18,0)
-	set @reserva_id = (select r.Reserva_Id from Reserva_Por_Habitacion r where r.RPH_Id = @rph_id)
-	
-	UPDATE Reserva
-	set Reserva_Estado = 'Efectivizada'
-	where Reserva_Id = @reserva_id
-	 
+		Insert into NENE_MALLOC.Estadia(Estadia_Id, Estadia_RPH) values(@id_item_fact,@rph_id)
+		
+		declare @reserva_id numeric(18,0)
+		set @reserva_id = (select r.Reserva_Id from Reserva_Por_Habitacion r where r.RPH_Id = @rph_id)
+		
+		UPDATE Reserva
+		set Reserva_Estado = 'Efectivizada'
+		where Reserva_Id = @reserva_id
+		 
 commit 
 GO
 
@@ -1323,7 +1318,25 @@ GO
 
 --------------------------------FUNCIONES-----------------------------------------------------
 
+-- COSTO DE LAS ESTADÍAS
 
+create function NENE_MALLOC.costo_estadia (@rph_id numeric(18,0), @cant_noches numeric(18,0))
+returns numeric(18,0)
+as
+begin
+	declare @costo_Estadia numeric(18,0)
+	set @costo_estadia = (select ((reg.Regimen_Precio*tipo.Tipo_Hab_Porc)+(ho.Hotel_Recarga_Estrella*ho.Hotel_Cant_Est))*@cant_noches
+						  from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Habitacion ha, NENE_MALLOC.Hotel ho, 
+							   NENE_MALLOC.Regimen reg, NENE_MALLOC.Reserva r, NENE_MALLOC.Tipo_Habitacion tipo
+						  where rph.RPH_Id = @rph_id and
+							    rph.Habitacion_Id = ha.Habitacion_Id and
+							    ho.Hotel_Id = ha.Habitacion_Hotel and
+							    ha.Habitacion_Tipo = tipo.Tipo_Hab_Id and
+							    rph.Reserva_Id = r.Reserva_Id and
+							    r.Reserva_Regimen = reg.Regimen_Id)
+   return @costo_estadia
+end
+GO
 --------------------------LISTADO ESTADÍSTICO---------------------------------------------------
 
 
@@ -1476,6 +1489,9 @@ Los siguientes procedimientos/triggers no los desarrollamos así los hacen los ch
 -BAJA USUARIO
 -BAJA DE USUARIO POR HOTEL
 -Modificacion de Usuario_Por_Rol_Por_Hotel
+-ALTA HABITACION POR RESERVA
+_CANCELAR RESERVA
+_ALTA PERIODO DE CIERRE
 
 Lei esto en uno de los mails que puso el ayudante:
 "En cuanto al guest, estaría muyyyyyyyyyyy mal asignarselo a todos los clientes por justamente del guest al no hacer 

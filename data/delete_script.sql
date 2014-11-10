@@ -4,6 +4,7 @@ go
 drop trigger [NENE_MALLOC].[alta_rol]
 GO
 
+drop table [NENE.MALLOC].[Log_Reserva]
 drop table [NENE_MALLOC].[Usuario_Por_Rol_Por_Hotel]
 drop table [NENE_MALLOC].[Func_Por_Rol]
 drop table [NENE_MALLOC].[Funcionalidad]
@@ -48,6 +49,7 @@ drop procedure [NENE_MALLOC].[generar_reserva]
 drop procedure [NENE_MALLOC].[modificar_reserva]
 GO
 
+drop function [NENE_MALLOC].[costo_estadia]
 drop function [NENE_MALLOC].[hoteles_reservas_mas_canceladas]
 drop function [NENE_MALLOC].[hoteles_consumibles_facturados]
 drop function [NENE_MALLOC].[hoteles_fuera_de_servicio]
