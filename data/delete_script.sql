@@ -19,17 +19,16 @@ drop table [NENE_MALLOC].[Factura]
 drop table [NENE_MALLOC].[Datos_Tarjeta]
 drop table [NENE_MALLOC].[Huesped_Por_Habitacion]
 drop table [NENE_MALLOC].[Reserva_Por_Habitacion]
-drop table [NENE_MALLOC].[Reserva]
-drop table [NENE_MALLOC].[Regimen]
 drop table [NENE_MALLOC].[Habitacion]
 drop table [NENE_MALLOC].[Tipo_Habitacion]
+drop table [NENE.MALLOC].[Log_Reserva]
+drop table [NENE_MALLOC].[Reserva]
 drop table [NENE_MALLOC].[Hotel]
+drop table [NENE_MALLOC].[Regimen]
 drop table [NENE_MALLOC].[Cliente]
 drop table [NENE_MALLOC].[Datos_Personales]
-drop table [NENE.MALLOC].[Log_Reserva]
-
-
 GO
+
 
 drop procedure [NENE_MALLOC].[login_usuario]
 drop procedure [NENE_MALLOC].[baja_rol]

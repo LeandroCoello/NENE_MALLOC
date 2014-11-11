@@ -34,7 +34,7 @@ CREATE TABLE NENE_MALLOC.Datos_Personales(
 		Datos_Tipo_Ident nvarchar(30),
 		Datos_Nro_Ident numeric(18,0),
 		Datos_Mail nvarchar(255),
-		Datos_Dom_Calle nvarchar(255),--puse el domicilio asi por la tabla maestra
+		Datos_Dom_Calle nvarchar(255),
 		Datos_Dom_Nro_Calle numeric(18,0),
 		Datos_Dom_Piso numeric(18,0),
 		Datos_Dom_Depto nvarchar(50),
@@ -67,7 +67,7 @@ CREATE TABLE NENE_MALLOC.Hotel(
 		Hotel_Fecha_Creacion datetime,
 		Hotel_Cerrado bit default 0,
 		Hotel_Cant_Est numeric(18,0),
-		Hotel_Recarga_Estrella numeric(18,0) -- este campo esta en la maestra, supongo que debe ser lo del calculo del costo que era un incremento que dependia de las estrellas
+		Hotel_Recarga_Estrella numeric(18,0)
 		)
 GO
 
@@ -113,13 +113,13 @@ CREATE TABLE NENE_MALLOC.Tipo_Habitacion(
 GO
 
 CREATE TABLE NENE_MALLOC.Habitacion(
-		Habitacion_Id numeric(18,0) primary key identity,--le puse id igual, de ultima se lo sacamos
+		Habitacion_Id numeric(18,0) primary key identity,
 		Habitacion_Num numeric(18,0),
 		Habitacion_Piso numeric(18,0),
 		Habitacion_Hotel numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id),
 		Habitacion_Tipo numeric(18,0) references NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id),
-		Habitacion_Vista nvarchar(50), -- en la maestra esta como frente
-		Habitacion_Desc nvarchar(255) default '', --esto no se, por ahi el enunciado se referia a la desc del tipo
+		Habitacion_Vista nvarchar(50), 
+		Habitacion_Desc nvarchar(255) default '',
 		Habitacion_Cerrada bit default 0
 		)
 GO
@@ -138,7 +138,7 @@ CREATE TABLE NENE_MALLOC.Reserva(
 		Reserva_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
 		Reserva_Fecha datetime,
 		Reserva_FechaIng datetime,
-		Reserva_CantNoches numeric(18,0), --de nuevo por la maestra, despues vemos cual sacamos si fecha fin o este
+		Reserva_CantNoches numeric(18,0),
 		Reserva_Estado nvarchar(255),
 		Reserva_Regimen numeric(18,0) references NENE_MALLOC.Regimen(Regimen_Id),
 		Reserva_Hotel numeric(18,0) references NENE_MALLOC.Hotel(Hotel_Id)
@@ -146,7 +146,7 @@ CREATE TABLE NENE_MALLOC.Reserva(
 GO
 
 CREATE TABLE NENE_MALLOC.Reserva_Por_Habitacion(
-		RPH_Id numeric(18,0) primary key identity, --le tuve que agregar esto porque si mandaba que Estadia_Reserva referenciara a Reserva Id de aca rompia porque habia dos pks
+		RPH_Id numeric(18,0) primary key identity, 
 		Reserva_Id numeric(18,0) references NENE_MALLOC.Reserva(Reserva_Id) not null,
 		Habitacion_Id numeric(18,0) references NENE_MALLOC.Habitacion(Habitacion_Id)not null,
 		Unique(Reserva_Id,Habitacion_Id)
@@ -165,7 +165,7 @@ CREATE TABLE NENE_MALLOC.Log_Reserva(
         Log_Fecha datetime,
         Log_Descripcion nvarchar(50),
         Log_Reservador numeric(18,0),
-        Log_Reserva numeric(18,0)
+        Log_Reserva numeric(18,0) references NENE_MALLOC.Reserva(Reserva_Id)
         )
 GO
 
@@ -317,7 +317,7 @@ Insert into NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id, Tipo_Hab_Desc, Tipo_Hab_Por
                                                                                          else 5 end
                                         from gd_esquema.Maestra)    
 GO     
-                                 
+                  
 --HOTEL
 
 Insert into NENE_MALLOC.Hotel(Hotel_Calle, Hotel_Nro_Calle, Hotel_Ciudad, Hotel_Cant_Est, Hotel_Recarga_Estrella)
@@ -376,15 +376,17 @@ Insert into NENE_MALLOC.Cliente (Cliente_Nacionalidad)
 		from gd_esquema.Maestra 
 			group by Cliente_Mail,Cliente_Fecha_Nac,Cliente_Pasaporte_Nro,Cliente_Nacionalidad)
 
+-- Resulta que para los clientes se inserta en Clientes y Datos Personales a la par, por lo tanto los Cliente_Id y Cliente_Datos coinciden
+-- (Solo se cumple para la migración)
+
 update NENE_MALLOC.Cliente
 	set Cliente_Datos=s.datos_id
 	from  (select d.Datos_Id datos_id from NENE_MALLOC.Datos_Personales d)s
 		where datos_id=Cliente_Id
+
+
 GO
 
-
-
--- Resulta que para los clientes se inserta en Clientes y Datos Personales a la par, por lo tanto los Cliente_Id y Cliente_Datos coinciden (obvio que solo para la migracion)
 
 --RESERVA
 insert into NENE_MALLOC.Reserva(Reserva_Id, Reserva_CantNoches, Reserva_FechaIng, Reserva_Fecha, Reserva_Hotel, 
@@ -496,8 +498,8 @@ deallocate cursor_migracion_estadia
 GO
 
 
---CONSUMIBLE POR HABITACION 2.42
--- Los consumibles estan siempre facturados
+--CONSUMIBLE POR HABITACION 
+-- Los consumibles estan siempre facturados en la tabla maestra.
 
 Declare 
 @codigo numeric(18,0),
@@ -563,7 +565,7 @@ GO
 ------------------------------STORE PROCEDURES---------------------------------------------
 --IMPORTANTE!! FORMATO DE STRING DE FECHAS TIENE QUE SER AAAAMMDD PARA QUE LO PODAMOS ASIGNAR DIRECTAMENTE A UN DATETIME.
 
---LOGIN (TESTEADOS TODOS LOS CASOS)
+--LOGIN 
 
 create Procedure NENE_MALLOC.login_usuario @usuario varchar(30),@userpass nvarchar(255),@return numeric(1,0) out
 as 
@@ -712,7 +714,7 @@ begin transaction
 commit
 GO
 
---ALTA DE USUARIO (TESTEADOS TODOS LOS CASOS)
+--ALTA DE USUARIO 
 
 create procedure NENE_MALLOC.alta_usuario @username varchar(30), @pass nvarchar(255), @rol nvarchar(255), @nombre nvarchar(255), 
 										  @apellido nvarchar(255), @telefono numeric(18,0), @tipo_ident nvarchar(30),
@@ -850,8 +852,7 @@ begin transaction
 commit
 GO
 
---ALTA DE CLIENTE (TESTEADOS TODOS LOS CASOS)
-
+--ALTA DE CLIENTE 
 create procedure NENE_MALLOC.alta_cliente @nombre nvarchar(255), @apellido nvarchar(255), @telefono numeric(18,0), 
 										  @tipo_ident nvarchar(30), @nro_ident numeric(18,0), @mail nvarchar(255), 
 										  @calle nvarchar(255), @nro_calle numeric(18,0), @piso numeric(18,0), 
