@@ -31,6 +31,9 @@ namespace FrbaHotel.ABM_de_Cliente
             txtNDoc.Text = "";
             txtNom.Text = "";
             cBtipoIdent.SelectedIndex = -1;
+            dGVListadoSeleccionados.DataSource = null;
+            dGVListadoSeleccionados.Columns.Clear();
+            dGVListadoSeleccionados.Refresh();
         }
 
         private void btnBusqueda_Click(object sender, EventArgs e)

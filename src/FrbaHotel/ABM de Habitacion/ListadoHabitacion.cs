@@ -31,7 +31,8 @@ namespace FrbaHotel.ABM_de_Habitacion
             txtPisoHotel.Text = "";
             cBTipoHabitacion.SelectedIndex = -1;
             cBVista.SelectedIndex = -1;
-            dataGridView1.Rows.Clear();
+            dataGridView1.DataSource = null;
+            dataGridView1.Columns.Clear();
             dataGridView1.Refresh();
         }
 

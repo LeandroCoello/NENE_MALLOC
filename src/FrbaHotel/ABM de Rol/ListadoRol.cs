@@ -26,6 +26,9 @@ namespace FrbaHotel.ABM_de_Rol
             txtNomRol.Text = "";
             cBEstadoRol.SelectedIndex = -1;
             cBFuncionalidades.SelectedIndex = -1;
+            dataGridView1.DataSource = null;
+            dataGridView1.Columns.Clear();
+            dataGridView1.Refresh();
         }
 
         private void btnBusqueda_Click(object sender, EventArgs e)

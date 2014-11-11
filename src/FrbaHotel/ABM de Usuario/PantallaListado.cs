@@ -15,5 +15,12 @@ namespace FrbaHotel.ABM_de_Usuario
         {
             InitializeComponent();
         }
+
+        private void btnLimpieza_Click(object sender, EventArgs e)
+        {
+            dataGridView1.DataSource = null;
+            dataGridView1.Columns.Clear();
+            dataGridView1.Refresh();
+        }
     }
 }

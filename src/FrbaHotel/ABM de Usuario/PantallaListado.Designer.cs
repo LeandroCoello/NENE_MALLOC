@@ -57,6 +57,7 @@
             this.btnLimpieza.TabIndex = 16;
             this.btnLimpieza.Text = "Limpiar";
             this.btnLimpieza.UseVisualStyleBackColor = true;
+            this.btnLimpieza.Click += new System.EventHandler(this.btnLimpieza_Click);
             // 
             // comboBox1
             // 
