@@ -120,6 +120,7 @@ CREATE TABLE NENE_MALLOC.Habitacion(
 		Habitacion_Tipo numeric(18,0) references NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id),
 		Habitacion_Vista nvarchar(50), 
 		Habitacion_Desc nvarchar(255) default '',
+		Habitacion_Ocupada bit default 0,
 		Habitacion_Cerrada bit default 0
 		)
 GO
@@ -218,7 +219,7 @@ CREATE TABLE NENE_MALLOC.Estadia(
 GO
 
 
--- Migración de datos
+-------------------------------------MIGRACION DE DATOS----------------------------------------------------
 
 --ROL
 
@@ -500,7 +501,6 @@ GO
 
 --CONSUMIBLE POR HABITACION 
 -- Los consumibles estan siempre facturados en la tabla maestra.
-
 Declare 
 @codigo numeric(18,0),
 @item_cant numeric(18,0),
@@ -1140,7 +1140,6 @@ begin transaction
 commit 
 GO
 
-
 --GENERAR RESERVA 
 
 create procedure NENE_MALLOC.generar_reserva @fecha_reserva nvarchar(15), @fecha_desde nvarchar(15),
@@ -1167,9 +1166,11 @@ begin transaction
 	                  @fecha_hasta_correcta between p.Periodo_FechaInicio and p.Periodo_FechaFin or 
 	                  p.Periodo_FechaInicio between @fecha_desde_correcta and @fecha_hasta_correcta or
 	                  p.Periodo_FechaFin between @fecha_desde_correcta and @fecha_hasta_correcta))
-		rollback
-		raiserror('Hotel cerrado.',16,1)
-		return -1
+	    begin
+			rollback
+			raiserror('Hotel cerrado.',16,1)
+			return -1
+		end
 		
 	
 	Insert into NENE_MALLOC.Reserva(Reserva_Id,Reserva_Cliente,Reserva_Fecha,Reserva_FechaIng,Reserva_CantNoches,
@@ -1241,12 +1242,20 @@ begin transaction
 
 		Insert into NENE_MALLOC.Estadia(Estadia_Id, Estadia_RPH) values(@id_item_fact,@rph_id)
 		
-		declare @reserva_id numeric(18,0)
+		declare 
+		@reserva_id numeric(18,0),
+		@habitacion_id numeric(18,0)
+		
 		set @reserva_id = (select r.Reserva_Id from Reserva_Por_Habitacion r where r.RPH_Id = @rph_id)
+		set @habitacion_id = (select r.Habitacion_Id from Reserva_Por_Habitacion r where r.RPH_Id = @rph_id)
 		
 		UPDATE Reserva
 		set Reserva_Estado = 'Efectivizada'
 		where Reserva_Id = @reserva_id
+		
+		UPDATE Habitacion
+		set Habitacion_Ocupada = 1
+		where Habitacion_Id = @habitacion_id
 		 
 commit 
 GO
@@ -1537,6 +1546,7 @@ _CANCELAR RESERVA
 _ALTA PERIODO DE CIERRE
 -ALTA HUESPED_POR_HABITACION
 -BAJA HUESPED_POR_HABITACION
+-SETEAR EL CAMPO HABITACION_OCUPADA EN 0 A LA HORA DE REALIZAR EL CHECKOUT
 -VERIFICAR EL TIPO DE HABITACION DE LA RESERVA (USEN LA TABLA TIPO_HABITACION)
 
 */
