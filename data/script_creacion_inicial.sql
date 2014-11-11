@@ -124,12 +124,6 @@ CREATE TABLE NENE_MALLOC.Habitacion(
 		)
 GO
 
-CREATE TABLE NENE_MALLOC.Huesped_Por_Habitacion(
-		Huesped_Por_Habitacion_Id numeric(18,0) primary key identity, 
-		RPH_Id numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id) not null,
-		Cliente_Id numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id)not null
-		)
-GO
 
 CREATE TABLE NENE_MALLOC.Cliente(
 		Cliente_Id numeric(18,0) primary key identity,
@@ -156,6 +150,13 @@ CREATE TABLE NENE_MALLOC.Reserva_Por_Habitacion(
 		Reserva_Id numeric(18,0) references NENE_MALLOC.Reserva(Reserva_Id) not null,
 		Habitacion_Id numeric(18,0) references NENE_MALLOC.Habitacion(Habitacion_Id)not null,
 		Unique(Reserva_Id,Habitacion_Id)
+		)
+GO
+
+CREATE TABLE NENE_MALLOC.Huesped_Por_Habitacion(
+		Huesped_Por_Habitacion_Id numeric(18,0) primary key identity, 
+		RPH_Id numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id) not null,
+		Cliente_Id numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id)not null
 		)
 GO
 
@@ -406,6 +407,7 @@ update NENE_MALLOC.Reserva
 		from (select distinct Reserva_Codigo from gd_esquema.Maestra where Estadia_Fecha_Inicio is not null)t
 			where Reserva_Id=t.Reserva_Codigo
 			
+--considerando que las que no estan efectivizadas son correctas
 update NENE_MALLOC.Reserva
 	set Reserva_Estado= 'Correcta'
 		where Reserva_Estado is null
@@ -1138,7 +1140,6 @@ commit
 GO
 
 
-
 --GENERAR RESERVA 
 
 create procedure NENE_MALLOC.generar_reserva @fecha_reserva nvarchar(15), @fecha_desde nvarchar(15),
@@ -1166,7 +1167,9 @@ begin transaction
 	                  p.Periodo_FechaInicio between @fecha_desde_correcta and @fecha_hasta_correcta or
 	                  p.Periodo_FechaFin between @fecha_desde_correcta and @fecha_hasta_correcta))
 		rollback
-	
+		raiserror('Hotel cerrado.',16,1)
+		return -1
+		
 	
 	Insert into NENE_MALLOC.Reserva(Reserva_Id,Reserva_Cliente,Reserva_Fecha,Reserva_FechaIng,Reserva_CantNoches,
 	                                Reserva_Estado,Reserva_Regimen,Reserva_Hotel)
@@ -1227,7 +1230,7 @@ begin transaction
 							  r.Reserva_Id = rph.Reserva_Id)
 
 	declare @item_monto numeric(18,2)
-	set @item_monto = NENE_MALLOC.costo_estadia (@rph_id, @cant_noches)
+	set @item_monto = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches))
 
 
 		
@@ -1287,7 +1290,7 @@ declare @fecha_correcta datetime
 commit 
 GO
 
---AGREGAR ITEMS A FACTURA -- duda
+--AGREGAR ITEMS A FACTURA
 
 create procedure NENE_MALLOC.agregar_items @fact_nro numeric(18,0), @rph_id numeric(18,0)
 as
@@ -1306,7 +1309,7 @@ update NENE_MALLOC.Factura
 	set Factura_Total = (select case when (select reg.Regimen_Desc from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Regimen reg
 												where rph.RPH_Id = @rph_id and
 													  r.Reserva_Id = rph.Reserva_Id and
-													  r.Reserva_Regimen = Regimen_Id) in ('All inclusive', 'All Inclusive moderado')
+													  r.Reserva_Regimen = reg.Regimen_Id) in ('All inclusive', 'All Inclusive moderado')
 													  then (select i.Item_Factura_Monto 
 																from NENE_MALLOC.Item_Factura i 
 																where i.Item_Factura = @fact_nro and
@@ -1315,6 +1318,8 @@ update NENE_MALLOC.Factura
 								else (select SUM(i.Item_Factura_Monto) from NENE_MALLOC.Item_Factura i
 											where i.Item_Factura = @fact_nro)
 								end)
+	where Factura_Id = @fact_nro
+	
 commit 
 GO
 
@@ -1532,10 +1537,5 @@ _ALTA PERIODO DE CIERRE
 -ALTA HUESPED_POR_HABITACION
 -BAJA HUESPED_POR_HABITACION
 -VERIFICAR EL TIPO DE HABITACION DE LA RESERVA (USEN LA TABLA TIPO_HABITACION)
-
-Lei esto en uno de los mails que puso el ayudante:
-"En cuanto al guest, estaría muyyyyyyyyyyy mal asignarselo a todos los clientes por justamente del guest al no hacer 
-login no se puede identificar a la persona, es alguien que hace uso del sistema y ahce la reserva en nombre de alguien 
-que dice ser o supone ser la misma persona que realiza la reserva."
 
 */
