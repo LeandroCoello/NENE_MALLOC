@@ -107,6 +107,7 @@ GO
 CREATE TABLE NENE_MALLOC.Tipo_Habitacion(
 		Tipo_Hab_Id numeric(18,0) primary key,
 		Tipo_Hab_Desc nvarchar(255),
+		Tipo_Cant_Maxima_Huespedes numeric(1,0),
 		Tipo_Hab_Porc numeric(18,2)
 		)
 GO
@@ -120,6 +121,13 @@ CREATE TABLE NENE_MALLOC.Habitacion(
 		Habitacion_Vista nvarchar(50), -- en la maestra esta como frente
 		Habitacion_Desc nvarchar(255) default '', --esto no se, por ahi el enunciado se referia a la desc del tipo
 		Habitacion_Cerrada bit default 0
+		)
+GO
+
+CREATE TABLE NENE_MALLOC.Huesped_Por_Habitacion(
+		Huesped_Por_Habitacion_Id numeric(18,0) primary key identity, 
+		RPH_Id numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id) not null,
+		Cliente_Id numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id)not null
 		)
 GO
 
@@ -299,10 +307,16 @@ GO
 
 --TIPO DE HABITACIÓN
 
-Insert into NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id, Tipo_Hab_Desc, Tipo_Hab_Porc)
-                                       (select distinct Habitacion_Tipo_Codigo, Habitacion_Tipo_Descripcion, Habitacion_Tipo_Porcentual
+Insert into NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id, Tipo_Hab_Desc, Tipo_Hab_Porc, Tipo_Cant_Maxima_Huespedes)
+                                       (select distinct Habitacion_Tipo_Codigo, Habitacion_Tipo_Descripcion, Habitacion_Tipo_Porcentual,
+                                                        case Habitacion_Tipo_Descripcion when 'Base Simple' then 1
+                                                                                         when 'Base Doble' then 2
+                                                                                         when 'Base Triple' then 3
+                                                                                         when 'Base Cuadruple' then 4
+                                                                                         else 5 end
                                         from gd_esquema.Maestra)    
-GO                                      
+GO     
+                                 
 --HOTEL
 
 Insert into NENE_MALLOC.Hotel(Hotel_Calle, Hotel_Nro_Calle, Hotel_Ciudad, Hotel_Cant_Est, Hotel_Recarga_Estrella)
@@ -1515,6 +1529,9 @@ Los siguientes procedimientos/triggers no los desarrollamos así los hacen los ch
 -ALTA HABITACION POR RESERVA
 _CANCELAR RESERVA
 _ALTA PERIODO DE CIERRE
+-ALTA HUESPED_POR_HABITACION
+-BAJA HUESPED_POR_HABITACION
+-VERIFICAR EL TIPO DE HABITACION DE LA RESERVA (USEN LA TABLA TIPO_HABITACION)
 
 Lei esto en uno de los mails que puso el ayudante:
 "En cuanto al guest, estaría muyyyyyyyyyyy mal asignarselo a todos los clientes por justamente del guest al no hacer 
