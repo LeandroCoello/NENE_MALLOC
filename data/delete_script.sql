@@ -50,6 +50,9 @@ drop procedure [NENE_MALLOC].[agregar_items]
 drop procedure [NENE_MALLOC].[generar_reserva]
 drop procedure [NENE_MALLOC].[modificar_reserva]
 drop procedure [NENE_MALLOC].[agregar_tarjeta]
+drop procedure [NENE_MALLOC].[crear_admin]
+drop procedure [NENE_MALLOC].[candelar_reserva]
+
 GO
 
 drop function [NENE_MALLOC].[costo_estadia]
