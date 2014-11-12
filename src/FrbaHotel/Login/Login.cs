@@ -31,29 +31,31 @@ namespace FrbaHotel.Login
             {
                 MessageBox.Show("Por favor complete los campos de usuario y contraseña");
             }
+            else
+            {
                 try
                 {
-                   userLog =  inicio.login(txtUsuario.Text, txtContraseña.Text);
+                    userLog = inicio.login(txtUsuario.Text, txtContraseña.Text);
+                    roles = userLog.conseguirRolesUsuario();
+                    if (roles.Count() > 1)
+                    {
+                        EleccionRol levantarEleccionRol = new EleccionRol(roles, userLog);
+                        this.Hide();
+                        levantarEleccionRol.ShowDialog();
+                    }
+                    else
+                    {
+                        Menu_Principal.CargaMenu levantarMenu = new FrbaHotel.Menu_Principal.CargaMenu(roles.First(), userLog);
+                        this.Hide();
+                    }
                 }
                 catch (Exception exception)
                 {
-                        MessageBox.Show(exception.Message);
-                        txtUsuario.Text = "";
-                        txtContraseña.Text = "";
+                    MessageBox.Show(exception.Message);
+                    this.limpiar();
                 }
-               roles = userLog.conseguirRolesUsuario();
-                     if (roles.Count() > 1)
-                         {
-                           EleccionRol levantarEleccionRol = new EleccionRol(roles,userLog);
-                           this.Hide();
-                           levantarEleccionRol.ShowDialog();
-                         }
-                     else 
-                     {
-                         
-                         Menu_Principal.CargaMenu levantarMenu = new FrbaHotel.Menu_Principal.CargaMenu(roles.First(),userLog);
-                         this.Hide();
-                     }
+            }  
         }
+        private void limpiar() { txtContraseña.Text = String.Empty; txtUsuario.Text = String.Empty; }
     }
 }

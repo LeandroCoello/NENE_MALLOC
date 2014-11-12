@@ -31,12 +31,7 @@ namespace FrbaHotel.Sistema
 
         public List<String> conseguirRolesUsuario()
         {
-            string queryRoles = "SELECT R.Rol_Desc FROM NENE_MALLOC.Rol R,NENE_MALLOC.Usuarios_Por_Rol UR,NENE_MALLOC.Usuario U"
-                                + "WHERE U.Username ='" + nombreUsuario + "'"
-                                + "and UR.UserId = U.User_Id"
-                                + "and UR.Rol_Cod = R.Rol_Cod"
-                                + "and R.Rol_baja = 0"
-                                + "GROUP BY Rol_Cod";
+            string queryRoles = "SELECT R.Rol_Desc FROM NENE_MALLOC.Rol R,NENE_MALLOC.Usuario_Por_Rol_Por_Hotel UR,NENE_MALLOC.Usuario U WHERE U.Usuario_name ='"+nombreUsuario+"' and UR.Usuario_Id = U.Usuario_Id and UR.Rol_Id = R.Rol_Id and R.Rol_estado = 0";
             DataTable roles = conexion.consulta(queryRoles);
             List<string> rolesAsignados = new List<string>();
             foreach (DataRow row in roles.Rows) {

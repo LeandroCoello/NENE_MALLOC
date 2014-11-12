@@ -19,7 +19,7 @@ namespace FrbaHotel.Sistema
         public SQLConnector() {
             try
             {
-                connection = new SqlConnection("Data Source=localhost/SQLSERVER2008;Initial Catalog=GD1C2014;user=gd;password=gd2014");
+                connection = new SqlConnection("Data Source=localhost\\SQLSERVER2008;Initial Catalog=GD2C2014;user=gd;password=gd2014");
                 connection.Open();
             }
             catch (Exception e) {
@@ -27,13 +27,15 @@ namespace FrbaHotel.Sistema
                 
             }
         }
+        public Object executeQueryEscalar(string query)
+        { 
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.CommandTimeout = 999999999;
 
+            sqlCommand.Connection = this.connection;
+            sqlCommand.CommandText = query;
 
-        public int executeIntegerProcedure(string query)
-        {
-            SqlCommand queryCommand = new SqlCommand(query, connection);
-            queryCommand.CommandType = CommandType.StoredProcedure;
-            return (int)queryCommand.ExecuteScalar();
+            return sqlCommand.ExecuteScalar();
         }
         public void executeOnly(string query)
         {   

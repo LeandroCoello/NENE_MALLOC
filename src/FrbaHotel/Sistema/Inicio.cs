@@ -15,18 +15,11 @@ namespace FrbaHotel.Sistema
         {
             this.connection = connectionInstance;
         }
-        public UsuarioLogueado registrarse()
+        public UsuarioLogueado login(string nombreDeUsuario, string contraseña)
         {
-            string queryRegistro = "exec SQL_O.generar_usuario";
-            DataTable usuarioNuevo = connection.consulta(queryRegistro);
-            string userId = usuarioNuevo.Columns[0].ToString();
-            string passSinHash = usuarioNuevo.Columns[1].ToString();
-            return new UsuarioLogueado(userId,passSinHash, connection);
-        }
-        public UsuarioLogueado login(String nombreDeUsuario, String contraseña)
-        {
-
-            switch (connection.executeIntegerProcedure("exec NENE_MALLOC.login_usuario "+nombreDeUsuario+ this.SHA256Encripta(contraseña)))
+            string queryLogin = "declare @alfa numeric(1,0) exec NENE_MALLOC.login_usuario '"+nombreDeUsuario+"','"+this.SHA256Encripta(contraseña)+"',@alfa out select @alfa";
+            MessageBox.Show(connection.executeQueryEscalar(queryLogin).ToString());
+            switch (Convert.ToInt32(connection.executeQueryEscalar(queryLogin)))
             {
                 case 0:
                 return new UsuarioLogueado(nombreDeUsuario, contraseña, connection);
