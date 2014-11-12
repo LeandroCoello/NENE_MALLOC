@@ -1216,6 +1216,32 @@ begin transaction
 commit 
 GO
 
+--CANCELAR RESERVA
+
+create procedure NENE_MALLOC.cancelar_reserva @fecha_cancelacion nvarchar(15), @reserva_id numeric(18,0),
+                                              @user_cancelador numeric(18,0), @motivo nvarchar(50)
+as
+begin transaction
+	
+	declare @fecha_cancelacion_correcta datetime
+	set @fecha_cancelacion_correcta = @fecha_cancelacion
+	
+	if (select r.Reserva_FechaIng from Reserva r where r.Reserva_Id = @reserva_id) >  DATEADD(DAY, 1, @fecha_cancelacion_correcta)
+	begin
+		rollback
+		raiserror('No se puede cancelar a un día de la reserva',16,1)
+		return
+	end
+	
+	Insert into NENE_MALLOC.Log_Reserva(Log_Fecha, Log_Reservador, Log_Descripcion, Log_Reserva)
+	                            values(@fecha_cancelacion_correcta, @user_cancelador, @motivo, @reserva_id)
+	UPDATE Reserva
+	set Reserva_Estado = 'Cancelada'
+	where Reserva_Id = @reserva_id
+	
+commit 
+GO
+
 --GENERAR ESTADIA - ITEM FACTURA de Estadia
 
 create procedure NENE_MALLOC.generar_estadia @rph_id numeric(18,0)
