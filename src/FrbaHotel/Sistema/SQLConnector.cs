@@ -22,8 +22,8 @@ namespace FrbaHotel.Sistema
                 connection = new SqlConnection("Data Source=localhost/SQLSERVER2008;Initial Catalog=GD1C2014;user=gd;password=gd2014");
                 connection.Open();
             }
-            catch (Exception) {
-                MessageBox.Show("No se pudo conectar");
+            catch (Exception e) {
+                MessageBox.Show(e.Message);
                 
             }
         }
