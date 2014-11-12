@@ -6,12 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.ABM_de_Usuario
 {
     public partial class ABMUsuario : Form
     {
-        public ABMUsuario()
+        SQLConnector coneccion;
+        public ABMUsuario(SQLConnector conexion)
         {
             InitializeComponent();
         }

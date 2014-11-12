@@ -13,7 +13,7 @@ namespace FrbaHotel.Listado_Estadistico
     public partial class ListEstadistico : Form
     {
         SQLConnector conector;
-        public ListEstadistico()
+        public ListEstadistico(SQLConnector conec)
         {
             InitializeComponent();
             cBListado.Items.Add("Hoteles con mayor cantidad de reservas canceladas");
@@ -21,7 +21,7 @@ namespace FrbaHotel.Listado_Estadistico
             cBListado.Items.Add("Hoteles con mayor cantidad de días fuera de servicio");
             cBListado.Items.Add("Habitaciones con mayor cantidad de días y veces que fueron ocupadas");
             cBListado.Items.Add("Clientes con mayor cantidad de puntos");
-            conector = new SQLConnector();
+            conector = conec;
         }
 
         private void btnLimpieza_Click(object sender, EventArgs e)

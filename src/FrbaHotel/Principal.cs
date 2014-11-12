@@ -21,11 +21,10 @@ namespace FrbaHotel
 
         private void btnExecRegistro_Click(object sender, EventArgs e)
         {
-            FrbaHotel.Generar_Modificar_Reserva.GenModReserva levantarReserva = new FrbaHotel.Generar_Modificar_Reserva.GenModReserva();
+            FrbaHotel.Generar_Modificar_Reserva.GenModReserva levantarReserva = new FrbaHotel.Generar_Modificar_Reserva.GenModReserva(coneccion);
             this.Hide();
             levantarReserva.ShowDialog();
             this.Show();
-            
         }
 
         private void btnExecLogin_Click(object sender, EventArgs e)

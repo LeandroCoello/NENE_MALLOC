@@ -6,12 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.ABM_de_Rol
 {
     public partial class ABMRol : Form
     {
-        public ABMRol()
+        public ABMRol(SQLConnector conexion)
         {
             InitializeComponent();
         }

@@ -6,14 +6,17 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
-namespace FrbaHotel.Menu_Principal
+namespace FrbaHotel.Facturar_Publicaciones
 {
-    public partial class MenuPrincipal : Form
+    public partial class FacturarPublicaciones : Form
     {
-        public MenuPrincipal(string rolElegido)
+        SQLConnector conexion;
+        public FacturarPublicaciones(SQLConnector conecc)
         {
             InitializeComponent();
+            conexion = conecc;
         }
     }
 }

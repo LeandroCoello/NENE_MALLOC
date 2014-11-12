@@ -210,17 +210,36 @@
     <Compile Include="Cancelar Reserva\Cancelar Reserva.Designer.cs">
       <DependentUpon>Cancelar Reserva.cs</DependentUpon>
     </Compile>
+    <Compile Include="Facturar Publicaciones\FacturarPublicaciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Facturar Publicaciones\FacturarPublicaciones.Designer.cs">
+      <DependentUpon>FacturarPublicaciones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login\EleccionRol.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Login\EleccionRol.Designer.cs">
       <DependentUpon>EleccionRol.cs</DependentUpon>
     </Compile>
-    <Compile Include="Menu Principal\MenuPrincipal.cs">
+    <Compile Include="Menu Principal\CargaMenu.cs" />
+    <Compile Include="Menu Principal\MenuAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Menu Principal\MenuPrincipal.Designer.cs">
-      <DependentUpon>MenuPrincipal.cs</DependentUpon>
+    <Compile Include="Menu Principal\MenuAdmin.Designer.cs">
+      <DependentUpon>MenuAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menu Principal\MenuGuest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menu Principal\MenuGuest.Designer.cs">
+      <DependentUpon>MenuGuest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menu Principal\MenuRecepcionista.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menu Principal\MenuRecepcionista.Designer.cs">
+      <DependentUpon>MenuRecepcionista.cs</DependentUpon>
     </Compile>
     <Compile Include="Principal.cs">
       <SubType>Form</SubType>
@@ -322,6 +341,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Login\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu Principal\MenuAdmin.resx">
+      <DependentUpon>MenuAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu Principal\MenuGuest.resx">
+      <DependentUpon>MenuGuest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu Principal\MenuRecepcionista.resx">
+      <DependentUpon>MenuRecepcionista.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Principal.resx">
       <DependentUpon>Principal.cs</DependentUpon>

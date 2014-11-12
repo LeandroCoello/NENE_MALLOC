@@ -289,7 +289,7 @@
             this.Controls.Add(this.label1);
             this.Name = "AltaCliente";
             this.Text = "AltaCliente";
-            this.Load += new System.EventHandler(this.AltaCliente_Load);
+
             this.ResumeLayout(false);
             this.PerformLayout();
 

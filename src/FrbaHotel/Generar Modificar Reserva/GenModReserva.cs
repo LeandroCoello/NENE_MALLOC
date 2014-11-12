@@ -12,8 +12,8 @@ namespace FrbaHotel.Generar_Modificar_Reserva
 {
     public partial class GenModReserva : Form
     {
-        SQLConnector conexion = new SQLConnector();
-        public GenModReserva()
+        SQLConnector conexion;
+        public GenModReserva(SQLConnector conecc)
         {
             InitializeComponent();
             DataTable tiposHabs = conexion.consulta("select Tipo_Hab_Desc FROM NENE_MALLOC.Tipo_Habitacion");
@@ -21,6 +21,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 cBtiposHabs.Items.Add(dr["Tipo_Hab_Desc"].ToString());
             }
             txtFecSist.Text = "ARCHIVO CONFIGURACION I NEED YOU";
+            conexion = conecc;
         }
     }
 }

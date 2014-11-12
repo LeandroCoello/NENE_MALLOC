@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using FrbaHotel.Sistema;
+using FrbaHotel.Menu_Principal;
 
 
 
@@ -15,7 +16,6 @@ namespace FrbaHotel.Login
 {
     public partial class Login : Form
     {
-        int contadorDeIntentos = 0;
         private Inicio inicio;
         private UsuarioLogueado userLog;
         private List<string> roles = new List<string>();
@@ -30,38 +30,30 @@ namespace FrbaHotel.Login
             if (txtUsuario.Text == "" || txtContraseña.Text == "")
             {
                 MessageBox.Show("Por favor complete los campos de usuario y contraseña");
-                return;
             }
-
-
-            if (contadorDeIntentos < 3)
-            {
                 try
                 {
                    userLog =  inicio.login(txtUsuario.Text, txtContraseña.Text);
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show(exception.Message);
+                        MessageBox.Show(exception.Message);
+                        txtUsuario.Text = "";
+                        txtContraseña.Text = "";
                 }
                roles = userLog.conseguirRolesUsuario();
                      if (roles.Count() > 1)
                          {
-                           EleccionRol levantarEleccionRol = new EleccionRol(roles);
+                           EleccionRol levantarEleccionRol = new EleccionRol(roles,userLog);
+                           this.Hide();
+                           levantarEleccionRol.ShowDialog();
                          }
-                     else {
-                         Menu_Principal.MenuPrincipal levantarMenu = new FrbaHotel.Menu_Principal.MenuPrincipal(roles.First());
-                         contadorDeIntentos = 0;
+                     else 
+                     {
+                         
+                         Menu_Principal.CargaMenu levantarMenu = new FrbaHotel.Menu_Principal.CargaMenu(roles.First(),userLog);
                          this.Hide();
-                         levantarMenu.ShowDialog();
-                      }
-            }
-            else
-            {
-                MessageBox.Show("Se ha alcanazo el maximo de intentos de login, usuario inhabilitado");
-                btnAceptar.Enabled = false;
-                /*Baja logica del sistema tambien ????*/
-            }
+                     }
         }
     }
 }

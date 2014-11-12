@@ -26,7 +26,7 @@ namespace FrbaHotel.Sistema
         public UsuarioLogueado login(String nombreDeUsuario, String contraseña)
         {
 
-            switch (connection.executeIntegerProcedure("exec SQL_O.proc_login User_Id,Userpass FROM SQL_O.Usuario where (User_Id ='" + nombreDeUsuario + "')and (Userpass = '" + this.SHA256Encripta(contraseña) + "')"))
+            switch (connection.executeIntegerProcedure("exec NENE_MALLOC.login_usuario "+nombreDeUsuario+ this.SHA256Encripta(contraseña)))
             {
                 case 0:
                 return new UsuarioLogueado(nombreDeUsuario, contraseña, connection);
@@ -37,8 +37,7 @@ namespace FrbaHotel.Sistema
                 case 3:
                 throw new Exception("contraseña incorrecta");
                 case 4:
-                throw new Exception("El usuario no existe");
-                    
+                throw new Exception("El usuario no existe");        
             }
             return null;
         }
@@ -46,12 +45,9 @@ namespace FrbaHotel.Sistema
         public string SHA256Encripta(string input)
         {
             SHA256Managed provider = new SHA256Managed();
-
             byte[] inputBytes = Encoding.UTF8.GetBytes(input);
             byte[] hashedBytes = provider.ComputeHash(inputBytes);
-
             StringBuilder output = new StringBuilder();
-
             for (int i = 0; i < hashedBytes.Length; i++)
                 output.Append(hashedBytes[i].ToString("x2").ToLower());
 

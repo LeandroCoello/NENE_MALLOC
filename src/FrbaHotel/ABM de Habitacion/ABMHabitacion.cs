@@ -6,12 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.ABM_de_Habitacion
 {
     public partial class ABMHabitacion : Form
     {
-        public ABMHabitacion()
+        SQLConnector conexion;
+        public ABMHabitacion(SQLConnector coneccion)
         {
             InitializeComponent();
         }

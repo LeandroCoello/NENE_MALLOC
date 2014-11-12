@@ -12,7 +12,8 @@ namespace FrbaHotel.ABM_de_Cliente
 {
     public partial class ABMCliente : Form
     {
-        public ABMCliente()
+        SQLConnector coneccion;
+        public ABMCliente(SQLConnector conexion)
         {
             InitializeComponent();
         }

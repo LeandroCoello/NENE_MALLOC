@@ -1,6 +1,6 @@
-﻿namespace FrbaHotel.Menu_Principal
+﻿namespace FrbaHotel.Facturar_Publicaciones
 {
-    partial class MenuPrincipal
+    partial class FacturarPublicaciones
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "MenuPrincipal";
+            this.Text = "FacturarPublicaciones";
         }
 
         #endregion

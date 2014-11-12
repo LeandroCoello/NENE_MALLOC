@@ -10,12 +10,11 @@ using FrbaHotel.Sistema;
 
 namespace FrbaHotel.Cancelar_Reserva
 {
-    public partial class Form1 : Form
+    public partial class CancelReser : Form
     {
-        SQLConnector conexion = new SQLConnector();
         //ESTO ES SOLO POR AHORA LA FECHA SE LA PEDIMOS AL ARCHIVO DE CONFIGURACION
         System.DateTime fechaActualSistema = new DateTime();
-        public Form1()
+        public CancelReser(SQLConnector conecc)
         {
             InitializeComponent();
             txtFecCancel.Text = fechaActualSistema.ToString();
@@ -24,7 +23,7 @@ namespace FrbaHotel.Cancelar_Reserva
         private void btnAceptarCancel_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtFecCancel.Text) || string.IsNullOrEmpty(txtMotivo.Text) || string.IsNullOrEmpty(txtNroReserva.Text) ||
-                string.IsNullOrEmpty(txtNUsuario.Text))
+                string.IsNullOrEmpty(txtIDRecepcionista.Text))
             {
                 MessageBox.Show("Por favor complete todo los campos");
                 this.limpiarCampos();
@@ -35,7 +34,7 @@ namespace FrbaHotel.Cancelar_Reserva
             }
            
         }
-        private void limpiarCampos() { txtNroReserva.Text = ""; txtMotivo.Text = ""; txtNUsuario.Text = ""; }
+        private void limpiarCampos() { txtNroReserva.Text = ""; txtMotivo.Text = ""; txtIDRecepcionista.Text = ""; }
 
         private void ejecutarCancelacion()
         {//TRIGGER DE SQL PARA VALIDAR FECHAS????

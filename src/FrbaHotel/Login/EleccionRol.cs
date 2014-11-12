@@ -6,17 +6,20 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.Login
 {
     public partial class EleccionRol : Form
     {
-        public EleccionRol(List<string> rolesACargar)
+        UsuarioLogueado usuarioLog;
+        public EleccionRol(List<string> rolesACargar,UsuarioLogueado userLog)
         {
             InitializeComponent();
             foreach (var rol in rolesACargar) {
                 lBEleccionRoles.Items.Add(rol);
             }
+            usuarioLog = userLog;
         }
 
         private void btnIngreso_Click(object sender, EventArgs e)
@@ -25,9 +28,8 @@ namespace FrbaHotel.Login
                 MessageBox.Show("Por favor elija un rol");
             }
             string selected = lBEleccionRoles.SelectedValue.ToString();
-            FrbaHotel.Menu_Principal.MenuPrincipal levantarMenu = new FrbaHotel.Menu_Principal.MenuPrincipal(selected);
-            this.Hide();
-            levantarMenu.ShowDialog();
+            FrbaHotel.Menu_Principal.CargaMenu levantarMenu = new FrbaHotel.Menu_Principal.CargaMenu(selected,usuarioLog);
+            this.Close();
         }
 
     }

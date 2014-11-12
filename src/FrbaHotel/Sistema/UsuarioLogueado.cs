@@ -25,6 +25,9 @@ namespace FrbaHotel.Sistema
         public String getContraseña() {
             return contraseñaHash;
         }
+        public SQLConnector getConexion() {
+            return conexion;
+        }
 
         public List<String> conseguirRolesUsuario()
         {

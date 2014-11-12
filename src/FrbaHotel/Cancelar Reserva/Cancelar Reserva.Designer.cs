@@ -1,6 +1,6 @@
 ﻿namespace FrbaHotel.Cancelar_Reserva
 {
-    partial class Form1
+    partial class CancelReser
     {
         /// <summary>
         /// Required designer variable.
@@ -33,7 +33,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtNroReserva = new System.Windows.Forms.TextBox();
-            this.txtNUsuario = new System.Windows.Forms.TextBox();
+            this.txtIDRecepcionista = new System.Windows.Forms.TextBox();
             this.txtFecCancel = new System.Windows.Forms.TextBox();
             this.txtMotivo = new System.Windows.Forms.TextBox();
             this.btnAceptarCancel = new System.Windows.Forms.Button();
@@ -71,9 +71,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 181);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(84, 13);
+            this.label4.Size = new System.Drawing.Size(90, 13);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Nombre usuario:";
+            this.label4.Text = "Id Recepcionista:";
             // 
             // txtNroReserva
             // 
@@ -82,12 +82,12 @@
             this.txtNroReserva.Size = new System.Drawing.Size(158, 20);
             this.txtNroReserva.TabIndex = 4;
             // 
-            // txtNUsuario
+            // txtIDRecepcionista
             // 
-            this.txtNUsuario.Location = new System.Drawing.Point(102, 178);
-            this.txtNUsuario.Name = "txtNUsuario";
-            this.txtNUsuario.Size = new System.Drawing.Size(122, 20);
-            this.txtNUsuario.TabIndex = 5;
+            this.txtIDRecepcionista.Location = new System.Drawing.Point(102, 178);
+            this.txtIDRecepcionista.Name = "txtIDRecepcionista";
+            this.txtIDRecepcionista.Size = new System.Drawing.Size(122, 20);
+            this.txtIDRecepcionista.TabIndex = 5;
             // 
             // txtFecCancel
             // 
@@ -116,7 +116,7 @@
             this.btnAceptarCancel.UseVisualStyleBackColor = true;
             this.btnAceptarCancel.Click += new System.EventHandler(this.btnAceptarCancel_Click);
             // 
-            // Form1
+            // CancelReser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -124,13 +124,13 @@
             this.Controls.Add(this.btnAceptarCancel);
             this.Controls.Add(this.txtMotivo);
             this.Controls.Add(this.txtFecCancel);
-            this.Controls.Add(this.txtNUsuario);
+            this.Controls.Add(this.txtIDRecepcionista);
             this.Controls.Add(this.txtNroReserva);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
+            this.Name = "CancelReser";
             this.Text = "Cancelar Reserva";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -144,7 +144,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtNroReserva;
-        private System.Windows.Forms.TextBox txtNUsuario;
+        private System.Windows.Forms.TextBox txtIDRecepcionista;
         private System.Windows.Forms.TextBox txtFecCancel;
         private System.Windows.Forms.TextBox txtMotivo;
         private System.Windows.Forms.Button btnAceptarCancel;
