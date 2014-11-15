@@ -12,14 +12,15 @@ namespace FrbaHotel.ABM_de_Cliente
 {
     public partial class ListadoCliente : Form
     {
-        SQLConnector conexion = new SQLConnector();
+        SQLConnector conexion;
         string criterioABM;
-        public ListadoCliente(string condicion)
+        public ListadoCliente(string condicion, SQLConnector conec)
         {
             InitializeComponent();
             cBtipoIdent.Items.Add("DNI");
             cBtipoIdent.Items.Add("PASAPORTE");
             criterioABM = condicion;
+            conexion = conec;
         }
 
 
@@ -38,32 +39,34 @@ namespace FrbaHotel.ABM_de_Cliente
 
         private void btnBusqueda_Click(object sender, EventArgs e)
         {
-            string queryFinal = "SELECT * FROM NENE_MALLOC.Datos_Personales DP, NENE_MALLOC_Cliente C WHERE DP.Datos_Id = C.Cliente_Datos";
+            string queryFinal = "SELECT C.Cliente_Id,D.Datos_Id,D.Datos_Nombre,D.Datos_Apellido,D.Datos_Telefono,D.Datos_Tipo_Ident,D.Datos_Nro_Ident,D.Datos_Mail,D.Datos_Dom_Calle,D.Datos_Dom_Nro_Calle,D.Datos_Dom_Piso,D.Datos_Dom_Depto,D.Datos_Fecha_Nac,C.Cliente_Nacionalidad"
+                +" FROM NENE_MALLOC.Datos_Personales D, NENE_MALLOC.Cliente C WHERE D.Datos_Id = C.Cliente_Datos";
             string agregarCondicion;
             if(!string.IsNullOrEmpty(txtApe.Text)){
-                agregarCondicion = "and DP.Datos_Apellido LIKE %"+txtApe.Text+"%";
+                agregarCondicion = "and D.Datos_Apellido LIKE '%"+txtApe.Text+"%'";
                 queryFinal += agregarCondicion;
             }
             if (!string.IsNullOrEmpty(txtNom.Text))
             {
-                agregarCondicion = "and DP.Datos_Nombre LIKE %" + txtNom.Text + "%";
+                agregarCondicion = "and D.Datos_Nombre LIKE '%" + txtNom.Text + "%'";
                 queryFinal += agregarCondicion;
             }
             if (!string.IsNullOrEmpty(txtNDoc.Text))
             {
-                agregarCondicion = "and DP.Datos_Nro_Ident LIKE %" + txtNDoc.Text + "%";
+                agregarCondicion = "and D.Datos_Nro_Ident LIKE '%" + txtNDoc.Text + "%'";
                 queryFinal += agregarCondicion;
             }
             if (!string.IsNullOrEmpty(txtMail.Text))
             {
-                agregarCondicion = "and DP.Datos_Mail LIKE %" + txtMail.Text + "%";
+                agregarCondicion = "and D.Datos_Mail LIKE '%" + txtMail.Text + "%'";
                 queryFinal += agregarCondicion;
             }
-            if(!string.IsNullOrEmpty(cBtipoIdent.SelectedItem.ToString()))
+            if(!string.IsNullOrEmpty(cBtipoIdent.SelectedText.ToString()))
             {
-                agregarCondicion = "and DP.Datos_Tipo_Ident =" + cBtipoIdent.SelectedItem.ToString();
+                agregarCondicion = "and D.Datos_Tipo_Ident ='" + cBtipoIdent.SelectedItem.ToString()+"'";
                 queryFinal += agregarCondicion;
             }
+            /*MessageBox.Show(queryFinal);*/
                 /*GROUP BY??????*/
             dGVListadoSeleccionados.DataSource = conexion.consulta(queryFinal);
             DataGridViewButtonColumn col = new DataGridViewButtonColumn();
@@ -76,19 +79,26 @@ namespace FrbaHotel.ABM_de_Cliente
         private void dGVListadoSeleccionados_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             var senderGrid = (DataGridView)sender;
+            string[] valor = new string[e.ColumnIndex];
 
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
+                
+                for (int i = 0; i < e.ColumnIndex; i++)
+                {
+                    valor[i] = dGVListadoSeleccionados.Rows[e.RowIndex].Cells[i].Value.ToString();
+                }
+
                 if (criterioABM == "baja")
                 {
-                    BajaCliente levantarBaja = new BajaCliente();
+                    BajaCliente levantarBaja = new BajaCliente(valor,conexion);
                     this.Close();
                     levantarBaja.Show();
                 }
                 else 
                 {
-                    ModifCliente levantarModif = new ModifCliente();
+                    ModifCliente levantarModif = new ModifCliente(valor,conexion);
                     this.Close();
                     levantarModif.Show();
                 }

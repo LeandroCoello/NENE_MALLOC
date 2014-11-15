@@ -13,8 +13,8 @@ namespace FrbaHotel.ABM_de_Cliente
     public partial class AltaCliente : Form
     {
         List<TextBox> txtBoxes = new List<TextBox>();
-        
-        public AltaCliente()
+        SQLConnector conexion;
+        public AltaCliente(SQLConnector conec)
         {
             InitializeComponent();
             txtBoxes.Add(txtNom);
@@ -26,6 +26,7 @@ namespace FrbaHotel.ABM_de_Cliente
             txtBoxes.Add(txtNroCalle);
             txtBoxes.Add(txtFecNac);
             txtBoxes.Add(txtNacionalidad);
+            conexion = conec;
             
         }
         private void btnAceptar_Click(object sender, EventArgs e)
@@ -37,11 +38,18 @@ namespace FrbaHotel.ABM_de_Cliente
                 }
             }
             SQLConnector conec = new SQLConnector();
-            string queryCliente = "exec NENE_MALLOC.alta_cliente '"+txtNom.Text+"' '"+txtApellido.Text+"' '"+txtTelefono.Text+"' '"
-                +txtTipoDoc.Text+"' '"+txtNroDoc.Text+"' '"+txtMail.Text+"' '"+txtDireccion.Text+"' '"+txtNroCalle.Text+"' '"+txtPiso.Text+"' '"+txtDepto+"' '"
-                +txtFecNac+"' '"+txtNacionalidad+"'";
-            conec.executeOnly(queryCliente);/*REVISAR COMO ATRAPAR ERRORES DE SQL*/
-            MessageBox.Show("Cliente registrado con exito");
-        }
+            string queryCliente = " declare @Id numeric(1,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
+                +txtTipoDoc.Text+"',"+txtNroDoc.Text+",'"+txtMail.Text+"','"+txtDireccion.Text+"',"+txtNroCalle.Text+","+txtPiso.Text+",'"+txtDepto.Text+"','"+txtFecNac.Text+"','"+txtNacionalidad.Text+"',@Id";
+            try
+            {
+                conec.executeOnly(queryCliente);
+                MessageBox.Show("Cliente registrado con exito");
+                this.Close();
+            }
+            catch(Exception excep) 
+            {
+                MessageBox.Show(excep.Message);
+            }
+        }    
     }
 }

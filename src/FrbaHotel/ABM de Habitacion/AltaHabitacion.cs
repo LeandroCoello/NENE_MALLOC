@@ -12,11 +12,12 @@ namespace FrbaHotel.ABM_de_Habitacion
 {
     public partial class HabitacionAlta : Form
     {
-        SQLConnector conexion = new SQLConnector();
-        public HabitacionAlta()
+        SQLConnector conexion;
+        public HabitacionAlta(SQLConnector conec)
         {
             InitializeComponent();
-            DataTable tiposHab = conexion.consulta("SELECT select Habitacion_Tipo FROM NENE_MALLOC.Habitacion GROUP BY Habitacion_Tipo");
+            conexion = conec;
+            DataTable tiposHab = conexion.consulta("SELECT Habitacion_Tipo FROM NENE_MALLOC.Habitacion GROUP BY Habitacion_Tipo");
             foreach(DataRow dr in tiposHab.Rows){
                 cBTipoHabitacion.Items.Add(dr["Habitacion_Tipo"].ToString());
             }
@@ -30,15 +31,17 @@ namespace FrbaHotel.ABM_de_Habitacion
                 MessageBox.Show("Por favor complete todos los campos");
             }
             else {
-                string queryViolento = "EXEC NENE_MALLOC.alta_habitacion "+txtNroHabi.Text+" "+txtPisoHotel.Text+" "+txtHotel.Text+" "+
-                    cBTipoHabitacion.SelectedItem.ToString()+" "+txtConVista.Text+" "+txtDesc.Text;
+                string queryViolento = "EXEC NENE_MALLOC.alta_habitacion "+txtNroHabi.Text+","+txtPisoHotel.Text+","+txtHotel.Text+","+
+                    cBTipoHabitacion.SelectedItem.ToString()+",'"+txtConVista.Text+"','"+txtDesc.Text+"'";
                 try
                 {
                     conexion.executeOnly(queryViolento);
+                    MessageBox.Show("Habitacion creada con exito.");
+                    this.Close();
                 }
-                catch (Exception ){
-                    MessageBox.Show("ERROR");
-                }/*BUSCAR SOBRE ATRAPAR ERRORES DE SQL*/
+                catch (Exception exce){
+                    MessageBox.Show(exce.Message);
+                }
             }
         }
     }

@@ -41,6 +41,8 @@
             this.btnAceptar = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.txtHotel = new System.Windows.Forms.TextBox();
+            this.txtEstrellas = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -137,7 +139,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 122);
+            this.label6.Location = new System.Drawing.Point(12, 147);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
             this.label6.TabIndex = 11;
@@ -145,16 +147,34 @@
             // 
             // txtHotel
             // 
-            this.txtHotel.Location = new System.Drawing.Point(127, 119);
+            this.txtHotel.Location = new System.Drawing.Point(127, 144);
             this.txtHotel.Name = "txtHotel";
             this.txtHotel.Size = new System.Drawing.Size(121, 20);
             this.txtHotel.TabIndex = 12;
+            // 
+            // txtEstrellas
+            // 
+            this.txtEstrellas.Location = new System.Drawing.Point(127, 121);
+            this.txtEstrellas.Name = "txtEstrellas";
+            this.txtEstrellas.Size = new System.Drawing.Size(121, 20);
+            this.txtEstrellas.TabIndex = 14;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(12, 124);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(49, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Estrellas:";
             // 
             // HabitacionAlta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 214);
+            this.Controls.Add(this.txtEstrellas);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.txtHotel);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnAceptar);
@@ -190,5 +210,7 @@
         private System.Windows.Forms.Button btnAceptar;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtHotel;
+        private System.Windows.Forms.TextBox txtEstrellas;
+        private System.Windows.Forms.Label label7;
     }
 }

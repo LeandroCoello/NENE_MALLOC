@@ -16,11 +16,12 @@ namespace FrbaHotel.ABM_de_Cliente
         public ABMCliente(SQLConnector conexion)
         {
             InitializeComponent();
+            coneccion = conexion;
         }
 
         private void btnAlta_Click(object sender, EventArgs e)
         {
-            FrbaHotel.ABM_de_Cliente.AltaCliente levantarAlta = new AltaCliente();
+            FrbaHotel.ABM_de_Cliente.AltaCliente levantarAlta = new AltaCliente(coneccion);
             this.Hide();
             levantarAlta.ShowDialog();
             this.Show();
@@ -28,17 +29,17 @@ namespace FrbaHotel.ABM_de_Cliente
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            ListadoCliente levantarListado = new ListadoCliente("modificar");
+            ListadoCliente levantarListado = new ListadoCliente("modificar", coneccion);
             this.Hide();
-            levantarListado.Show();
+            levantarListado.ShowDialog();
             this.Show();
         }
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            ListadoCliente levantarListado = new ListadoCliente("baja");
+            ListadoCliente levantarListado = new ListadoCliente("baja",coneccion);
             this.Hide();
-            levantarListado.Show();
+            levantarListado.ShowDialog();
             this.Show();
         }
     }

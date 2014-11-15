@@ -12,10 +12,11 @@ namespace FrbaHotel.ABM_de_Habitacion
 {
     public partial class ListadoHabitacion : Form
     {
-        SQLConnector conexion = new SQLConnector();
-        public ListadoHabitacion(string criterio)
+        SQLConnector conexion;
+        public ListadoHabitacion(string criterio,SQLConnector conec)
         {
             InitializeComponent();
+            conexion = conec;
             DataTable tiposHab = conexion.consulta("SELECT select Habitacion_Tipo FROM NENE_MALLOC.Habitacion GROUP BY Habitacion_Tipo");
             foreach (DataRow dr in tiposHab.Rows)
             {

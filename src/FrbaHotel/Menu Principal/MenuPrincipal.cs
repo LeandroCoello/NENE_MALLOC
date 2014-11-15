@@ -6,17 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using FrbaHotel.Sistema;
 
-namespace FrbaHotel.ABM_de_Habitacion
+namespace FrbaHotel.Menu_Principal
 {
-    public partial class ModifHabitacion : Form
+    public partial class MenuPrincipal : Form
     {
-        SQLConnector conexion;
-        public ModifHabitacion(SQLConnector conec)
+        public MenuPrincipal(string rolElegido)
         {
             InitializeComponent();
-            conexion = conec;
         }
     }
 }

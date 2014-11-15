@@ -12,6 +12,7 @@ namespace FrbaHotel.Sistema
         private SQLConnector conexion;
         private String nombreUsuario;
         private String contraseñaHash;
+       
         public UsuarioLogueado(String n,String c, SQLConnector con)
         {
             this.nombreUsuario = n;
@@ -39,6 +40,16 @@ namespace FrbaHotel.Sistema
             }
             return rolesAsignados;
         }
-
+        public List<Double> conseguirHotelesId() 
+        {
+            string queryHotele = "SELECT H.Hotel_Id FROM NENE_MALLOC.Usuario_Por_Hotel H,NENE_MALLOC.Usuario U WHERE U.usuario_name = '"+nombreUsuario+"' AND U.Usuario_Id = H.Usuario_Id";
+            DataTable hoteles = conexion.consulta(queryHotele);
+            List<Double> hotelesId = new List<double>();
+            foreach (DataRow row in hoteles.Rows) 
+            {
+                hotelesId.Add((double)row[0]);
+            }
+            return hotelesId;
+        }
     }
 }

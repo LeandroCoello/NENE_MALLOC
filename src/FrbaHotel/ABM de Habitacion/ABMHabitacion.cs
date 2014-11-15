@@ -13,32 +13,33 @@ namespace FrbaHotel.ABM_de_Habitacion
     public partial class ABMHabitacion : Form
     {
         SQLConnector conexion;
-        public ABMHabitacion(SQLConnector coneccion)
+        public ABMHabitacion(SQLConnector conec)
         {
             InitializeComponent();
+            conexion = conec;
         }
 
         private void btnAlta_Click(object sender, EventArgs e)
         {
-            ABM_de_Habitacion.HabitacionAlta levantarAlta = new HabitacionAlta();
+            ABM_de_Habitacion.HabitacionAlta levantarAlta = new HabitacionAlta(conexion);
             this.Hide();
-            levantarAlta.Show();
+            levantarAlta.ShowDialog();
             this.Show();
         }
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            ListadoHabitacion levantarListado = new ListadoHabitacion("modificar");
+            ListadoHabitacion levantarListado = new ListadoHabitacion("modificar",conexion);
             this.Hide();
-            levantarListado.Show();
+            levantarListado.ShowDialog();
             this.Show();
         }
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            ListadoHabitacion levantarListado = new ListadoHabitacion("baja");
+            ListadoHabitacion levantarListado = new ListadoHabitacion("baja",conexion);
             this.Hide();
-            levantarListado.Show();
+            levantarListado.ShowDialog();
             this.Show();
 
         }

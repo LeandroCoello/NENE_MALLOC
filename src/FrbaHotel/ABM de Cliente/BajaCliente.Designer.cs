@@ -28,18 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtNacionalidad = new System.Windows.Forms.TextBox();
-            this.txtFecNac = new System.Windows.Forms.TextBox();
-            this.txtDepto = new System.Windows.Forms.TextBox();
-            this.txtPiso = new System.Windows.Forms.TextBox();
-            this.txtNroCalle = new System.Windows.Forms.TextBox();
-            this.txtDireccion = new System.Windows.Forms.TextBox();
-            this.txtTelefono = new System.Windows.Forms.TextBox();
-            this.txtMail = new System.Windows.Forms.TextBox();
-            this.txtNroDoc = new System.Windows.Forms.TextBox();
-            this.txtTipoDoc = new System.Windows.Forms.TextBox();
-            this.txtApellido = new System.Windows.Forms.TextBox();
-            this.txtNom = new System.Windows.Forms.TextBox();
+            this.txt12 = new System.Windows.Forms.TextBox();
+            this.txt11 = new System.Windows.Forms.TextBox();
+            this.txt10 = new System.Windows.Forms.TextBox();
+            this.txt9 = new System.Windows.Forms.TextBox();
+            this.txt8 = new System.Windows.Forms.TextBox();
+            this.txt7 = new System.Windows.Forms.TextBox();
+            this.txt6 = new System.Windows.Forms.TextBox();
+            this.txt5 = new System.Windows.Forms.TextBox();
+            this.txt4 = new System.Windows.Forms.TextBox();
+            this.txt3 = new System.Windows.Forms.TextBox();
+            this.txt2 = new System.Windows.Forms.TextBox();
+            this.txt1 = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -55,101 +55,101 @@
             this.btnBaja = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // txtNacionalidad
+            // txt12
             // 
-            this.txtNacionalidad.Location = new System.Drawing.Point(87, 260);
-            this.txtNacionalidad.Name = "txtNacionalidad";
-            this.txtNacionalidad.ReadOnly = true;
-            this.txtNacionalidad.Size = new System.Drawing.Size(142, 20);
-            this.txtNacionalidad.TabIndex = 48;
+            this.txt12.Location = new System.Drawing.Point(87, 260);
+            this.txt12.Name = "txt12";
+            this.txt12.ReadOnly = true;
+            this.txt12.Size = new System.Drawing.Size(161, 20);
+            this.txt12.TabIndex = 48;
             // 
-            // txtFecNac
+            // txt11
             // 
-            this.txtFecNac.Location = new System.Drawing.Point(87, 236);
-            this.txtFecNac.Name = "txtFecNac";
-            this.txtFecNac.ReadOnly = true;
-            this.txtFecNac.Size = new System.Drawing.Size(142, 20);
-            this.txtFecNac.TabIndex = 47;
+            this.txt11.Location = new System.Drawing.Point(87, 236);
+            this.txt11.Name = "txt11";
+            this.txt11.ReadOnly = true;
+            this.txt11.Size = new System.Drawing.Size(161, 20);
+            this.txt11.TabIndex = 47;
             // 
-            // txtDepto
+            // txt10
             // 
-            this.txtDepto.Location = new System.Drawing.Point(87, 212);
-            this.txtDepto.Name = "txtDepto";
-            this.txtDepto.ReadOnly = true;
-            this.txtDepto.Size = new System.Drawing.Size(142, 20);
-            this.txtDepto.TabIndex = 46;
+            this.txt10.Location = new System.Drawing.Point(87, 212);
+            this.txt10.Name = "txt10";
+            this.txt10.ReadOnly = true;
+            this.txt10.Size = new System.Drawing.Size(161, 20);
+            this.txt10.TabIndex = 46;
             // 
-            // txtPiso
+            // txt9
             // 
-            this.txtPiso.Location = new System.Drawing.Point(87, 189);
-            this.txtPiso.Name = "txtPiso";
-            this.txtPiso.ReadOnly = true;
-            this.txtPiso.Size = new System.Drawing.Size(142, 20);
-            this.txtPiso.TabIndex = 45;
+            this.txt9.Location = new System.Drawing.Point(87, 189);
+            this.txt9.Name = "txt9";
+            this.txt9.ReadOnly = true;
+            this.txt9.Size = new System.Drawing.Size(161, 20);
+            this.txt9.TabIndex = 45;
             // 
-            // txtNroCalle
+            // txt8
             // 
-            this.txtNroCalle.Location = new System.Drawing.Point(87, 167);
-            this.txtNroCalle.Name = "txtNroCalle";
-            this.txtNroCalle.ReadOnly = true;
-            this.txtNroCalle.Size = new System.Drawing.Size(142, 20);
-            this.txtNroCalle.TabIndex = 44;
+            this.txt8.Location = new System.Drawing.Point(87, 167);
+            this.txt8.Name = "txt8";
+            this.txt8.ReadOnly = true;
+            this.txt8.Size = new System.Drawing.Size(161, 20);
+            this.txt8.TabIndex = 44;
             // 
-            // txtDireccion
+            // txt7
             // 
-            this.txtDireccion.Location = new System.Drawing.Point(87, 145);
-            this.txtDireccion.Name = "txtDireccion";
-            this.txtDireccion.ReadOnly = true;
-            this.txtDireccion.Size = new System.Drawing.Size(142, 20);
-            this.txtDireccion.TabIndex = 43;
+            this.txt7.Location = new System.Drawing.Point(87, 145);
+            this.txt7.Name = "txt7";
+            this.txt7.ReadOnly = true;
+            this.txt7.Size = new System.Drawing.Size(161, 20);
+            this.txt7.TabIndex = 43;
             // 
-            // txtTelefono
+            // txt6
             // 
-            this.txtTelefono.Location = new System.Drawing.Point(87, 120);
-            this.txtTelefono.Name = "txtTelefono";
-            this.txtTelefono.ReadOnly = true;
-            this.txtTelefono.Size = new System.Drawing.Size(142, 20);
-            this.txtTelefono.TabIndex = 42;
+            this.txt6.Location = new System.Drawing.Point(87, 120);
+            this.txt6.Name = "txt6";
+            this.txt6.ReadOnly = true;
+            this.txt6.Size = new System.Drawing.Size(161, 20);
+            this.txt6.TabIndex = 42;
             // 
-            // txtMail
+            // txt5
             // 
-            this.txtMail.Location = new System.Drawing.Point(87, 98);
-            this.txtMail.Name = "txtMail";
-            this.txtMail.ReadOnly = true;
-            this.txtMail.Size = new System.Drawing.Size(142, 20);
-            this.txtMail.TabIndex = 41;
+            this.txt5.Location = new System.Drawing.Point(87, 98);
+            this.txt5.Name = "txt5";
+            this.txt5.ReadOnly = true;
+            this.txt5.Size = new System.Drawing.Size(161, 20);
+            this.txt5.TabIndex = 41;
             // 
-            // txtNroDoc
+            // txt4
             // 
-            this.txtNroDoc.Location = new System.Drawing.Point(87, 75);
-            this.txtNroDoc.Name = "txtNroDoc";
-            this.txtNroDoc.ReadOnly = true;
-            this.txtNroDoc.Size = new System.Drawing.Size(142, 20);
-            this.txtNroDoc.TabIndex = 40;
+            this.txt4.Location = new System.Drawing.Point(87, 75);
+            this.txt4.Name = "txt4";
+            this.txt4.ReadOnly = true;
+            this.txt4.Size = new System.Drawing.Size(161, 20);
+            this.txt4.TabIndex = 40;
             // 
-            // txtTipoDoc
+            // txt3
             // 
-            this.txtTipoDoc.Location = new System.Drawing.Point(87, 53);
-            this.txtTipoDoc.Name = "txtTipoDoc";
-            this.txtTipoDoc.ReadOnly = true;
-            this.txtTipoDoc.Size = new System.Drawing.Size(142, 20);
-            this.txtTipoDoc.TabIndex = 39;
+            this.txt3.Location = new System.Drawing.Point(87, 53);
+            this.txt3.Name = "txt3";
+            this.txt3.ReadOnly = true;
+            this.txt3.Size = new System.Drawing.Size(161, 20);
+            this.txt3.TabIndex = 39;
             // 
-            // txtApellido
+            // txt2
             // 
-            this.txtApellido.Location = new System.Drawing.Point(87, 29);
-            this.txtApellido.Name = "txtApellido";
-            this.txtApellido.ReadOnly = true;
-            this.txtApellido.Size = new System.Drawing.Size(142, 20);
-            this.txtApellido.TabIndex = 38;
+            this.txt2.Location = new System.Drawing.Point(87, 29);
+            this.txt2.Name = "txt2";
+            this.txt2.ReadOnly = true;
+            this.txt2.Size = new System.Drawing.Size(161, 20);
+            this.txt2.TabIndex = 38;
             // 
-            // txtNom
+            // txt1
             // 
-            this.txtNom.Location = new System.Drawing.Point(87, 6);
-            this.txtNom.Name = "txtNom";
-            this.txtNom.ReadOnly = true;
-            this.txtNom.Size = new System.Drawing.Size(142, 20);
-            this.txtNom.TabIndex = 37;
+            this.txt1.Location = new System.Drawing.Point(87, 7);
+            this.txt1.Name = "txt1";
+            this.txt1.ReadOnly = true;
+            this.txt1.Size = new System.Drawing.Size(161, 20);
+            this.txt1.TabIndex = 37;
             // 
             // label13
             // 
@@ -208,7 +208,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 123);
+            this.label6.Location = new System.Drawing.Point(12, 56);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(52, 13);
             this.label6.TabIndex = 30;
@@ -217,7 +217,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 101);
+            this.label5.Location = new System.Drawing.Point(12, 120);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 13);
             this.label5.TabIndex = 29;
@@ -226,7 +226,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 78);
+            this.label4.Location = new System.Drawing.Point(12, 101);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 13);
             this.label4.TabIndex = 28;
@@ -235,7 +235,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 56);
+            this.label3.Location = new System.Drawing.Point(12, 78);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 27;
@@ -273,20 +273,20 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(243, 326);
+            this.ClientSize = new System.Drawing.Size(278, 326);
             this.Controls.Add(this.btnBaja);
-            this.Controls.Add(this.txtNacionalidad);
-            this.Controls.Add(this.txtFecNac);
-            this.Controls.Add(this.txtDepto);
-            this.Controls.Add(this.txtPiso);
-            this.Controls.Add(this.txtNroCalle);
-            this.Controls.Add(this.txtDireccion);
-            this.Controls.Add(this.txtTelefono);
-            this.Controls.Add(this.txtMail);
-            this.Controls.Add(this.txtNroDoc);
-            this.Controls.Add(this.txtTipoDoc);
-            this.Controls.Add(this.txtApellido);
-            this.Controls.Add(this.txtNom);
+            this.Controls.Add(this.txt12);
+            this.Controls.Add(this.txt11);
+            this.Controls.Add(this.txt10);
+            this.Controls.Add(this.txt9);
+            this.Controls.Add(this.txt8);
+            this.Controls.Add(this.txt7);
+            this.Controls.Add(this.txt6);
+            this.Controls.Add(this.txt5);
+            this.Controls.Add(this.txt4);
+            this.Controls.Add(this.txt3);
+            this.Controls.Add(this.txt2);
+            this.Controls.Add(this.txt1);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -308,18 +308,18 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtNacionalidad;
-        private System.Windows.Forms.TextBox txtFecNac;
-        private System.Windows.Forms.TextBox txtDepto;
-        private System.Windows.Forms.TextBox txtPiso;
-        private System.Windows.Forms.TextBox txtNroCalle;
-        private System.Windows.Forms.TextBox txtDireccion;
-        private System.Windows.Forms.TextBox txtTelefono;
-        private System.Windows.Forms.TextBox txtMail;
-        private System.Windows.Forms.TextBox txtNroDoc;
-        private System.Windows.Forms.TextBox txtTipoDoc;
-        private System.Windows.Forms.TextBox txtApellido;
-        private System.Windows.Forms.TextBox txtNom;
+        private System.Windows.Forms.TextBox txt12;
+        private System.Windows.Forms.TextBox txt11;
+        private System.Windows.Forms.TextBox txt10;
+        private System.Windows.Forms.TextBox txt9;
+        private System.Windows.Forms.TextBox txt8;
+        private System.Windows.Forms.TextBox txt7;
+        private System.Windows.Forms.TextBox txt6;
+        private System.Windows.Forms.TextBox txt5;
+        private System.Windows.Forms.TextBox txt4;
+        private System.Windows.Forms.TextBox txt3;
+        private System.Windows.Forms.TextBox txt2;
+        private System.Windows.Forms.TextBox txt1;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;

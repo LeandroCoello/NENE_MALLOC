@@ -12,10 +12,11 @@ namespace FrbaHotel.ABM_de_Habitacion
 {
     public partial class BajaHabitacion : Form
     {
-        SQLConnector conexion = new SQLConnector();
-        public BajaHabitacion()
+        SQLConnector conexion;
+        public BajaHabitacion(SQLConnector conec)
         {
             InitializeComponent();
+            conexion = conec;
         }
 
         private void btnDARBAJA_Click(object sender, EventArgs e)

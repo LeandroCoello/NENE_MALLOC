@@ -18,7 +18,6 @@ namespace FrbaHotel.Sistema
         public UsuarioLogueado login(string nombreDeUsuario, string contraseña)
         {
             string queryLogin = "declare @alfa numeric(1,0) exec NENE_MALLOC.login_usuario '"+nombreDeUsuario+"','"+this.SHA256Encripta(contraseña)+"',@alfa out select @alfa";
-            MessageBox.Show(connection.executeQueryEscalar(queryLogin).ToString());
             switch (Convert.ToInt32(connection.executeQueryEscalar(queryLogin)))
             {
                 case 0:
