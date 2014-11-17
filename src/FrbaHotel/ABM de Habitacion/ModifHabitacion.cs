@@ -13,10 +13,49 @@ namespace FrbaHotel.ABM_de_Habitacion
     public partial class ModifHabitacion : Form
     {
         SQLConnector conexion;
-        public ModifHabitacion(SQLConnector conec)
+        List<TextBox> boxes = new List<TextBox>();
+        string habitacionId;
+        public ModifHabitacion(string[] listaValores,SQLConnector conec)
         {
             InitializeComponent();
             conexion = conec;
+            habitacionId = listaValores[0];
+            this.generarBoxes();
+            this.cargarBoxes(listaValores);
+        }
+        private void cargarBoxes(string[] unaLista)
+        {
+            int i = 1;
+            foreach (var txtB in boxes)
+            {
+                txtB.Text = unaLista[i];
+                i++;
+            }
+        }
+        private void generarBoxes() 
+        {
+            boxes.Add(txtNHab);
+            boxes.Add(txtPH);
+            boxes.Add(txtH);
+            boxes.Add(txtTHab);
+            boxes.Add(txtUbi);
+            boxes.Add(txtDesc);
+        }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            string queryModif = "EXEC NENE_MALLOC.modificacion_habitacion "+txtNHab.Text+","+txtPH.Text+","+txtH.Text+","+txtTHab.Text+",'"+txtUbi.Text+"','"+txtDesc.Text+"',"+habitacionId;
+            MessageBox.Show(queryModif);
+            try
+            {
+                conexion.executeOnly(queryModif);
+                MessageBox.Show("Habitación modificada con exito");
+                this.Close();
+            }
+            catch (Exception exe)
+            {
+                MessageBox.Show(exe.Message);
+            }
         }
     }
 }

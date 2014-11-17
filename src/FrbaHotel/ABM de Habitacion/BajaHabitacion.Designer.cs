@@ -35,17 +35,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.txtNHab = new System.Windows.Forms.TextBox();
+            this.txtPisoHotel = new System.Windows.Forms.TextBox();
+            this.txtUbicacion = new System.Windows.Forms.TextBox();
+            this.txtTipoHab = new System.Windows.Forms.TextBox();
+            this.txtDesc = new System.Windows.Forms.TextBox();
+            this.txtHotel = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnDARBAJA
             // 
-            this.btnDARBAJA.Location = new System.Drawing.Point(87, 151);
+            this.btnDARBAJA.Location = new System.Drawing.Point(81, 154);
             this.btnDARBAJA.Name = "btnDARBAJA";
             this.btnDARBAJA.Size = new System.Drawing.Size(75, 23);
             this.btnDARBAJA.TabIndex = 0;
@@ -74,7 +74,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 55);
+            this.label3.Location = new System.Drawing.Point(12, 105);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(58, 13);
             this.label3.TabIndex = 3;
@@ -92,7 +92,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 103);
+            this.label5.Location = new System.Drawing.Point(12, 131);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(66, 13);
             this.label5.TabIndex = 5;
@@ -101,71 +101,71 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 128);
+            this.label6.Location = new System.Drawing.Point(12, 54);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
             this.label6.TabIndex = 6;
             this.label6.Text = "Hotel:";
             // 
-            // textBox1
+            // txtNHab
             // 
-            this.textBox1.Location = new System.Drawing.Point(116, 6);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 7;
+            this.txtNHab.Location = new System.Drawing.Point(116, 6);
+            this.txtNHab.Name = "txtNHab";
+            this.txtNHab.ReadOnly = true;
+            this.txtNHab.Size = new System.Drawing.Size(100, 20);
+            this.txtNHab.TabIndex = 7;
             // 
-            // textBox2
+            // txtPisoHotel
             // 
-            this.textBox2.Location = new System.Drawing.Point(116, 28);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 8;
+            this.txtPisoHotel.Location = new System.Drawing.Point(116, 28);
+            this.txtPisoHotel.Name = "txtPisoHotel";
+            this.txtPisoHotel.ReadOnly = true;
+            this.txtPisoHotel.Size = new System.Drawing.Size(100, 20);
+            this.txtPisoHotel.TabIndex = 8;
             // 
-            // textBox3
+            // txtUbicacion
             // 
-            this.textBox3.Location = new System.Drawing.Point(116, 52);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 9;
+            this.txtUbicacion.Location = new System.Drawing.Point(116, 102);
+            this.txtUbicacion.Name = "txtUbicacion";
+            this.txtUbicacion.ReadOnly = true;
+            this.txtUbicacion.Size = new System.Drawing.Size(100, 20);
+            this.txtUbicacion.TabIndex = 9;
             // 
-            // textBox4
+            // txtTipoHab
             // 
-            this.textBox4.Location = new System.Drawing.Point(116, 76);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 10;
+            this.txtTipoHab.Location = new System.Drawing.Point(116, 76);
+            this.txtTipoHab.Name = "txtTipoHab";
+            this.txtTipoHab.ReadOnly = true;
+            this.txtTipoHab.Size = new System.Drawing.Size(100, 20);
+            this.txtTipoHab.TabIndex = 10;
             // 
-            // textBox5
+            // txtDesc
             // 
-            this.textBox5.Location = new System.Drawing.Point(116, 100);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 11;
+            this.txtDesc.Location = new System.Drawing.Point(116, 128);
+            this.txtDesc.Name = "txtDesc";
+            this.txtDesc.ReadOnly = true;
+            this.txtDesc.Size = new System.Drawing.Size(100, 20);
+            this.txtDesc.TabIndex = 11;
             // 
-            // textBox6
+            // txtHotel
             // 
-            this.textBox6.Location = new System.Drawing.Point(116, 125);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 12;
+            this.txtHotel.Location = new System.Drawing.Point(116, 51);
+            this.txtHotel.Name = "txtHotel";
+            this.txtHotel.ReadOnly = true;
+            this.txtHotel.Size = new System.Drawing.Size(100, 20);
+            this.txtHotel.TabIndex = 12;
             // 
             // BajaHabitacion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(249, 201);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(249, 196);
+            this.Controls.Add(this.txtHotel);
+            this.Controls.Add(this.txtDesc);
+            this.Controls.Add(this.txtTipoHab);
+            this.Controls.Add(this.txtUbicacion);
+            this.Controls.Add(this.txtPisoHotel);
+            this.Controls.Add(this.txtNHab);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -189,11 +189,11 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox txtNHab;
+        private System.Windows.Forms.TextBox txtPisoHotel;
+        private System.Windows.Forms.TextBox txtUbicacion;
+        private System.Windows.Forms.TextBox txtTipoHab;
+        private System.Windows.Forms.TextBox txtDesc;
+        private System.Windows.Forms.TextBox txtHotel;
     }
 }
