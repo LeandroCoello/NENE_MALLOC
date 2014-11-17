@@ -22,39 +22,74 @@ namespace FrbaHotel.Listado_Estadistico
             cBListado.Items.Add("Habitaciones con mayor cantidad de días y veces que fueron ocupadas");
             cBListado.Items.Add("Clientes con mayor cantidad de puntos");
             conector = conec;
+            DataTable anios = conector.consulta("SELECT DISTINCT YEAR(Reserva_Fecha) FROM NENE_MALLOC.Reserva GROUP BY Reserva_Fecha ");
+            foreach(DataRow row in anios.Rows)
+            {
+                cBanios.Items.Add(row[0].ToString());
+            }
+
         }
 
         private void btnLimpieza_Click(object sender, EventArgs e)
         {
             cBListado.SelectedIndex = -1;
+            cBanios.SelectedIndex = -1;
+            txtMFIN.Text = "";
+            txtMFIN.Enabled = false;
+            txtMINI.Text = "";
+            txtMINI.Enabled = false;
             dGVListEsta.ClearSelection();
+            dGVListEsta.Refresh();
         }
 
 
         private void btnLanzarConsulta_Click(object sender, EventArgs e)
-        {    
-            string queryFinal;
-            switch (cBListado.SelectedItem.ToString()) 
-            {  
-                case "Hoteles con mayor cantidad de reservas canceladas":
-                    queryFinal = "exec hoteles_reservas_mas_canceladas GO";
-                    dGVListEsta.DataSource = conector.consulta(queryFinal);
-                    break;
-                case "Hoteles con mayor cantidad de consumibles facturados":
-                    queryFinal = "exec hoteles_consumibles_facturados GO";
-                    dGVListEsta.DataSource = conector.consulta(queryFinal);
-                    break;
-                case "Hoteles con mayor cantidad de días fuera de servicio":
-                    queryFinal = "exec hoteles_fuera_de_servicio GO";
-                    dGVListEsta.DataSource = conector.consulta(queryFinal);
-                    break;
-                case "Habitaciones con mayor cantidad de días y veces que fueron ocupadas":
-                    queryFinal = "exec habitaciones_mas_ocupadas GO";
-                    break;
-                default:
-
-                    break;
+        {
+            if (txtMFIN.Text == "" || txtMINI.Text == "") { MessageBox.Show("Complete los meses"); }
+            else
+            {
+                string queryFinal;
+                switch (cBListado.SelectedItem.ToString())
+                {
+                    case "Hoteles con mayor cantidad de reservas canceladas":
+                        queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_reservas_mas_canceladas ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
+                        dGVListEsta.DataSource = conector.consulta(queryFinal);
+                        break;
+                    case "Hoteles con mayor cantidad de consumibles facturados":
+                        queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_consumibles_facturados ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
+                        dGVListEsta.DataSource = conector.consulta(queryFinal);
+                        break;
+                    case "Hoteles con mayor cantidad de días fuera de servicio":
+                        queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_fuera_de_servicio ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
+                        dGVListEsta.DataSource = conector.consulta(queryFinal);
+                        break;
+                    case "Habitaciones con mayor cantidad de días y veces que fueron ocupadas":
+                        queryFinal = "SELECT * FROM NENE_MALLOC.habitaciones_mas_ocupadas ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
+                        dGVListEsta.DataSource = conector.consulta(queryFinal);
+                        break;
+                    case "Clientes con mayor cantidad de puntos":
+                        queryFinal = "SELECT * FROM NENE_MALLOC.clientes_mas_puntos (" + cBanios.SelectedItem.ToString() + "," + txtMINI.Text + "," + txtMFIN.Text + ")";
+                        dGVListEsta.DataSource = conector.consulta(queryFinal);
+                        break;
+                    default:
+                        return;
+                        
+                }
             }
         }
+        private void habilatarMeses() 
+        {
+            txtMINI.Enabled = true;
+            txtMFIN.Enabled = true;
+        }
+
+        private void cBanios_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cBanios.SelectedIndex != -1) 
+            {
+                this.habilatarMeses();
+            }
+        }
+
     }
 }

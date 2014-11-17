@@ -33,6 +33,12 @@
             this.btnLanzarConsulta = new System.Windows.Forms.Button();
             this.btnLimpieza = new System.Windows.Forms.Button();
             this.dGVListEsta = new System.Windows.Forms.DataGridView();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cBanios = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtMINI = new System.Windows.Forms.TextBox();
+            this.txtMFIN = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dGVListEsta)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,14 +54,14 @@
             // cBListado
             // 
             this.cBListado.FormattingEnabled = true;
-            this.cBListado.Location = new System.Drawing.Point(12, 25);
+            this.cBListado.Location = new System.Drawing.Point(15, 68);
             this.cBListado.Name = "cBListado";
             this.cBListado.Size = new System.Drawing.Size(529, 21);
             this.cBListado.TabIndex = 1;
             // 
             // btnLanzarConsulta
             // 
-            this.btnLanzarConsulta.Location = new System.Drawing.Point(466, 52);
+            this.btnLanzarConsulta.Location = new System.Drawing.Point(463, 133);
             this.btnLanzarConsulta.Name = "btnLanzarConsulta";
             this.btnLanzarConsulta.Size = new System.Drawing.Size(75, 23);
             this.btnLanzarConsulta.TabIndex = 2;
@@ -65,7 +71,7 @@
             // 
             // btnLimpieza
             // 
-            this.btnLimpieza.Location = new System.Drawing.Point(12, 52);
+            this.btnLimpieza.Location = new System.Drawing.Point(12, 133);
             this.btnLimpieza.Name = "btnLimpieza";
             this.btnLimpieza.Size = new System.Drawing.Size(75, 23);
             this.btnLimpieza.TabIndex = 3;
@@ -76,16 +82,74 @@
             // dGVListEsta
             // 
             this.dGVListEsta.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGVListEsta.Location = new System.Drawing.Point(15, 81);
+            this.dGVListEsta.Location = new System.Drawing.Point(12, 162);
             this.dGVListEsta.Name = "dGVListEsta";
             this.dGVListEsta.Size = new System.Drawing.Size(526, 374);
             this.dGVListEsta.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 33);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(29, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Año:";
+            // 
+            // cBanios
+            // 
+            this.cBanios.FormattingEnabled = true;
+            this.cBanios.Location = new System.Drawing.Point(47, 30);
+            this.cBanios.Name = "cBanios";
+            this.cBanios.Size = new System.Drawing.Size(82, 21);
+            this.cBanios.TabIndex = 6;
+            this.cBanios.SelectedIndexChanged += new System.EventHandler(this.cBanios_SelectedIndexChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(162, 33);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(58, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Mes Inicio:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(336, 33);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(47, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "Mes Fin:";
+            // 
+            // txtMINI
+            // 
+            this.txtMINI.Enabled = false;
+            this.txtMINI.Location = new System.Drawing.Point(226, 30);
+            this.txtMINI.Name = "txtMINI";
+            this.txtMINI.Size = new System.Drawing.Size(86, 20);
+            this.txtMINI.TabIndex = 9;
+            // 
+            // txtMFIN
+            // 
+            this.txtMFIN.Enabled = false;
+            this.txtMFIN.Location = new System.Drawing.Point(389, 30);
+            this.txtMFIN.Name = "txtMFIN";
+            this.txtMFIN.Size = new System.Drawing.Size(100, 20);
+            this.txtMFIN.TabIndex = 10;
             // 
             // ListEstadistico
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 467);
+            this.ClientSize = new System.Drawing.Size(569, 548);
+            this.Controls.Add(this.txtMFIN);
+            this.Controls.Add(this.txtMINI);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.cBanios);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.dGVListEsta);
             this.Controls.Add(this.btnLimpieza);
             this.Controls.Add(this.btnLanzarConsulta);
@@ -106,5 +170,11 @@
         private System.Windows.Forms.Button btnLanzarConsulta;
         private System.Windows.Forms.Button btnLimpieza;
         private System.Windows.Forms.DataGridView dGVListEsta;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox cBanios;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtMINI;
+        private System.Windows.Forms.TextBox txtMFIN;
     }
 }

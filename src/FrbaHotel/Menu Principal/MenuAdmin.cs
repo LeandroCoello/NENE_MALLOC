@@ -53,7 +53,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnHabitacion_Click(object sender, EventArgs e)
         {
-            ABM_de_Habitacion.ABMHabitacion levantarHabitacion = new FrbaHotel.ABM_de_Habitacion.ABMHabitacion(userLog.getConexion());
+            ABM_de_Habitacion.ABMHabitacion levantarHabitacion = new FrbaHotel.ABM_de_Habitacion.ABMHabitacion(userLog.getConexion(),userLog);
             this.Hide();
             levantarHabitacion.ShowDialog();
             this.Show();
@@ -65,6 +65,12 @@ namespace FrbaHotel.Menu_Principal
             this.Hide();
             levantarRegimen.ShowDialog();
             this.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Listado_Estadistico.ListEstadistico up = new Listado_Estadistico.ListEstadistico(userLog.getConexion());
+            up.ShowDialog();
         }
 
     }
