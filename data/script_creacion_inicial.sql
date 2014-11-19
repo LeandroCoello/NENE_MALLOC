@@ -509,7 +509,7 @@ Declare
 @reserva_id numeric(18,0),
 @numero_habitacion numeric(18,0)
 Declare cursor_migracion_consumible cursor
-	for(select distinct Consumible_Codigo, 
+	for(select Consumible_Codigo, 
 					    Item_Factura_Cantidad,
 					    Item_Factura_Monto,
 					    Factura_Nro,
