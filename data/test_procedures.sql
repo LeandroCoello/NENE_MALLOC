@@ -25,13 +25,18 @@ update NENE_MALLOC.Usuario
 GO
 
 --Test alta_cliente
+declare @id numeric(18,0)
 exec NENE_MALLOC.alta_cliente @nombre= 'James', @apellido='Bond', @telefono= 48795870, 
 										  @tipo_ident='DNI' , @nro_ident= 15487896, @mail='jbond@gmail.com' , 
 										  @calle='Medrano', @nro_calle=951, @piso=4 , 
-										  @depto='B' , @fecha_nacimiento='19890514', @nacionalidad='Argentino'
+										  @depto='B' , @fecha_nacimiento='19890514', @nacionalidad='Argentino', @id_cliente= @id out
+select @id
 
 select * from NENE_MALLOC.Datos_Personales
-select * from NENE_MALLOC.Cliente
+select * from NENE_MALLOC.Cliente--10742 datos
+
+delete from NENE_MALLOC.Cliente where Cliente_Datos = 100744
+delete from NENE_MALLOC.Datos_Personales where Datos_Id= 100744
 
 --										  
 exec NENE_MALLOC.alta_cliente @nombre= 'James', @apellido='Bond', @telefono= 48795870, 
@@ -112,3 +117,13 @@ insert into NENE_MALLOC.Rol(Rol_Desc)
 			values('Guest')
 select * from NENE_MALLOC.Rol
 GO
+
+--Test generar_factura
+
+declare @fact_nro numeric(18,0)
+exec NENE_MALLOC.generar_factura 100744,'20140415',@fact_nro out
+select @fact_nro
+
+select * from NENE_MALLOC.Factura
+
+delete from NENE_MALLOC.Factura where Factura_Cliente = 100744

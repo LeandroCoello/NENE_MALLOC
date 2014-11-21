@@ -910,9 +910,9 @@ begin transaction
     Insert into NENE_MALLOC.Cliente(Cliente_Nacionalidad, Cliente_Datos)
                              values(@nacionalidad, (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
      
-    set @id_cliente = (select MAX(c.Cliente_Id) from Cliente c)
-    return @id_cliente                         
+	set @id_cliente = (select MAX(c.Cliente_Id) from Cliente c)     
 commit
+    return @id_cliente                         
 GO
 
 --MODIFICACION CLIENTE
@@ -1195,8 +1195,8 @@ begin transaction
     
     Insert into NENE_MALLOC.Log_Reserva(Log_Fecha, Log_Reservador, Log_Descripcion, Log_Reserva) 
                                  values(@fecha_reserva_correcta, @user_reservador, 'Nueva Reserva', @id_reserva)                      
-	return @id_reserva
 commit 
+	return @id_reserva
 GO
 
 --MODIFICAR_RESERVA
@@ -1337,9 +1337,10 @@ declare @fecha_correcta datetime
 	insert into NENE_MALLOC.Factura(Factura_Id, Factura_Cliente, Factura_Fecha)
 					values(@fact_nro, @cliente_id, @fecha_correcta)
 	
-	return @fact_nro
 commit 
+	return @fact_nro
 GO
+
 
 --AGREGAR ITEMS A FACTURA
 
