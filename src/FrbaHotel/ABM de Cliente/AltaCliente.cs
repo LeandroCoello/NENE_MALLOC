@@ -37,12 +37,11 @@ namespace FrbaHotel.ABM_de_Cliente
                     break;
                 }
             }
-            SQLConnector conec = new SQLConnector();
             string queryCliente = " declare @Id numeric(1,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
                 +txtTipoDoc.Text+"',"+txtNroDoc.Text+",'"+txtMail.Text+"','"+txtDireccion.Text+"',"+txtNroCalle.Text+","+txtPiso.Text+",'"+txtDepto.Text+"','"+txtFecNac.Text+"','"+txtNacionalidad.Text+"',@Id";
             try
             {
-                conec.executeOnly(queryCliente);
+                conexion.executeOnly(queryCliente);
                 MessageBox.Show("Cliente registrado con exito");
                 this.Close();
             }

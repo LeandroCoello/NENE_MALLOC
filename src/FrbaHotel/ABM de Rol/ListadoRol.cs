@@ -6,19 +6,26 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.ABM_de_Rol
 {
     public partial class ListadoRol : Form
     {
-        string criterio;
-        public ListadoRol(string condicion)
+        SQLConnector conexion;
+        string criterioABM;
+        public ListadoRol(string condicion, SQLConnector conec)
         {
             InitializeComponent();
-            criterio = condicion;
-            cBEstadoRol.Items.Add("Habilitado");
-            cBEstadoRol.Items.Add("Deshabilitado");
-            //BUSCAR DE UN DATA TABLE ROBARLE LOS CAMPOS PARA METERLOS EN UN COMBO BOX PARA LAS FUNCIONALIDADES
+            criterioABM = condicion;
+            conexion = conec;
+            cBEstadoRol.Items.Add("1");
+            cBEstadoRol.Items.Add("0");
+            DataTable funcionalidades = conexion.consulta("SELECT Func_Desc FROM NENE_MALLOC.Funcionalidad");
+            foreach (DataRow row in funcionalidades.Rows) 
+            {
+                cBFuncionalidades.Items.Add(row["Func_Desc"]);
+            }
         }
 
         private void btnLimpieza_Click(object sender, EventArgs e)
@@ -33,12 +40,26 @@ namespace FrbaHotel.ABM_de_Rol
 
         private void btnBusqueda_Click(object sender, EventArgs e)
         {
-            string queryFinal = "SELECT * FROM NENE_MALLOC.Rol";
+            string queryFinal = "SELECT R.Rol_Id,R.Rol_Desc,R.Rol_estado FROM NENE_MALLOC.Rol R, NENE_MALLOC.Func_Por_Rol FR, NENE_MALLOC.Funcionalidad F "+
+                "WHERE R.Rol_Id = FR.Rol_Id AND FR.Func_Id = F.Func_Id";
+            string ultimaClausula =  "GROUP BY R.Rol_Id,R.Rol_Desc,R.Rol_estado";
             if (!string.IsNullOrEmpty(txtNomRol.Text)) 
             {
-                queryFinal += "and NENE_MALLOC.Rol.Rol_Desc LIKE %"+txtNomRol.Text+"%";
+                queryFinal += "and R.Rol_Desc LIKE '%"+txtNomRol.Text+"%'";
             }
-
+            if (!string.IsNullOrEmpty(cBFuncionalidades.SelectedItem.ToString())) 
+            {
+                queryFinal += "and F.Func_Desc LIKE '%"+cBFuncionalidades.SelectedItem.ToString()+"'%";
+            }
+            if (!string.IsNullOrEmpty(cBEstadoRol.SelectedItem.ToString())) 
+            {
+                queryFinal +=  "and R.Rol_Estado LIKE '%"+cBEstadoRol.SelectedItem.ToString()+"'%";  
+            }
+            queryFinal += ultimaClausula;
+            try{
+              dataGridView1.DataSource =  conexion.consulta(queryFinal);
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
     }
 }

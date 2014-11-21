@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using FrbaHotel.Sistema;
+using System.Configuration;
 
 namespace FrbaHotel.Cancelar_Reserva
 {
     public partial class CancelReser : Form
     {
         //ESTO ES SOLO POR AHORA LA FECHA SE LA PEDIMOS AL ARCHIVO DE CONFIGURACION
+        
         System.DateTime fechaActualSistema = new DateTime();
         public CancelReser(SQLConnector conecc)
         {

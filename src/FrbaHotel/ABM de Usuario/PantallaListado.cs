@@ -6,14 +6,19 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.ABM_de_Usuario
 {
     public partial class PantallaListado : Form
     {
-        public PantallaListado()
+        SQLConnector conexion;
+        string criterioABM;
+        public PantallaListado(string criterio, SQLConnector conec)
         {
             InitializeComponent();
+            criterioABM = criterio;
+            conexion = conec;
         }
 
         private void btnLimpieza_Click(object sender, EventArgs e)

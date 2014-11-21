@@ -12,15 +12,16 @@ namespace FrbaHotel.ABM_de_Usuario
 {
     public partial class ABMUsuario : Form
     {
-        SQLConnector coneccion;
-        public ABMUsuario(SQLConnector conexion)
+        SQLConnector conexion;
+        public ABMUsuario(SQLConnector conec)
         {
             InitializeComponent();
+            conexion = conec;
         }
 
         private void btnAlta_Click(object sender, EventArgs e)
         {
-            AltaUsuario levantarAlta = new AltaUsuario();
+            AltaUsuario levantarAlta = new AltaUsuario(conexion);
             this.Hide();
             levantarAlta.ShowDialog();
             this.Show();
@@ -28,17 +29,17 @@ namespace FrbaHotel.ABM_de_Usuario
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            ModificarUsuario levantarModif = new ModificarUsuario();
+            PantallaListado levantarListado = new PantallaListado("modificar",conexion);           
             this.Hide();
-            levantarModif.ShowDialog();
+            levantarListado.ShowDialog();
             this.Show();
         }
 
         private void btnBajar_Click(object sender, EventArgs e)
         {
-            BajaUsuario levantarBaja = new BajaUsuario();
+            PantallaListado levantarListado = new PantallaListado("baja", conexion);
             this.Hide();
-            levantarBaja.ShowDialog();
+            levantarListado.ShowDialog();
             this.Show();
         }
     }

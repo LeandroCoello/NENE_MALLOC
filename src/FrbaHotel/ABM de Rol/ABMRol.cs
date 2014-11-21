@@ -12,14 +12,16 @@ namespace FrbaHotel.ABM_de_Rol
 {
     public partial class ABMRol : Form
     {
-        public ABMRol(SQLConnector conexion)
+        SQLConnector conexion;
+        public ABMRol(SQLConnector conec)
         {
             InitializeComponent();
+            conexion = conec;
         }
 
         private void btnAlta_Click(object sender, EventArgs e)
         {
-            AltaRol levantaAlta = new AltaRol();
+            AltaRol levantaAlta = new AltaRol(conexion);
             this.Hide();
             levantaAlta.ShowDialog();
             this.Show();
@@ -27,7 +29,7 @@ namespace FrbaHotel.ABM_de_Rol
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            ListadoRol levantarListado = new ListadoRol("modificar");
+            ListadoRol levantarListado = new ListadoRol("modificar",conexion);
             this.Hide();
             levantarListado.Show();
             this.Show();
@@ -35,7 +37,7 @@ namespace FrbaHotel.ABM_de_Rol
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            ListadoRol levantarListado = new ListadoRol("baja");
+            ListadoRol levantarListado = new ListadoRol("baja",conexion);
             this.Hide();
             levantarListado.Show();
             this.Show(); 

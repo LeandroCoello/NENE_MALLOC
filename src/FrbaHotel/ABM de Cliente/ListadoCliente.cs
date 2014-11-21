@@ -66,8 +66,6 @@ namespace FrbaHotel.ABM_de_Cliente
                 agregarCondicion = "and D.Datos_Tipo_Ident ='" + cBtipoIdent.SelectedItem.ToString()+"'";
                 queryFinal += agregarCondicion;
             }
-            /*MessageBox.Show(queryFinal);*/
-                /*GROUP BY??????*/
             dGVListadoSeleccionados.DataSource = conexion.consulta(queryFinal);
             DataGridViewButtonColumn col = new DataGridViewButtonColumn();
             col.UseColumnTextForButtonValue = true;

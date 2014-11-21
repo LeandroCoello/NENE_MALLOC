@@ -6,20 +6,22 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.ABM_de_Rol
 {
     public partial class ModificarRol : Form
     {
-        public ModificarRol()
+        SQLConnector conexion;
+        public ModificarRol(SQLConnector conec)
         {
             InitializeComponent();
+            conexion = conec;
         }
 
         private void ModificarRol_Load(object sender, EventArgs e)
         {
-            /*Crear un listado de los roles actuales y una vez que 
-             este seleccionado levantar los campos para modificar*/
+
         }
     }
 }

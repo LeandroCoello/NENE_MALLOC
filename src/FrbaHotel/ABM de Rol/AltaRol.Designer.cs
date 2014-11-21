@@ -32,10 +32,10 @@
             this.txtNomRol = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.rBtnActivo = new System.Windows.Forms.RadioButton();
-            this.rBtnInactivo = new System.Windows.Forms.RadioButton();
+            this.cBFuncio = new System.Windows.Forms.ComboBox();
             this.btnCrearRol = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtEstado = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -72,39 +72,17 @@
             this.label3.TabIndex = 3;
             this.label3.Text = "Estado:";
             // 
-            // comboBox1
+            // cBFuncio
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(116, 46);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(100, 21);
-            this.comboBox1.TabIndex = 4;
-            // 
-            // rBtnActivo
-            // 
-            this.rBtnActivo.AutoSize = true;
-            this.rBtnActivo.Location = new System.Drawing.Point(63, 86);
-            this.rBtnActivo.Name = "rBtnActivo";
-            this.rBtnActivo.Size = new System.Drawing.Size(55, 17);
-            this.rBtnActivo.TabIndex = 5;
-            this.rBtnActivo.TabStop = true;
-            this.rBtnActivo.Text = "Activo";
-            this.rBtnActivo.UseVisualStyleBackColor = true;
-            // 
-            // rBtnInactivo
-            // 
-            this.rBtnInactivo.AutoSize = true;
-            this.rBtnInactivo.Location = new System.Drawing.Point(124, 86);
-            this.rBtnInactivo.Name = "rBtnInactivo";
-            this.rBtnInactivo.Size = new System.Drawing.Size(63, 17);
-            this.rBtnInactivo.TabIndex = 6;
-            this.rBtnInactivo.TabStop = true;
-            this.rBtnInactivo.Text = "Inactivo";
-            this.rBtnInactivo.UseVisualStyleBackColor = true;
+            this.cBFuncio.FormattingEnabled = true;
+            this.cBFuncio.Location = new System.Drawing.Point(116, 46);
+            this.cBFuncio.Name = "cBFuncio";
+            this.cBFuncio.Size = new System.Drawing.Size(100, 21);
+            this.cBFuncio.TabIndex = 4;
             // 
             // btnCrearRol
             // 
-            this.btnCrearRol.Location = new System.Drawing.Point(94, 121);
+            this.btnCrearRol.Location = new System.Drawing.Point(73, 137);
             this.btnCrearRol.Name = "btnCrearRol";
             this.btnCrearRol.Size = new System.Drawing.Size(75, 23);
             this.btnCrearRol.TabIndex = 7;
@@ -112,15 +90,31 @@
             this.btnCrearRol.UseVisualStyleBackColor = true;
             this.btnCrearRol.Click += new System.EventHandler(this.btnCrearRol_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(112, 106);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(104, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "0(Activo)/1(Inactivo)";
+            // 
+            // txtEstado
+            // 
+            this.txtEstado.Location = new System.Drawing.Point(116, 83);
+            this.txtEstado.Name = "txtEstado";
+            this.txtEstado.Size = new System.Drawing.Size(100, 20);
+            this.txtEstado.TabIndex = 9;
+            // 
             // AltaRol
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(253, 175);
+            this.ClientSize = new System.Drawing.Size(253, 170);
+            this.Controls.Add(this.txtEstado);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.btnCrearRol);
-            this.Controls.Add(this.rBtnInactivo);
-            this.Controls.Add(this.rBtnActivo);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cBFuncio);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtNomRol);
@@ -138,9 +132,9 @@
         private System.Windows.Forms.TextBox txtNomRol;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.RadioButton rBtnActivo;
-        private System.Windows.Forms.RadioButton rBtnInactivo;
+        private System.Windows.Forms.ComboBox cBFuncio;
         private System.Windows.Forms.Button btnCrearRol;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtEstado;
     }
 }

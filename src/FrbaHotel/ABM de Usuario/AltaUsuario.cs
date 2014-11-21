@@ -16,7 +16,7 @@ namespace FrbaHotel.ABM_de_Usuario
         Inicio inicio;
         SQLConnector conec;
         List<TextBox> txtBoxes = new List<TextBox>();
-        public AltaUsuario()
+        public AltaUsuario(SQLConnector conexion)
         {
             InitializeComponent();
             txtBoxes.Add(txtUser);
@@ -35,6 +35,7 @@ namespace FrbaHotel.ABM_de_Usuario
             BindingSource bs = new BindingSource();
             bs.DataSource = rolesActuales;
             cBRolesAAsignar.DataSource = bs;
+            conec = conexion;
         }
 
         private void btnLimpieza_Click(object sender, EventArgs e)
@@ -42,6 +43,7 @@ namespace FrbaHotel.ABM_de_Usuario
             foreach (TextBox texto in txtBoxes){
                 texto.Text = "";        
                 }
+            cBRolesAAsignar.SelectedIndex = -1;
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
@@ -52,9 +54,13 @@ namespace FrbaHotel.ABM_de_Usuario
                 string queryAlta = "exec NENE_MALLOC.Alta_Usuario '"+txtUser.Text+"' '"+passFinal+"' '"+cBRolesAAsignar.SelectedItem.ToString()+"' '"+
                     txtNom.Text+"' '"+txtApellido.Text+"' '"+txtTelefono.Text+"' '"+txtTDoc.Text+"' '"+txtNDoc.Text+"' '"+txtMail.Text+"' '"
                     +txtCalle.Text+"' '"+txtNcalle.Text+"' '"+txtPiso.Text+"' '"+txtDepto.Text+"' '"+txtFecNac.Text+"' '"+txtHotelTrabaja.Text+ "'";
-                conec.executeOnly(queryAlta);/*ESTO VAMOS A TENER Q CAMBIARLO PORQ LA QUERY PUEDE DEVOLVERNOS UN ERROR*/
-                MessageBox.Show("Usuario creado con exito");
-                this.Close();
+                try
+                {
+                    conec.executeOnly(queryAlta);
+                    MessageBox.Show("Usuario creado con exito");
+                    this.Close();
+                }
+                catch (Exception ex) { MessageBox.Show(ex.Message); }
             }
         }
         private Boolean estanTodosCompletos() {
