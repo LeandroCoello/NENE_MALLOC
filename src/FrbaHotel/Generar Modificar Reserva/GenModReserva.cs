@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,6 +14,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
     public partial class GenModReserva : Form
     {
         SQLConnector conexion;
+        DateTime fechaActualSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
         public GenModReserva(SQLConnector conecc)
         {
             InitializeComponent();
@@ -20,7 +22,11 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             foreach(DataRow dr in tiposHabs.Rows){
                 cBtiposHabs.Items.Add(dr["Tipo_Hab_Desc"].ToString());
             }
-            txtFecSist.Text = "ARCHIVO CONFIGURACION I NEED YOU";
+            DataTable tiposRegis = conexion.consulta("SELECT Regimen_Desc FROM NENE_MALLOC.Regimen");
+            foreach (DataRow dr in tiposRegis.Rows) {
+                cBtipRegi.Items.Add(dr["Regimen_Desc"]).ToString();
+            }
+            txtFecSist.Text = fechaActualSistema.ToString("yyyyMMdd"); ;
             conexion = conecc;
         }
     }

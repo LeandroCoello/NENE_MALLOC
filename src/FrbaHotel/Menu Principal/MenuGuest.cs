@@ -12,19 +12,26 @@ namespace FrbaHotel.Menu_Principal
 {
     public partial class MenuGuest : Form
     {
-        UsuarioLogueado userLog;
-        public MenuGuest(UsuarioLogueado usuario)
+        SQLConnector conexion;
+        public MenuGuest(SQLConnector conec)
         {
             InitializeComponent();
-            userLog = usuario;
+            conexion = conec;
         }
 
         private void btnGENMODRESER_Click(object sender, EventArgs e)
         {
-            Generar_Modificar_Reserva.GenModReserva levantarGenMod = new FrbaHotel.Generar_Modificar_Reserva.GenModReserva(userLog.getConexion());
+            Generar_Modificar_Reserva.GenModReserva levantarGenMod = new FrbaHotel.Generar_Modificar_Reserva.GenModReserva(conexion);
             this.Hide();
             levantarGenMod.ShowDialog();
             this.ShowDialog();
+        }
+
+        private void bnCancelGuest_Click(object sender, EventArgs e)
+        {
+            Cancelar_Reserva.CancelReser levantarCancel = new FrbaHotel.Cancelar_Reserva.CancelReser(conexion,"guest");
+            levantarCancel.ShowDialog();
+            this.Hide();
         }
     }
 }

@@ -16,11 +16,15 @@ namespace FrbaHotel.Cancelar_Reserva
     {
         DateTime fechaActualSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
         SQLConnector conexion;
-        public CancelReser(SQLConnector conecc)
+        public CancelReser(SQLConnector conecc,string criterio)
         {
             InitializeComponent();
             txtFecCancel.Text = fechaActualSistema.ToString("yyyyMMdd");
             conexion = conecc;
+            if (criterio == "guest") 
+            {   txtIDRecepcionista.ReadOnly = true;
+                txtIDRecepcionista.Text = null;
+            }
         }
 
         private void btnAceptarCancel_Click(object sender, EventArgs e)

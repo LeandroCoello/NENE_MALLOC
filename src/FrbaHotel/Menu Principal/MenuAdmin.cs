@@ -66,12 +66,5 @@ namespace FrbaHotel.Menu_Principal
             levantarRegimen.ShowDialog();
             this.Show();
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Listado_Estadistico.ListEstadistico up = new Listado_Estadistico.ListEstadistico(userLog.getConexion());
-            up.ShowDialog();
-        }
-
     }
 }

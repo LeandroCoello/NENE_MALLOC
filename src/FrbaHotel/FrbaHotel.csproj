@@ -345,6 +345,9 @@
     <EmbeddedResource Include="ABM de Usuario\BajaUsuario.resx">
       <DependentUpon>BajaUsuario.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Usuario\ModificarUsuario.resx">
+      <DependentUpon>ModificarUsuario.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM de Usuario\PantallaListado.resx">
       <DependentUpon>PantallaListado.cs</DependentUpon>
     </EmbeddedResource>

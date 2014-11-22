@@ -28,19 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnExecRegistro = new System.Windows.Forms.Button();
+            this.btnInvitado = new System.Windows.Forms.Button();
             this.btnExecLogin = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // btnExecRegistro
+            // btnInvitado
             // 
-            this.btnExecRegistro.Location = new System.Drawing.Point(67, 79);
-            this.btnExecRegistro.Name = "btnExecRegistro";
-            this.btnExecRegistro.Size = new System.Drawing.Size(104, 44);
-            this.btnExecRegistro.TabIndex = 0;
-            this.btnExecRegistro.Text = "Registrar Estadia";
-            this.btnExecRegistro.UseVisualStyleBackColor = true;
-            this.btnExecRegistro.Click += new System.EventHandler(this.btnExecRegistro_Click);
+            this.btnInvitado.Location = new System.Drawing.Point(67, 79);
+            this.btnInvitado.Name = "btnInvitado";
+            this.btnInvitado.Size = new System.Drawing.Size(104, 44);
+            this.btnInvitado.TabIndex = 0;
+            this.btnInvitado.Text = "Invitado";
+            this.btnInvitado.UseVisualStyleBackColor = true;
+            this.btnInvitado.Click += new System.EventHandler(this.btnInvitado_Click);
             // 
             // btnExecLogin
             // 
@@ -58,7 +58,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(251, 184);
             this.Controls.Add(this.btnExecLogin);
-            this.Controls.Add(this.btnExecRegistro);
+            this.Controls.Add(this.btnInvitado);
             this.Name = "Principal";
             this.Text = "Bienvenido";
             this.ResumeLayout(false);
@@ -67,7 +67,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnExecRegistro;
+        private System.Windows.Forms.Button btnInvitado;
         private System.Windows.Forms.Button btnExecLogin;
     }
 }

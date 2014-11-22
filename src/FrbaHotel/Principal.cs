@@ -19,20 +19,19 @@ namespace FrbaHotel
             coneccion = new SQLConnector();
         }
 
-        private void btnExecRegistro_Click(object sender, EventArgs e)
-        {
-            FrbaHotel.Generar_Modificar_Reserva.GenModReserva levantarReserva = new FrbaHotel.Generar_Modificar_Reserva.GenModReserva(coneccion);
-            this.Hide();
-            levantarReserva.ShowDialog();
-            this.Show();
-        }
-
         private void btnExecLogin_Click(object sender, EventArgs e)
         {
             FrbaHotel.Login.Login levantarLogeo = new FrbaHotel.Login.Login(coneccion);
             this.Hide();
             levantarLogeo.ShowDialog();
             this.Show();
+        }
+
+        private void btnInvitado_Click(object sender, EventArgs e)
+        {
+            Menu_Principal.MenuGuest levantarGuest = new FrbaHotel.Menu_Principal.MenuGuest(coneccion);
+            levantarGuest.ShowDialog();
+            this.Close();
         }
 
     }

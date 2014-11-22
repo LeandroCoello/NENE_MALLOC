@@ -71,14 +71,14 @@ namespace FrbaHotel.ABM_de_Usuario
                 if (criterioABM == "baja")
                 {
                     BajaUsuario levantarBaja = new BajaUsuario(valor, conexion);
-                    this.Close();
                     levantarBaja.Show();
+                    this.Close();
                 }
                 else
                 {
                     ModificarUsuario levantarModif = new ModificarUsuario(valor, conexion);
-                    this.Close();
                     levantarModif.Show();
+                    this.Close();
                 }
             }
         }

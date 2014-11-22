@@ -29,7 +29,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnCancelReser_Click(object sender, EventArgs e)
         {
-            Cancelar_Reserva.CancelReser levantarCancel = new FrbaHotel.Cancelar_Reserva.CancelReser(userLog.getConexion());
+            Cancelar_Reserva.CancelReser levantarCancel = new FrbaHotel.Cancelar_Reserva.CancelReser(userLog.getConexion(),"recepcionista");
             this.Hide();
             levantarCancel.ShowDialog();
             this.Show();

@@ -38,6 +38,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.cBtiposHabs = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.cBtipRegi = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -125,11 +126,20 @@
             this.label6.TabIndex = 9;
             this.label6.Text = "Tipo Regimen:";
             // 
+            // cBtipRegi
+            // 
+            this.cBtipRegi.FormattingEnabled = true;
+            this.cBtipRegi.Location = new System.Drawing.Point(92, 153);
+            this.cBtipRegi.Name = "cBtipRegi";
+            this.cBtipRegi.Size = new System.Drawing.Size(101, 21);
+            this.cBtipRegi.TabIndex = 10;
+            // 
             // GenModReserva
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.cBtipRegi);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.cBtiposHabs);
             this.Controls.Add(this.label5);
@@ -159,5 +169,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cBtiposHabs;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cBtipRegi;
     }
 }
