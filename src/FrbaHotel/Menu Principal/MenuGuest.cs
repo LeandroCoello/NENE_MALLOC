@@ -30,8 +30,10 @@ namespace FrbaHotel.Menu_Principal
         private void bnCancelGuest_Click(object sender, EventArgs e)
         {
             Cancelar_Reserva.CancelReser levantarCancel = new FrbaHotel.Cancelar_Reserva.CancelReser(conexion,"guest");
-            levantarCancel.ShowDialog();
             this.Hide();
+            levantarCancel.ShowDialog();
+            this.Show();
+            
         }
     }
 }

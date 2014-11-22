@@ -30,6 +30,7 @@ namespace FrbaHotel
         private void btnInvitado_Click(object sender, EventArgs e)
         {
             Menu_Principal.MenuGuest levantarGuest = new FrbaHotel.Menu_Principal.MenuGuest(coneccion);
+            this.Hide();
             levantarGuest.ShowDialog();
             this.Close();
         }
