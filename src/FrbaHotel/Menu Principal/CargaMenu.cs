@@ -21,7 +21,7 @@ namespace FrbaHotel.Menu_Principal
                     levantarRecepcion.ShowDialog();
                     break;
                 case "Guest":
-                    MenuGuest levantarGuest = new MenuGuest(usuario);
+                    MenuGuest levantarGuest = new MenuGuest(usuario.getConexion());
                     levantarGuest.ShowDialog();
                     break;
             }
