@@ -14,10 +14,12 @@ namespace FrbaHotel.ABM_de_Habitacion
     {
         SQLConnector conexion;
         string criterioABM;
-        public ListadoHabitacion(string criterio,SQLConnector conec)
+        Double hotelAsignad;
+        public ListadoHabitacion(string criterio,SQLConnector conec,Double hotelId)
         {
             InitializeComponent();
             conexion = conec;
+            hotelAsignad = hotelId;
             DataTable tiposHab = conexion.consulta("SELECT Habitacion_Tipo FROM NENE_MALLOC.Habitacion GROUP BY Habitacion_Tipo");
             foreach (DataRow dr in tiposHab.Rows)
             {
@@ -30,7 +32,6 @@ namespace FrbaHotel.ABM_de_Habitacion
 
         private void btnLimpieza_Click(object sender, EventArgs e)
         {
-            txtHotel.Text = "";
             txtPisoHotel.Text = "";
             cBTipoHabitacion.SelectedIndex = -1;
             cBVista.SelectedIndex = -1;
@@ -41,9 +42,19 @@ namespace FrbaHotel.ABM_de_Habitacion
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            string queryFinal = "select * FROM NENE_MALLOC.Habitacion";
-            if (!String.IsNullOrEmpty(txtHotel.Text)) { }
-            //ARMAR LAS CONDICIONES
+            string queryFinal = "select * FROM NENE_MALLOC.Habitacion WHERE Habitacion_Hotel ="+hotelAsignad;
+            if (!String.IsNullOrEmpty(txtPisoHotel.Text)) {
+                queryFinal += "and Habitacion_Piso =" + txtPisoHotel.Text;
+            }
+            if (!String.IsNullOrEmpty(cBTipoHabitacion.SelectedText)) 
+            {
+                queryFinal += "and Habitacion_Tipo =" + cBTipoHabitacion.SelectedText;
+            }
+            if (!String.IsNullOrEmpty(cBVista.SelectedText))
+            {
+                queryFinal += "and Habitacion_Vista =" + cBVista.SelectedText;
+            }
+
             dataGridView1.DataSource = conexion.consulta(queryFinal);
             DataGridViewButtonColumn col = new DataGridViewButtonColumn();
             col.UseColumnTextForButtonValue = true;
@@ -54,25 +65,25 @@ namespace FrbaHotel.ABM_de_Habitacion
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             var senderGrid = (DataGridView)sender;
-            string[] valor = new string[e.ColumnIndex];
+            string[] valores = new string[e.ColumnIndex];
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
 
                 for (int i = 0; i < e.ColumnIndex; i++)
                 {
-                    valor[i] = dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString();
+                    valores[i] = dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString();
                 }
 
                 if (criterioABM == "baja")
                 {
-                    BajaHabitacion levantarBaja = new BajaHabitacion(valor, conexion);
+                    BajaHabitacion levantarBaja = new BajaHabitacion(valores, conexion);
                     this.Close();
                     levantarBaja.Show();
                 }
                 else
                 {
-                    ModifHabitacion levantarModif = new ModifHabitacion(valor, conexion);
+                    ModifHabitacion levantarModif = new ModifHabitacion(valores, conexion);
                     this.Close();
                     levantarModif.Show();
                 }

@@ -56,10 +56,12 @@ namespace FrbaHotel.ABM_de_Rol
                 queryFinal +=  "and R.Rol_Estado LIKE '%"+cBEstadoRol.SelectedItem.ToString()+"'%";  
             }
             queryFinal += ultimaClausula;
-            try{
               dataGridView1.DataSource =  conexion.consulta(queryFinal);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+              DataGridViewButtonColumn col = new DataGridViewButtonColumn();
+              col.UseColumnTextForButtonValue = true;
+              col.Text = "Seleccionar";
+              col.Name = "Seleccionar";
+              dataGridView1.Columns.Add(col);
         }
     }
 }

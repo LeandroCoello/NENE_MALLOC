@@ -28,7 +28,8 @@ namespace FrbaHotel.Login
                 MessageBox.Show("Por favor elija un rol");
             }
             string selected = lBEleccionRoles.SelectedValue.ToString();
-            FrbaHotel.Menu_Principal.CargaMenu levantarMenu = new FrbaHotel.Menu_Principal.CargaMenu(selected,usuarioLog);
+            EleccionHotel levantarElecHotel = new EleccionHotel(selected,usuarioLog);
+            levantarElecHotel.ShowDialog();
             this.Close();
         }
 

@@ -14,15 +14,17 @@ namespace FrbaHotel.ABM_de_Habitacion
     {
         SQLConnector conexion;
         List<Double> habitacionesId;
+        Double hotelId;
         public ABMHabitacion(SQLConnector conec, UsuarioLogueado userLog)
         {
             InitializeComponent();
             conexion = conec;
+            hotelId = userLog.getHotelAsignado();
         }
 
         private void btnAlta_Click(object sender, EventArgs e)
         {
-            ABM_de_Habitacion.HabitacionAlta levantarAlta = new HabitacionAlta(conexion);
+            ABM_de_Habitacion.HabitacionAlta levantarAlta = new HabitacionAlta(conexion,hotelId);
             this.Hide();
             levantarAlta.ShowDialog();
             this.Show();
@@ -30,7 +32,7 @@ namespace FrbaHotel.ABM_de_Habitacion
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            ListadoHabitacion levantarListado = new ListadoHabitacion("modificar",conexion);
+            ListadoHabitacion levantarListado = new ListadoHabitacion("modificar",conexion,hotelId);
             this.Hide();
             levantarListado.ShowDialog();
             this.Show();
@@ -38,7 +40,7 @@ namespace FrbaHotel.ABM_de_Habitacion
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            ListadoHabitacion levantarListado = new ListadoHabitacion("baja",conexion);
+            ListadoHabitacion levantarListado = new ListadoHabitacion("baja",conexion,hotelId);
             this.Hide();
             levantarListado.ShowDialog();
             this.Show();

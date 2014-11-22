@@ -13,7 +13,7 @@ namespace FrbaHotel.ABM_de_Usuario
     public partial class ModificarUsuario : Form
     {
         SQLConnector conexion;
-        public ModificarUsuario(SQLConnector conec)
+        public ModificarUsuario(string[] valores,SQLConnector conec)
         {
             InitializeComponent();
             conexion = conec;

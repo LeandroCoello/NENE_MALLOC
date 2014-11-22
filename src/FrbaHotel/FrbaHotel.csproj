@@ -231,6 +231,12 @@
     <Compile Include="Facturar Publicaciones\FacturarPublicaciones.Designer.cs">
       <DependentUpon>FacturarPublicaciones.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login\EleccionHotel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login\EleccionHotel.Designer.cs">
+      <DependentUpon>EleccionHotel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login\EleccionRol.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -350,6 +356,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Listado Estadistico\ListEstadistico.resx">
       <DependentUpon>ListEstadistico.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\EleccionHotel.resx">
+      <DependentUpon>EleccionHotel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\EleccionRol.resx">
       <DependentUpon>EleccionRol.cs</DependentUpon>

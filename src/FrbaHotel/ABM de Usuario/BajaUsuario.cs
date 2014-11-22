@@ -13,7 +13,7 @@ namespace FrbaHotel.ABM_de_Usuario
     public partial class BajaUsuario : Form
     {
         SQLConnector conexion;
-        public BajaUsuario(SQLConnector conec)
+        public BajaUsuario(string[] valores, SQLConnector conec)
         {
             InitializeComponent();
             conexion = conec;

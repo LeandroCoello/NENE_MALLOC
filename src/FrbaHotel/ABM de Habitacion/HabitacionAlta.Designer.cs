@@ -147,6 +147,7 @@
             // 
             this.txtHotel.Location = new System.Drawing.Point(127, 118);
             this.txtHotel.Name = "txtHotel";
+            this.txtHotel.ReadOnly = true;
             this.txtHotel.Size = new System.Drawing.Size(121, 20);
             this.txtHotel.TabIndex = 12;
             // 

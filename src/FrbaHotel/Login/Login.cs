@@ -40,13 +40,14 @@ namespace FrbaHotel.Login
                     if (roles.Count() > 1)
                     {
                         EleccionRol levantarEleccionRol = new EleccionRol(roles, userLog);
-                        this.Hide();
                         levantarEleccionRol.ShowDialog();
+                        this.Close();
                     }
                     else
                     {
-                        Menu_Principal.CargaMenu levantarMenu = new FrbaHotel.Menu_Principal.CargaMenu(roles.First(), userLog);
-                        this.Hide();
+                        EleccionHotel levantarElecHotel = new EleccionHotel(roles.First(), userLog);
+                        levantarElecHotel.ShowDialog();
+                        this.Close();
                     }
                 }
                 catch (Exception exception)

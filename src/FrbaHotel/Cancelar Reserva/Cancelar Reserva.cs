@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,19 +8,19 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using FrbaHotel.Sistema;
-using System.Configuration;
+
 
 namespace FrbaHotel.Cancelar_Reserva
 {
     public partial class CancelReser : Form
     {
-        //ESTO ES SOLO POR AHORA LA FECHA SE LA PEDIMOS AL ARCHIVO DE CONFIGURACION
-        
-        System.DateTime fechaActualSistema = new DateTime();
+        DateTime fechaActualSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
+        SQLConnector conexion;
         public CancelReser(SQLConnector conecc)
         {
             InitializeComponent();
-            txtFecCancel.Text = fechaActualSistema.ToString();
+            txtFecCancel.Text = fechaActualSistema.ToString("yyyyMMdd");
+            conexion = conecc;
         }
 
         private void btnAceptarCancel_Click(object sender, EventArgs e)
@@ -32,18 +33,19 @@ namespace FrbaHotel.Cancelar_Reserva
             }
             else 
             {
-                this.ejecutarCancelacion();
+                try {
+                    string queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '"+txtFecCancel.Text+"',"+txtNroReserva.Text+","+txtIDRecepcionista.Text+",'"+txtMotivo.Text+"'";
+                    conexion.executeOnly(queryCancel);
+                    MessageBox.Show("Reserva Cancelada con exito");
+                    this.Close();
+                }
+                catch (Exception ex) { 
+                    MessageBox.Show(ex.Message); 
+                }
             }
            
         }
         private void limpiarCampos() { txtNroReserva.Text = ""; txtMotivo.Text = ""; txtIDRecepcionista.Text = ""; }
 
-        private void ejecutarCancelacion()
-        {//TRIGGER DE SQL PARA VALIDAR FECHAS????
-            /*string queryObtenerFechaIngreso = "SELECT Reserva_FechaIng FROM NENE_MALLOC.Reserva" +
-                "WHERE Reserva.Reserva_Cliente =" + txtNUsuario.Text + "and Reserva.Reserva_Id =" + txtNroReserva.Text;
-            System.DateTime fechaDeReserva = DateTime.TryParse(conexion.consulta(queryObtenerFechaIngreso).Rows[0].ItemArray[0]);
-            string queryCancelacion = "UPDATE NENE_MALLOC.Reserva set Reserva_Estado = 'Cancelada' Where WHERE Reserva.Reserva_Cliente =" + txtNUsuario.Text + "and Reserva.Reserva_Id =" + txtNroReserva.Text + " GO";*/
-        }
     }
 }
