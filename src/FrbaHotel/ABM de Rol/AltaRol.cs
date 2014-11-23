@@ -17,6 +17,7 @@ namespace FrbaHotel.ABM_de_Rol
         {
             InitializeComponent();
             conexion = conec;
+            DataTable funcionalidades = conec.consulta("");
         }
 
         private void btnCrearRol_Click(object sender, EventArgs e)

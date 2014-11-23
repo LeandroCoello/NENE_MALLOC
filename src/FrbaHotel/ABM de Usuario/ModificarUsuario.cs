@@ -45,6 +45,7 @@ namespace FrbaHotel.ABM_de_Usuario
             boxes.Add(txtPiso);
             boxes.Add(txtDepto);
             boxes.Add(txtFecNac);
+            boxes.Add(txtHotelTrabaja);
         }
         private void cargarBoxes(string[] listaVal)
         {
@@ -66,7 +67,7 @@ namespace FrbaHotel.ABM_de_Usuario
             {
                 string query = "EXEC NENE_MALLOC.modificacion_usuario '" + txtUser.Text + "','" + txtPass.Text + "','" + txtNom.Text + "','" + txtApellido.Text +
                     "'," + txtTelefono.Text + ",'" + txtTDoc.Text + "'," + txtNDoc.Text + ",'" + txtMail.Text + "','" + txtCalle.Text + "'," + txtNcalle.Text + "," + txtPiso.Text
-                    + ",'" + txtDepto.Text + "','" + txtFecNac.Text + "," + txtHotelTrabaja.Text + "," + usuarioId;
+                    + ",'" + txtDepto.Text + "','" + txtFecNac.Text + "," + usuarioId + "," +  txtHotelTrabaja.Text + ",'" + cBRolesAAsignar.SelectedItem.ToString() + "'";
                 conexion.executeOnly(query);
                 MessageBox.Show("Usuario modificado con exito");
                 this.Close();

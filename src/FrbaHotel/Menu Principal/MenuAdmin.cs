@@ -66,5 +66,12 @@ namespace FrbaHotel.Menu_Principal
             levantarRegimen.ShowDialog();
             this.Show();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Registrar_Consumible.RegConsumible levantar = new FrbaHotel.Registrar_Consumible.RegConsumible(userLog.getConexion());
+            this.Hide();
+            levantar.ShowDialog();
+        }
     }
 }

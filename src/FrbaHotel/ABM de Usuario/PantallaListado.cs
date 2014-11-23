@@ -34,11 +34,10 @@ namespace FrbaHotel.ABM_de_Usuario
 
         private void btnBusqueda_Click(object sender, EventArgs e)
         {
-            string queryFinal = "SELECT U.Usuario_Id,U.Usuario_datos,U.Usuario_name,U.Usuario_pass,DP.Datos_Nombre,DP.Datos_Apellido,DP.Datos_Tipo_Ident,DP.Datos_Nro_Ident,DP.Datos_Mail,DP.Datos_Telefono,DP.Datos_Dom_Calle,DP.Datos_Dom_Nro_Calle,DP.Datos_Dom_Piso,DP.Datos_Dom_Depto,DP.Datos_Fecha_Nac "
-                            + "FROM NENE_MALLOC.Usuario U ,NENE_MALLOC.Datos_Personales DP WHERE U.Usuario_datos = DP.Datos_Id ";
+            string queryFinal = "SELECT U.Usuario_Id,U.Usuario_datos,U.Usuario_name,U.Usuario_pass,DP.Datos_Nombre,DP.Datos_Apellido,DP.Datos_Tipo_Ident,DP.Datos_Nro_Ident,DP.Datos_Mail,DP.Datos_Telefono,DP.Datos_Dom_Calle,DP.Datos_Dom_Nro_Calle,DP.Datos_Dom_Piso,DP.Datos_Dom_Depto,DP.Datos_Fecha_Nac,UP.Hotel_Id  "
+                            + "FROM NENE_MALLOC.Usuario U ,NENE_MALLOC.Datos_Personales DP,NENE_MALLOC.Usuario_Por_Rol_Por_Hotel UP WHERE U.Usuario_datos = DP.Datos_Id AND UP.Usuario_Id = U.Usuario_Id ";
             if (!string.IsNullOrEmpty(txtNom.Text)) {
                 queryFinal += "AND U.Usuario_name LIKE '%" + txtNom.Text + "%'";
-
             }
             if(cBEstado.SelectedIndex != -1){
                 queryFinal += "AND U.Usuario_baja =" + cBEstado.SelectedItem;
