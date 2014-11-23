@@ -640,6 +640,30 @@ end
 
 GO
 
+
+--ALTA DE ROL
+create procedure NENE_MALLOC.alta_rol @desc nvarchar(255), @estado bit, @funcionalidad nvarchar(255)
+as begin transaction
+
+	if exists(select r.Rol_Desc from NENE_MALLOC.Rol r where r.Rol_Desc = @desc)
+		begin
+			rollback
+			raiserror('El rol ya existe.',16,1)
+			return
+		end
+	
+	declare @id numeric(18,0)
+	set @id = (select MAX(Rol_Id) from NENE_MALLOC.Rol) + 1
+	
+	Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc,Rol_estado) 
+			values (@id, @desc, @estado)
+			
+	Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id)
+			values(@id, (select Func_Id from NENE_MALLOC.Funcionalidad where Func_Desc = @funcionalidad))
+
+commit
+GO
+
 --BAJA DEL ROL
 create procedure NENE_MALLOC.baja_rol @rol nvarchar(255)
 as
@@ -653,7 +677,7 @@ commit
 GO 
 
 --MODIFICACION DE ROL
-create procedure NENE_MALLOC.modificacion_rol @rol_id numeric(18,0), @descripcion nvarchar(255)
+create procedure NENE_MALLOC.modificacion_rol @rol_id numeric(18,0), @descripcion nvarchar(255), @estado bit
 as
 begin transaction
 	
@@ -664,7 +688,8 @@ begin transaction
 		end
 	
 	update NENE_MALLOC.Rol  
-		set Rol_Desc = @descripcion
+		set Rol_Desc = @descripcion,
+			Rol_estado = @estado		
 		where Rol_Id = @rol_id
 commit
 GO
@@ -1394,21 +1419,6 @@ declare @fecha_correcta datetime
 commit
 GO
 
---------------------------------TRIGGERS-----------------------------------------------------
-
---ALTA DEL ROL
-create trigger NENE_MALLOC.alta_rol on NENE_MALLOC.Rol
-instead of insert
-as
-begin
-	if exists(select r.Rol_Desc from NENE_MALLOC.Rol r, Inserted i where r.Rol_Desc = i.Rol_Desc)
-		begin
-			raiserror('El rol ya existe',16,1)
-		end
-	else
-		Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values ((select MAX(Rol_Id) from NENE_MALLOC.Rol) + 1,(select i.Rol_Desc from Inserted i))
-end 
-GO
 
 --------------------------------FUNCIONES-----------------------------------------------------
 

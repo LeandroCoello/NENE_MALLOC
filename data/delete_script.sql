@@ -1,8 +1,6 @@
 use GD2C2014
 go 
 
-drop trigger [NENE_MALLOC].[alta_rol]
-GO
 
 drop table [NENE_MALLOC].[Usuario_Por_Rol_Por_Hotel]
 drop table [NENE_MALLOC].[Func_Por_Rol]
@@ -38,6 +36,7 @@ drop procedure [NENE_MALLOC].[alta_usuario]
 drop procedure [NENE_MALLOC].[alta_hotel]
 drop procedure [NENE_MALLOC].[alta_habitacion]
 drop procedure [NENE_MALLOC].[alta_cliente]
+drop procedure [NENE_MALLOC].[alta_rol]
 drop procedure [NENE_MALLOC].[modificacion_usuario]
 drop procedure [NENE_MALLOC].[modificacion_cliente]
 drop procedure [NENE_MALLOC].[modificacion_hotel]
