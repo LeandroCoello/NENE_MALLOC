@@ -35,7 +35,6 @@
             this.txtNcalle = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.cBRolesAAsignar = new System.Windows.Forms.ComboBox();
-            this.txtHotelTrabaja = new System.Windows.Forms.TextBox();
             this.txtFecNac = new System.Windows.Forms.TextBox();
             this.txtCalle = new System.Windows.Forms.TextBox();
             this.txtTelefono = new System.Windows.Forms.TextBox();
@@ -59,7 +58,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnModUser = new System.Windows.Forms.Button();
+            this.txtHotelTrabaja = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtDepto
@@ -117,13 +117,6 @@
             this.cBRolesAAsignar.Name = "cBRolesAAsignar";
             this.cBRolesAAsignar.Size = new System.Drawing.Size(100, 21);
             this.cBRolesAAsignar.TabIndex = 57;
-            // 
-            // txtHotelTrabaja
-            // 
-            this.txtHotelTrabaja.Location = new System.Drawing.Point(122, 395);
-            this.txtHotelTrabaja.Name = "txtHotelTrabaja";
-            this.txtHotelTrabaja.Size = new System.Drawing.Size(100, 20);
-            this.txtHotelTrabaja.TabIndex = 56;
             // 
             // txtFecNac
             // 
@@ -312,21 +305,29 @@
             this.label1.TabIndex = 33;
             this.label1.Text = "Username:";
             // 
-            // button1
+            // btnModUser
             // 
-            this.button1.Location = new System.Drawing.Point(54, 433);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(133, 23);
-            this.button1.TabIndex = 64;
-            this.button1.Text = "Modificar y guardar";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnModUser.Location = new System.Drawing.Point(54, 433);
+            this.btnModUser.Name = "btnModUser";
+            this.btnModUser.Size = new System.Drawing.Size(133, 23);
+            this.btnModUser.TabIndex = 64;
+            this.btnModUser.Text = "Modificar y guardar";
+            this.btnModUser.UseVisualStyleBackColor = true;
+            this.btnModUser.Click += new System.EventHandler(this.btnModUser_Click);
+            // 
+            // txtHotelTrabaja
+            // 
+            this.txtHotelTrabaja.Location = new System.Drawing.Point(122, 395);
+            this.txtHotelTrabaja.Name = "txtHotelTrabaja";
+            this.txtHotelTrabaja.Size = new System.Drawing.Size(100, 20);
+            this.txtHotelTrabaja.TabIndex = 56;
             // 
             // ModificarUsuario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(259, 504);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnModUser);
             this.Controls.Add(this.txtDepto);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.txtPiso);
@@ -374,7 +375,6 @@
         private System.Windows.Forms.TextBox txtNcalle;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox cBRolesAAsignar;
-        private System.Windows.Forms.TextBox txtHotelTrabaja;
         private System.Windows.Forms.TextBox txtFecNac;
         private System.Windows.Forms.TextBox txtCalle;
         private System.Windows.Forms.TextBox txtTelefono;
@@ -398,7 +398,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnModUser;
+        private System.Windows.Forms.TextBox txtHotelTrabaja;
 
     }
 }

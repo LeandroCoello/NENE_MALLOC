@@ -13,7 +13,6 @@ namespace FrbaHotel.ABM_de_Habitacion
     public partial class ABMHabitacion : Form
     {
         SQLConnector conexion;
-        List<Double> habitacionesId;
         Double hotelId;
         public ABMHabitacion(SQLConnector conec, UsuarioLogueado userLog)
         {

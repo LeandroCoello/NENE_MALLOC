@@ -29,8 +29,9 @@ namespace FrbaHotel.Login
         {
             if (cBHoteles.SelectedIndex == -1) { MessageBox.Show("Por favor elija un hotel"); }
             else {
-                userLog.setHotelAsignado(Convert.ToDouble(cBHoteles.SelectedText));
+                userLog.setHotelAsignado(Convert.ToDouble(cBHoteles.SelectedItem.ToString()));
                 Menu_Principal.CargaMenu cargarMenu = new FrbaHotel.Menu_Principal.CargaMenu(rolSeleccionado,userLog);
+                
                 this.Close();
             }
         }

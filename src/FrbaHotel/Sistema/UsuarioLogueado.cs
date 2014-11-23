@@ -43,18 +43,18 @@ namespace FrbaHotel.Sistema
             DataTable roles = conexion.consulta(queryRoles);
             List<string> rolesAsignados = new List<string>();
             foreach (DataRow row in roles.Rows) {
-                rolesAsignados.Add((string)row[0]);
+                rolesAsignados.Add(row[0].ToString());
             }
             return rolesAsignados;
         }
         public List<Double> conseguirHotelesId() 
         {
-            string queryHotele = "SELECT H.Hotel_Id FROM NENE_MALLOC.Usuario_Por_Hotel H,NENE_MALLOC.Usuario U WHERE U.usuario_name = '"+nombreUsuario+"' AND U.Usuario_Id = H.Usuario_Id";
+            string queryHotele = "SELECT H.Hotel_Id FROM NENE_MALLOC.Usuario_Por_Rol_Por_Hotel H,NENE_MALLOC.Usuario U WHERE U.usuario_name = '"+nombreUsuario+"' AND U.Usuario_Id = H.Usuario_Id";
             DataTable hoteles = conexion.consulta(queryHotele);
             List<Double> hotelesId = new List<double>();
             foreach (DataRow row in hoteles.Rows) 
             {
-                hotelesId.Add((double)row[0]);
+                hotelesId.Add(Convert.ToDouble(row[0]));
             }
             return hotelesId;
         }

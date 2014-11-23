@@ -19,6 +19,8 @@ namespace FrbaHotel.ABM_de_Usuario
             InitializeComponent();
             criterioABM = criterio;
             conexion = conec;
+            cBEstado.Items.Add(0);
+            cBEstado.Items.Add(1);
         }
 
         private void btnLimpieza_Click(object sender, EventArgs e)
@@ -32,21 +34,16 @@ namespace FrbaHotel.ABM_de_Usuario
 
         private void btnBusqueda_Click(object sender, EventArgs e)
         {
-            string queryFinal="SELECT * FROM NENE_MALLOC.Usuario";
+            string queryFinal = "SELECT U.Usuario_Id,U.Usuario_datos,U.Usuario_name,U.Usuario_pass,DP.Datos_Nombre,DP.Datos_Apellido,DP.Datos_Tipo_Ident,DP.Datos_Nro_Ident,DP.Datos_Mail,DP.Datos_Telefono,DP.Datos_Dom_Calle,DP.Datos_Dom_Nro_Calle,DP.Datos_Dom_Piso,DP.Datos_Dom_Depto,DP.Datos_Fecha_Nac "
+                            + "FROM NENE_MALLOC.Usuario U ,NENE_MALLOC.Datos_Personales DP WHERE U.Usuario_datos = DP.Datos_Id ";
             if (!string.IsNullOrEmpty(txtNom.Text)) {
-                queryFinal += "WHERE Usuario_name = '"+txtNom.Text+"'";
-                if (cBEstado.SelectedIndex != -1) {
-                    queryFinal += "AND Usuario_baja =" + cBEstado.SelectedText;
-                }
-            }
-            else if(cBEstado.SelectedIndex != -1){
-                queryFinal += "WHERE Usuario_baja ="+cBEstado.SelectedText;
-                if (!string.IsNullOrEmpty(txtNom.Text))
-                {
-                    queryFinal += "AND Usuario_name = '" + txtNom.Text + "'";
-                }
-            }
+                queryFinal += "AND U.Usuario_name LIKE '%" + txtNom.Text + "%'";
 
+            }
+            if(cBEstado.SelectedIndex != -1){
+                queryFinal += "AND U.Usuario_baja =" + cBEstado.SelectedItem;
+ 
+            }
             dataGridView1.DataSource = conexion.consulta(queryFinal);
             DataGridViewButtonColumn col = new DataGridViewButtonColumn();
             col.UseColumnTextForButtonValue = true;
@@ -71,13 +68,13 @@ namespace FrbaHotel.ABM_de_Usuario
                 if (criterioABM == "baja")
                 {
                     BajaUsuario levantarBaja = new BajaUsuario(valor, conexion);
-                    levantarBaja.Show();
+                    levantarBaja.ShowDialog();
                     this.Close();
                 }
                 else
                 {
                     ModificarUsuario levantarModif = new ModificarUsuario(valor, conexion);
-                    levantarModif.Show();
+                    levantarModif.ShowDialog();
                     this.Close();
                 }
             }

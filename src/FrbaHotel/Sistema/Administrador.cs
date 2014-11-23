@@ -8,7 +8,10 @@ namespace FrbaHotel.Sistema
 {
     public class Administrador
     {
-        SQLConnector conexion = new SQLConnector();
+        SQLConnector conexion;
+        public Administrador(SQLConnector conec) {
+            conexion = conec;
+        }
         public List<String> vendedoresConMayorFacturacion()
         {
             return null;

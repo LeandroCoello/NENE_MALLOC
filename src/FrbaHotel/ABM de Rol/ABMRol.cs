@@ -31,7 +31,7 @@ namespace FrbaHotel.ABM_de_Rol
         {
             ListadoRol levantarListado = new ListadoRol("modificar",conexion);
             this.Hide();
-            levantarListado.Show();
+            levantarListado.ShowDialog();
             this.Show();
         }
 
@@ -39,7 +39,7 @@ namespace FrbaHotel.ABM_de_Rol
         {
             ListadoRol levantarListado = new ListadoRol("baja",conexion);
             this.Hide();
-            levantarListado.Show();
+            levantarListado.ShowDialog();
             this.Show(); 
         }
     }
