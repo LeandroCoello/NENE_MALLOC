@@ -814,11 +814,12 @@ commit
 GO
 
 --MODIFICACION USUARIO
-create procedure NENE_MALLOC.modificacion_usuario @username varchar(30), @pass nvarchar(255), @rol nvarchar(255), @nombre nvarchar(255), 
-										  @apellido nvarchar(255), @telefono numeric(18,0), @tipo_ident nvarchar(30),
-										  @nro_ident numeric(18,0), @mail nvarchar(255), @calle nvarchar(255),
-										  @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
-										  @fecha_nacimiento nvarchar(15), @hotel numeric(18,0), @usuario_id numeric(18,0)
+create procedure NENE_MALLOC.modificacion_usuario @username varchar(30), @pass nvarchar(255),@nombre nvarchar(255), 
+												  @apellido nvarchar(255), @telefono numeric(18,0), @tipo_ident nvarchar(30),
+												  @nro_ident numeric(18,0), @mail nvarchar(255), @calle nvarchar(255),
+												  @nro_calle numeric(18,0), @piso numeric(18,0), @depto nvarchar(50),
+												  @fecha_nacimiento nvarchar(15), @usuario_id numeric(18,0), @hotel_id numeric(18,0),
+												  @rol_desc nvarchar(255)
 as
 begin transaction
 	
@@ -863,6 +864,21 @@ begin transaction
 		end
 		
 		
+	declare @rol_id numeric(18,0)
+	set @rol_id = (select Rol_Id from NENE_MALLOC.Rol where Rol_Desc = @rol_desc)
+		
+	if exists(select *  from NENE_MALLOC.Usuario_Por_Rol_Por_Hotel u 
+				where u.Hotel_Id = @hotel_id and
+					  u.Rol_Id = @rol_id and 
+					  u.Usuario_Id = @usuario_id)
+		begin
+			rollback
+			raiserror('El usuario ya tiene ese Rol en el Hotel.',16,1)
+			return
+		end
+	
+		
+		
 	declare @fecha_correcta datetime
 	set @fecha_correcta = @fecha_nacimiento
 	declare @datos_id numeric(18,0)
@@ -870,7 +886,7 @@ begin transaction
 						where u.Usuario_Id = @usuario_id)
 	
 	
-	update NENE_MALLOC.Datos_Personales
+	Update NENE_MALLOC.Datos_Personales
 		set Datos_Nombre = @nombre,
 			Datos_Apellido = @apellido,
 			Datos_Telefono = @telefono,
@@ -884,13 +900,17 @@ begin transaction
 			Datos_Fecha_Nac = @fecha_correcta		
 		where Datos_Id = @datos_id
 	
-	update NENE_MALLOC.Usuario
+	Update NENE_MALLOC.Usuario
 		set Usuario_name = @username,
 			Usuario_pass = @pass
 		where Usuario_Id = @usuario_id
+		
+	Insert into Usuario_Por_Rol_Por_Hotel(Usuario_Id, Rol_Id, Hotel_Id)
+			values(@usuario_id, @rol_id, @hotel_id)
 									         
 commit
 GO
+
 
 --ALTA DE CLIENTE 
 create procedure NENE_MALLOC.alta_cliente @nombre nvarchar(255), @apellido nvarchar(255), @telefono numeric(18,0), 
