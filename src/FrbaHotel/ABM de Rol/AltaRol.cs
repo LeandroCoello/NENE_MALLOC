@@ -28,7 +28,7 @@ namespace FrbaHotel.ABM_de_Rol
             }
             else
             {
-                string query = "INSERT INTO NENE_MALLOC.Rol VALUES ('" + txtNomRol.Text + "','" + cBFuncio.SelectedItem.ToString() + "', " + txtEstado.Text + ")";
+                string query = "EXEC NENE_MALLOC.Rol '" + txtNomRol.Text + "'," + txtEstado.Text + ",'" +cBFuncio.SelectedItem.ToString() + "', ";
                 try
                 {
                     conexion.executeOnly(query);

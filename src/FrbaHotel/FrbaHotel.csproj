@@ -318,6 +318,18 @@
     <EmbeddedResource Include="ABM de Hotel\ABMHotel.resx">
       <DependentUpon>ABMHotel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Hotel\AltaHotel.resx">
+      <DependentUpon>AltaHotel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Hotel\BajaHotel.resx">
+      <DependentUpon>BajaHotel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Hotel\ListadoHotel.resx">
+      <DependentUpon>ListadoHotel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Hotel\ModifHotel.resx">
+      <DependentUpon>ModifHotel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM de Regimen\ABMRegimen.resx">
       <DependentUpon>ABMRegimen.cs</DependentUpon>
     </EmbeddedResource>

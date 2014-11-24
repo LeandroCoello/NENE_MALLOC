@@ -51,6 +51,7 @@
             this.btnBaja.TabIndex = 1;
             this.btnBaja.Text = "Baja";
             this.btnBaja.UseVisualStyleBackColor = true;
+            this.btnBaja.Click += new System.EventHandler(this.btnBaja_Click);
             // 
             // btnModif
             // 
@@ -60,6 +61,7 @@
             this.btnModif.TabIndex = 2;
             this.btnModif.Text = "Modificar";
             this.btnModif.UseVisualStyleBackColor = true;
+            this.btnModif.Click += new System.EventHandler(this.btnModif_Click);
             // 
             // ABMHotel
             // 

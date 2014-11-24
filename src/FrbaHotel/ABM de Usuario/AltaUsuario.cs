@@ -12,7 +12,6 @@ namespace FrbaHotel.ABM_de_Usuario
 {
     public partial class AltaUsuario : Form
     {
-        Administrador admin;
         Inicio inicio;
         SQLConnector conec;
         List<TextBox> txtBoxes = new List<TextBox>();
@@ -31,6 +30,7 @@ namespace FrbaHotel.ABM_de_Usuario
             txtBoxes.Add(txtNcalle);
             txtBoxes.Add(txtFecNac);
             txtBoxes.Add(txtHotelTrabaja);
+            Administrador admin = new Administrador(conexion);
             List<string> rolesActuales = admin.rolesSistema();
             BindingSource bs = new BindingSource();
             bs.DataSource = rolesActuales;

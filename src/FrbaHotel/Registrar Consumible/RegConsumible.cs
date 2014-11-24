@@ -18,10 +18,6 @@ namespace FrbaHotel.Registrar_Consumible
         {
             InitializeComponent();
             conexion = conecc;
-            DataTable regimenes = conecc.consulta("SELECT Regimen_Desc FROM NENE_MALLOC.Regimen");
-            foreach (DataRow row in regimenes.Rows) {
-                cBRegimen.Items.Add(row["Regimen_Desc"].ToString());
-            }
         }
         public string getDesc() { return descrip; }
 

@@ -45,7 +45,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnHotel_Click(object sender, EventArgs e)
         {
-            ABM_de_Hotel.ABMHotel levantarHotel = new FrbaHotel.ABM_de_Hotel.ABMHotel(userLog.getConexion());
+            ABM_de_Hotel.ABMHotel levantarHotel = new FrbaHotel.ABM_de_Hotel.ABMHotel(userLog);
             this.Hide();
             levantarHotel.ShowDialog();
             this.Show();
@@ -65,13 +65,6 @@ namespace FrbaHotel.Menu_Principal
             this.Hide();
             levantarRegimen.ShowDialog();
             this.Show();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Registrar_Consumible.RegConsumible levantar = new FrbaHotel.Registrar_Consumible.RegConsumible(userLog.getConexion());
-            this.Hide();
-            levantar.ShowDialog();
         }
     }
 }
