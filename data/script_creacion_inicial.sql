@@ -1437,7 +1437,6 @@ declare @fecha_correcta datetime
 commit
 GO
 
-
 --------------------------------FUNCIONES-----------------------------------------------------
 
 -- COSTO DE LAS ESTADÍAS
@@ -1604,7 +1603,25 @@ returns @tabla table (nombre nvarchar(255),
 end
 GO
 
+---------------------------------TRIGGER----------------------------------------------------
 
+create trigger tr_delete_regimen_por_hotel on NENE_MALLOC.Regimen_Por_Hotel
+instead of DELETE
+as 
+begin transaction 
+	
+	if not(exists (select r.Reserva_Id 
+	               from NENE_MALLOC.Reserva r, Deleted d 
+	               where d.Regimen_Id = r.Reserva_Regimen and
+	                     d.Hotel_Id = r.Reserva_Hotel))
+		
+		DELETE from NENE_MALLOC.Regimen_Por_Hotel
+		where Hotel_Id = (select d.Hotel_Id from Deleted d) and
+		      Regimen_Id = (select d.Regimen_Id from Deleted d)
+		      
+commit
+GO
+		
 /*
 Los siguientes procedimientos/triggers no los desarrollamos así los hacen los chicos:
 -BAJA ROL

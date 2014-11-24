@@ -2,6 +2,9 @@ use GD2C2014
 go 
 
 
+drop trigger [NENE_MALLOC].[tr_delete_regimen_por_hotel]
+GO 
+
 drop table [NENE_MALLOC].[Usuario_Por_Rol_Por_Hotel]
 drop table [NENE_MALLOC].[Func_Por_Rol]
 drop table [NENE_MALLOC].[Funcionalidad]
@@ -60,7 +63,6 @@ drop function [NENE_MALLOC].[hoteles_fuera_de_servicio]
 drop function [NENE_MALLOC].[habitaciones_mas_ocupadas]
 drop function [NENE_MALLOC].[clientes_mas_puntos]
 GO
-
 
 drop schema NENE_MALLOC
 GO
