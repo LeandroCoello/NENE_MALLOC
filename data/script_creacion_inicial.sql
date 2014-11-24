@@ -1085,7 +1085,7 @@ GO
 
 create procedure NENE_MALLOC.modificacion_hotel @nombre nvarchar(255), @mail nvarchar(255), @telefono numeric(18,0),
 												@calle nvarchar(255), @nro_calle numeric(18,0), @ciudad nvarchar(255),
-												@pais nvarchar(255), @fecha_creacion nvarchar(15), @estrellas numeric(18,0),
+												@pais nvarchar(255), @estrellas numeric(18,0),
 												@recarga_estrella numeric(18,0), @hotel_id numeric(18,0)
 
 as
@@ -1128,9 +1128,6 @@ begin transaction
 			raiserror('Ya existe un hotel en esta direccion',16,1)
 			return
 		end	
-		
-	declare @fecha_correcta datetime
-	set @fecha_correcta = @fecha_creacion
 
 	update NENE_MALLOC.Hotel
 	set Hotel_Nombre = @nombre,
@@ -1140,7 +1137,6 @@ begin transaction
 	    Hotel_Nro_Calle = @nro_calle,
 	    Hotel_Ciudad = @ciudad,
 	    Hotel_Pais = @pais,
-	    Hotel_Fecha_Creacion = @fecha_correcta,
 	    Hotel_Cant_Est = @estrellas,
 	    Hotel_Recarga_Estrella = @recarga_estrella		
 		where Hotel_Id = @hotel_id		
