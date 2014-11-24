@@ -1033,7 +1033,7 @@ GO
 create procedure NENE_MALLOC.alta_hotel @nombre nvarchar(255), @mail nvarchar(255), @telefono numeric(18,0),
                                         @calle nvarchar(255), @nro_calle numeric(18,0), @ciudad nvarchar(255),
                                         @pais nvarchar(255), @fecha_creacion nvarchar(15), @estrellas numeric(18,0),
-                                        @recarga_estrella numeric(18,0)
+                                        @recarga_estrella numeric(18,0), @hotel_id numeric(18,0) out
 
 as
 begin transaction
@@ -1076,7 +1076,9 @@ begin transaction
 	                              Hotel_Ciudad, Hotel_Pais, Hotel_Fecha_Creacion, Hotel_Cant_Est, Hotel_Recarga_Estrella)
 		                   values(@nombre, @mail, @telefono, @calle, @nro_calle, @ciudad, @pais, @fecha_correcta,
 		                          @estrellas, @recarga_estrella)	                 
+	set @hotel_id = (select max(Hotel_Id)from NENE_MALLOC.Hotel)
 commit
+	return @hotel_id
 GO
 
 --MODIFICACIÓN DE HOTEL
