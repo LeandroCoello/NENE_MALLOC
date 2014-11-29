@@ -28,23 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnGENMODRESER = new System.Windows.Forms.Button();
+            this.btnModificar = new System.Windows.Forms.Button();
             this.bnCancelGuest = new System.Windows.Forms.Button();
+            this.btnGenerar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // btnGENMODRESER
+            // btnModificar
             // 
-            this.btnGENMODRESER.Location = new System.Drawing.Point(39, 12);
-            this.btnGENMODRESER.Name = "btnGENMODRESER";
-            this.btnGENMODRESER.Size = new System.Drawing.Size(109, 51);
-            this.btnGENMODRESER.TabIndex = 1;
-            this.btnGENMODRESER.Text = "Generar o Modificar Reserva";
-            this.btnGENMODRESER.UseVisualStyleBackColor = true;
-            this.btnGENMODRESER.Click += new System.EventHandler(this.btnGENMODRESER_Click);
+            this.btnModificar.Location = new System.Drawing.Point(127, 17);
+            this.btnModificar.Name = "btnModificar";
+            this.btnModificar.Size = new System.Drawing.Size(109, 51);
+            this.btnModificar.TabIndex = 1;
+            this.btnModificar.Text = "Modificar Reserva";
+            this.btnModificar.UseVisualStyleBackColor = true;
+            this.btnModificar.Click += new System.EventHandler(this.btnGENMODRESER_Click);
             // 
             // bnCancelGuest
             // 
-            this.bnCancelGuest.Location = new System.Drawing.Point(154, 12);
+            this.bnCancelGuest.Location = new System.Drawing.Point(242, 17);
             this.bnCancelGuest.Name = "bnCancelGuest";
             this.bnCancelGuest.Size = new System.Drawing.Size(109, 51);
             this.bnCancelGuest.TabIndex = 2;
@@ -52,13 +53,24 @@
             this.bnCancelGuest.UseVisualStyleBackColor = true;
             this.bnCancelGuest.Click += new System.EventHandler(this.bnCancelGuest_Click);
             // 
+            // btnGenerar
+            // 
+            this.btnGenerar.Location = new System.Drawing.Point(12, 17);
+            this.btnGenerar.Name = "btnGenerar";
+            this.btnGenerar.Size = new System.Drawing.Size(109, 51);
+            this.btnGenerar.TabIndex = 3;
+            this.btnGenerar.Text = "Generar Reserva";
+            this.btnGenerar.UseVisualStyleBackColor = true;
+            this.btnGenerar.Click += new System.EventHandler(this.btnGenerar_Click);
+            // 
             // MenuGuest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(327, 80);
+            this.ClientSize = new System.Drawing.Size(368, 80);
+            this.Controls.Add(this.btnGenerar);
             this.Controls.Add(this.bnCancelGuest);
-            this.Controls.Add(this.btnGENMODRESER);
+            this.Controls.Add(this.btnModificar);
             this.Name = "MenuGuest";
             this.Text = "Guest";
             this.ResumeLayout(false);
@@ -67,7 +79,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnGENMODRESER;
+        private System.Windows.Forms.Button btnModificar;
         private System.Windows.Forms.Button bnCancelGuest;
+        private System.Windows.Forms.Button btnGenerar;
     }
 }

@@ -29,5 +29,25 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             txtFecSist.Text = fechaActualSistema.ToString("yyyyMMdd"); ;
             conexion = conecc;
         }
+
+        private void cBtiposHabs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cBtipRegi_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

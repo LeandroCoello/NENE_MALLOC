@@ -28,24 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnGENMODRESER = new System.Windows.Forms.Button();
+            this.btnGENRESER = new System.Windows.Forms.Button();
             this.btnCancelReser = new System.Windows.Forms.Button();
             this.btnRegEst = new System.Windows.Forms.Button();
             this.btnRegConsu = new System.Windows.Forms.Button();
             this.btnFacPub = new System.Windows.Forms.Button();
             this.btnListEsta = new System.Windows.Forms.Button();
             this.btnABMCliente = new System.Windows.Forms.Button();
+            this.btnModReser = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // btnGENMODRESER
+            // btnGENRESER
             // 
-            this.btnGENMODRESER.Location = new System.Drawing.Point(12, 12);
-            this.btnGENMODRESER.Name = "btnGENMODRESER";
-            this.btnGENMODRESER.Size = new System.Drawing.Size(109, 51);
-            this.btnGENMODRESER.TabIndex = 0;
-            this.btnGENMODRESER.Text = "Generar o Modificar Reserva";
-            this.btnGENMODRESER.UseVisualStyleBackColor = true;
-            this.btnGENMODRESER.Click += new System.EventHandler(this.btnGENMODRESER_Click);
+            this.btnGENRESER.Location = new System.Drawing.Point(12, 12);
+            this.btnGENRESER.Name = "btnGENRESER";
+            this.btnGENRESER.Size = new System.Drawing.Size(109, 51);
+            this.btnGENRESER.TabIndex = 0;
+            this.btnGENRESER.Text = "Generar Reserva";
+            this.btnGENRESER.UseVisualStyleBackColor = true;
+            this.btnGENRESER.Click += new System.EventHandler(this.btnGENMODRESER_Click);
             // 
             // btnCancelReser
             // 
@@ -69,7 +70,7 @@
             // 
             // btnRegConsu
             // 
-            this.btnRegConsu.Location = new System.Drawing.Point(12, 69);
+            this.btnRegConsu.Location = new System.Drawing.Point(12, 126);
             this.btnRegConsu.Name = "btnRegConsu";
             this.btnRegConsu.Size = new System.Drawing.Size(109, 51);
             this.btnRegConsu.TabIndex = 3;
@@ -107,18 +108,28 @@
             this.btnABMCliente.UseVisualStyleBackColor = true;
             this.btnABMCliente.Click += new System.EventHandler(this.btnABMCliente_Click);
             // 
+            // btnModReser
+            // 
+            this.btnModReser.Location = new System.Drawing.Point(12, 69);
+            this.btnModReser.Name = "btnModReser";
+            this.btnModReser.Size = new System.Drawing.Size(109, 51);
+            this.btnModReser.TabIndex = 7;
+            this.btnModReser.Text = "Modificar Reserva";
+            this.btnModReser.UseVisualStyleBackColor = true;
+            // 
             // MenuRecepcionista
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(369, 196);
+            this.Controls.Add(this.btnModReser);
             this.Controls.Add(this.btnABMCliente);
             this.Controls.Add(this.btnListEsta);
             this.Controls.Add(this.btnFacPub);
             this.Controls.Add(this.btnRegConsu);
             this.Controls.Add(this.btnRegEst);
             this.Controls.Add(this.btnCancelReser);
-            this.Controls.Add(this.btnGENMODRESER);
+            this.Controls.Add(this.btnGENRESER);
             this.Name = "MenuRecepcionista";
             this.Text = "Recepcionista";
             this.ResumeLayout(false);
@@ -127,12 +138,13 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnGENMODRESER;
+        private System.Windows.Forms.Button btnGENRESER;
         private System.Windows.Forms.Button btnCancelReser;
         private System.Windows.Forms.Button btnRegEst;
         private System.Windows.Forms.Button btnRegConsu;
         private System.Windows.Forms.Button btnFacPub;
         private System.Windows.Forms.Button btnListEsta;
         private System.Windows.Forms.Button btnABMCliente;
+        private System.Windows.Forms.Button btnModReser;
     }
 }

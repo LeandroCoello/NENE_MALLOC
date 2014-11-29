@@ -108,6 +108,7 @@
             this.label5.Size = new System.Drawing.Size(85, 13);
             this.label5.TabIndex = 7;
             this.label5.Text = "Tipo Habitación:";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // cBtiposHabs
             // 
@@ -116,6 +117,7 @@
             this.cBtiposHabs.Name = "cBtiposHabs";
             this.cBtiposHabs.Size = new System.Drawing.Size(100, 21);
             this.cBtiposHabs.TabIndex = 8;
+            this.cBtiposHabs.SelectedIndexChanged += new System.EventHandler(this.cBtiposHabs_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -125,6 +127,7 @@
             this.label6.Size = new System.Drawing.Size(76, 13);
             this.label6.TabIndex = 9;
             this.label6.Text = "Tipo Regimen:";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // cBtipRegi
             // 
@@ -133,12 +136,13 @@
             this.cBtipRegi.Name = "cBtipRegi";
             this.cBtipRegi.Size = new System.Drawing.Size(101, 21);
             this.cBtipRegi.TabIndex = 10;
+            this.cBtipRegi.SelectedIndexChanged += new System.EventHandler(this.cBtipRegi_SelectedIndexChanged);
             // 
             // GenModReserva
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(320, 258);
+            this.ClientSize = new System.Drawing.Size(463, 377);
             this.Controls.Add(this.cBtipRegi);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.cBtiposHabs);

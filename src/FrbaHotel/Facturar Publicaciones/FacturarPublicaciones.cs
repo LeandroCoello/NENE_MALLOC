@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +13,14 @@ namespace FrbaHotel.Facturar_Publicaciones
 {
     public partial class FacturarPublicaciones : Form
     {
-        SQLConnector conexion;
-        public FacturarPublicaciones(SQLConnector conecc)
+        UsuarioLogueado usuario;
+        String fechaSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]).ToString("yyyyMMdd"); 
+        public FacturarPublicaciones(UsuarioLogueado userLog)
         {
             InitializeComponent();
-            conexion = conecc;
+            usuario = userLog;
+            cBFormaPago.Items.Add("Efectivo");
+            cBFormaPago.Items.Add("Tarjeta credito");
         }
     }
 }
