@@ -1407,6 +1407,19 @@ as
 begin transaction
 
 
+if exists (select * from NENE_MALLOC.Item_Factura, NENE_MALLOC.Estadia 
+				where Item_Factura_Id = Estadia_Id and
+					  Estadia_RPH = @rph_id)
+	begin 
+	
+	rollback
+	raiserror('La Estadía ya se facturó.',16,1)
+	return
+	
+	end
+
+
+
 update NENE_MALLOC.Item_Factura
 	set Item_Factura = @fact_nro
 		where Item_Factura_Id in (select e.Estadia_Id from NENE_MALLOC.Estadia e where e.Estadia_RPH = @rph_id) or
