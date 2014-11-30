@@ -190,7 +190,7 @@ CREATE TABLE NENE_MALLOC.Factura(
 		Factura_Id numeric(18,0) primary key,
 		Factura_Cliente numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id),
 		Factura_Fecha datetime,
-		Factura_Total numeric(18,2),
+		Factura_Total numeric(18,2) default 0,
 		Factura_Tarjeta numeric(18,0) references NENE_MALLOC.Datos_Tarjeta(Datos_Tarjeta_Id)--si esta en null es efectivo
 		)
 GO
@@ -256,7 +256,7 @@ Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (23,'Check-In')
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (24,'Check-Out')
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (25,'Registrar Consumibles')
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (26,'Emitir Factura')
-Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (27,'Listado EstadÌstico')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (27,'Listado Estad√≠stico')
 GO
 
 
@@ -307,7 +307,7 @@ Insert into NENE_MALLOC.Regimen(Regimen_Desc, Regimen_Precio)
                                 from gd_esquema.Maestra)
 GO                                
 
---TIPO DE HABITACI”N
+--TIPO DE HABITACI√ìN
 
 Insert into NENE_MALLOC.Tipo_Habitacion(Tipo_Hab_Id, Tipo_Hab_Desc, Tipo_Hab_Porc, Tipo_Cant_Maxima_Huespedes)
                                        (select distinct Habitacion_Tipo_Codigo, Habitacion_Tipo_Descripcion, Habitacion_Tipo_Porcentual,
@@ -378,7 +378,7 @@ Insert into NENE_MALLOC.Cliente (Cliente_Nacionalidad)
 			group by Cliente_Mail,Cliente_Fecha_Nac,Cliente_Pasaporte_Nro,Cliente_Nacionalidad)
 
 -- Resulta que para los clientes se inserta en Clientes y Datos Personales a la par, por lo tanto los Cliente_Id y Cliente_Datos coinciden
--- (Solo se cumple para la migraciÛn)
+-- (Solo se cumple para la migraci√≥n)
 
 update NENE_MALLOC.Cliente
 	set Cliente_Datos=s.datos_id
@@ -416,7 +416,7 @@ update NENE_MALLOC.Reserva
 		where Reserva_Estado is null
 GO
 
---RESERVA POR HABITACI”N
+--RESERVA POR HABITACI√ìN
 insert into NENE_MALLOC.Reserva_Por_Habitacion(Reserva_Id, Habitacion_Id)
 			(select distinct g.Reserva_Codigo,
 				    (select h.Habitacion_Id from NENE_MALLOC.Habitacion h
@@ -616,7 +616,7 @@ else
 			if((select Usuario_Intentos from NENE_MALLOC.Usuario where @usuario = Usuario_name) = 2)
 			begin
 				
-				raiserror('La contraseÒa ingresada no es correcta y el usuario quedo inhabilitado',16,1)
+				raiserror('La contrase√±a ingresada no es correcta y el usuario quedo inhabilitado',16,1)
 				update NENE_MALLOC.Usuario set Usuario_Deshabilitado = 1
 				where Usuario_name = @usuario
 				set @return = 1
@@ -625,8 +625,8 @@ else
 			begin
 				update NENE_MALLOC.Usuario set Usuario_Intentos = Usuario_Intentos + 1
 				where Usuario_name = @usuario;
-				raiserror('La contraseÒa ingresada no es correcta.',16,1)
-				set @return = 3 --El usuario no ingresa por ingresar una contraseÒa incorrecta
+				raiserror('La contrase√±a ingresada no es correcta.',16,1)
+				set @return = 3 --El usuario no ingresa por ingresar una contrase√±a incorrecta
 				return
 			end
 		end
@@ -703,7 +703,7 @@ begin transaction
 	if ((select r.Rol_estado from NENE_MALLOC.Rol r where r.Rol_Desc = @rol) = 1)
 		begin
 			rollback
-			raiserror('El rol est· dado de baja',16,1)
+			raiserror('El rol est√° dado de baja',16,1)
 		end
 		
 	if(not(exists(select f.Func_Id from NENE_MALLOC.Funcionalidad f where @funcionalidad = Func_Desc)))
@@ -733,7 +733,7 @@ begin transaction
 	if ((select r.Rol_estado from NENE_MALLOC.Rol r where r.Rol_Desc = @rol) = 1)
 		begin
 			rollback
-			raiserror('El rol est· dado de baja',16,1)
+			raiserror('El rol est√° dado de baja',16,1)
 		end
 		
 	if (@rol_id is null)
@@ -1081,7 +1081,7 @@ commit
 	return @hotel_id
 GO
 
---MODIFICACI”N DE HOTEL
+--MODIFICACI√ìN DE HOTEL
 
 create procedure NENE_MALLOC.modificacion_hotel @nombre nvarchar(255), @mail nvarchar(255), @telefono numeric(18,0),
 												@calle nvarchar(255), @nro_calle numeric(18,0), @ciudad nvarchar(255),
@@ -1167,7 +1167,7 @@ begin transaction
 commit 
 GO
 
---MODIFICACI”N DE HABITACI”N
+--MODIFICACI√ìN DE HABITACI√ìN
 
 create procedure NENE_MALLOC.modificacion_habitacion @numero numeric(18,0), @piso numeric(18,0), @hotel numeric(18,0),
 													 @tipo numeric(18,0), @vista nvarchar(50), @descripcion nvarchar(255),
@@ -1287,7 +1287,7 @@ begin transaction
 	if (select r.Reserva_FechaIng from Reserva r where r.Reserva_Id = @reserva_id) >  DATEADD(DAY, 1, @fecha_cancelacion_correcta)
 	begin
 		rollback
-		raiserror('No se puede cancelar a un dÌa de la reserva',16,1)
+		raiserror('No se puede cancelar a un d√≠a de la reserva',16,1)
 		return
 	end
 	
@@ -1439,7 +1439,7 @@ GO
 
 --------------------------------FUNCIONES-----------------------------------------------------
 
--- COSTO DE LAS ESTADÕAS
+-- COSTO DE LAS ESTAD√çAS
 
 create function NENE_MALLOC.costo_estadia (@rph_id numeric(18,0), @cant_noches numeric(18,0))
 returns numeric(18,0)
@@ -1458,7 +1458,7 @@ begin
    return @costo_estadia
 end
 GO
---------------------------LISTADO ESTADÕSTICO---------------------------------------------------
+--------------------------LISTADO ESTAD√çSTICO---------------------------------------------------
 
 
 --HOTELES CON MAYOR CANTIDAD DE RESERVAS CANCELADAS
@@ -1537,7 +1537,7 @@ returns @tabla table (hotel_nombre nvarchar(255),
 end
 GO
 
---HABITACIONES CON MAYOR CANTIDAD DE DÕAS Y VECES QUE FUERON OCUPADAS
+--HABITACIONES CON MAYOR CANTIDAD DE D√çAS Y VECES QUE FUERON OCUPADAS
 create function NENE_MALLOC.habitaciones_mas_ocupadas(@anio numeric(4,0),@mesInicio numeric(2,0), @mesFin numeric(2,0))
 returns @tabla table (habitacion_num numeric(18,0),
 					  habitacion_piso numeric(18,0),
@@ -1623,7 +1623,7 @@ commit
 GO
 		
 /*
-Los siguientes procedimientos/triggers no los desarrollamos asÌ los hacen los chicos:
+Los siguientes procedimientos/triggers no los desarrollamos as√≠ los hacen los chicos:
 -BAJA ROL
 -BAJA USUARIO
 -BAJA DE USUARIO POR HOTEL
