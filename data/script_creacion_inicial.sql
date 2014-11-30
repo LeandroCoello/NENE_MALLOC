@@ -588,7 +588,7 @@ Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_Pass, Usuario_Datos)
 				values('RecepRodriguez','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
 
 Insert into NENE_MALLOC.Usuario_Por_Rol_Por_Hotel(Usuario_Id, Hotel_Id, Rol_Id)
-					values((select max(Usuario_Id) from NENE_MALLOC.Usuario),8,1)
+					values((select max(Usuario_Id) from NENE_MALLOC.Usuario),8,2)
 GO
 
 
