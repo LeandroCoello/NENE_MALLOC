@@ -31,6 +31,7 @@ namespace FrbaHotel.ABM_de_Usuario
             txtBoxes.Add(txtFecNac);
             txtBoxes.Add(txtHotelTrabaja);
             Administrador admin = new Administrador(conexion);
+            inicio = new Inicio(conexion);
             List<string> rolesActuales = admin.rolesSistema();
             BindingSource bs = new BindingSource();
             bs.DataSource = rolesActuales;

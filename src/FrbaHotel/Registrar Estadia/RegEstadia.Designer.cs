@@ -28,13 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.btnIngreso = new System.Windows.Forms.Button();
+            this.btnEgreso = new System.Windows.Forms.Button();
             this.SuspendLayout();
+            // 
+            // btnIngreso
+            // 
+            this.btnIngreso.Location = new System.Drawing.Point(60, 12);
+            this.btnIngreso.Name = "btnIngreso";
+            this.btnIngreso.Size = new System.Drawing.Size(75, 39);
+            this.btnIngreso.TabIndex = 0;
+            this.btnIngreso.Text = "Ingreso";
+            this.btnIngreso.UseVisualStyleBackColor = true;
+            this.btnIngreso.Click += new System.EventHandler(this.btnIngreso_Click);
+            // 
+            // btnEgreso
+            // 
+            this.btnEgreso.Location = new System.Drawing.Point(60, 67);
+            this.btnEgreso.Name = "btnEgreso";
+            this.btnEgreso.Size = new System.Drawing.Size(75, 41);
+            this.btnEgreso.TabIndex = 1;
+            this.btnEgreso.Text = "Egreso";
+            this.btnEgreso.UseVisualStyleBackColor = true;
+            this.btnEgreso.Click += new System.EventHandler(this.btnEgreso_Click);
             // 
             // RegEstadia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(205, 126);
+            this.Controls.Add(this.btnEgreso);
+            this.Controls.Add(this.btnIngreso);
             this.Name = "RegEstadia";
             this.Text = "Registrar Estadia";
             this.ResumeLayout(false);
@@ -42,5 +66,8 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Button btnIngreso;
+        private System.Windows.Forms.Button btnEgreso;
     }
 }

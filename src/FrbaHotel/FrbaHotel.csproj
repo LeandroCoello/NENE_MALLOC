@@ -249,6 +249,18 @@
     <Compile Include="Generar Modificar Reserva\Modificar.Designer.cs">
       <DependentUpon>Modificar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Generar Modificar Reserva\Regimenes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generar Modificar Reserva\Regimenes.Designer.cs">
+      <DependentUpon>Regimenes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generar Modificar Reserva\Tipos_Habitaciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generar Modificar Reserva\Tipos_Habitaciones.Designer.cs">
+      <DependentUpon>Tipos_Habitaciones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login\EleccionHotel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -285,12 +297,6 @@
     </Compile>
     <Compile Include="Principal.Designer.cs">
       <DependentUpon>Principal.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Generar Modificar Reserva\GenModReserva.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Generar Modificar Reserva\GenModReserva.Designer.cs">
-      <DependentUpon>GenModReserva.cs</DependentUpon>
     </Compile>
     <Compile Include="Listado Estadistico\ListEstadistico.cs">
       <SubType>Form</SubType>
@@ -393,8 +399,8 @@
     <EmbeddedResource Include="Generar Modificar Reserva\Generar.resx">
       <DependentUpon>Generar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Generar Modificar Reserva\GenModReserva.resx">
-      <DependentUpon>GenModReserva.cs</DependentUpon>
+    <EmbeddedResource Include="Generar Modificar Reserva\Modificar.resx">
+      <DependentUpon>Modificar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Listado Estadistico\ListEstadistico.resx">
       <DependentUpon>ListEstadistico.cs</DependentUpon>
@@ -434,6 +440,9 @@
     <EmbeddedResource Include="Registrar Consumible\RegConsumible.resx">
       <DependentUpon>RegConsumible.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Registrar Estadia\Ingreso_Egreso.resx">
+      <DependentUpon>Ingreso_Egreso.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Registrar Estadia\RegEstadia.resx">
       <DependentUpon>RegEstadia.cs</DependentUpon>
     </EmbeddedResource>
@@ -468,6 +477,12 @@
     </Compile>
     <Compile Include="Registrar Consumible\RegConsumible.Designer.cs">
       <DependentUpon>RegConsumible.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Registrar Estadia\Ingreso_Egreso.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Registrar Estadia\Ingreso_Egreso.Designer.cs">
+      <DependentUpon>Ingreso_Egreso.cs</DependentUpon>
     </Compile>
     <Compile Include="Registrar Estadia\RegEstadia.cs">
       <SubType>Form</SubType>

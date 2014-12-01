@@ -61,7 +61,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnFacPub_Click(object sender, EventArgs e)
         {
-            Facturar_Publicaciones.FacturarPublicaciones levantarFac = new FrbaHotel.Facturar_Publicaciones.FacturarPublicaciones(userLog.getConexion());
+            Facturar_Publicaciones.FacturarPublicaciones levantarFac = new FrbaHotel.Facturar_Publicaciones.FacturarPublicaciones(userLog);
             this.Hide();
             levantarFac.ShowDialog();
             this.Show();
@@ -69,7 +69,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnListEsta_Click(object sender, EventArgs e)
         {
-            Listado_Estadistico.ListEstadistico levantarListado = new FrbaHotel.Listado_Estadistico.ListEstadistico(userLog);
+            Listado_Estadistico.ListEstadistico levantarListado = new FrbaHotel.Listado_Estadistico.ListEstadistico(userLog.getConexion());
             this.Hide();
             levantarListado.ShowDialog();
             this.Show();

@@ -27,7 +27,7 @@ namespace FrbaHotel.Login
             if (String.IsNullOrEmpty(lBEleccionRoles.SelectedItem.ToString())) {
                 MessageBox.Show("Por favor elija un rol");
             }
-            string selected = lBEleccionRoles.SelectedValue.ToString();
+            string selected = lBEleccionRoles.SelectedItem.ToString();
             EleccionHotel levantarElecHotel = new EleccionHotel(selected,usuarioLog);
             levantarElecHotel.ShowDialog();
             this.Close();

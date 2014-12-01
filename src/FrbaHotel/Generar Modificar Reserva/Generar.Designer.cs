@@ -134,6 +134,7 @@
             this.btnConfirmacion.TabIndex = 23;
             this.btnConfirmacion.Text = "Confirmar";
             this.btnConfirmacion.UseVisualStyleBackColor = true;
+            this.btnConfirmacion.Click += new System.EventHandler(this.btnConfirmacion_Click);
             // 
             // dGVRegimen
             // 
@@ -170,7 +171,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(559, 487);
+            this.ClientSize = new System.Drawing.Size(559, 429);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.finDateTimePicker);
             this.Controls.Add(this.inicioDateTimePicker1);

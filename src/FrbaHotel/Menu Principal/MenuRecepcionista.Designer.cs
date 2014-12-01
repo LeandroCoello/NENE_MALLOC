@@ -46,7 +46,6 @@
             this.btnGENRESER.TabIndex = 0;
             this.btnGENRESER.Text = "Generar Reserva";
             this.btnGENRESER.UseVisualStyleBackColor = true;
-            this.btnGENRESER.Click += new System.EventHandler(this.btnGENMODRESER_Click);
             // 
             // btnCancelReser
             // 
