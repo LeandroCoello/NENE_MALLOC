@@ -30,15 +30,14 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtMail = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cBTipoDoc = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtNDoc = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnBusquedaClie = new System.Windows.Forms.Button();
-            this.btnGenerarReserva = new System.Windows.Forms.Button();
-            this.btnModifReserva = new System.Windows.Forms.Button();
+            this.btnLimpieza = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -60,12 +59,12 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Mail:";
             // 
-            // textBox1
+            // txtMail
             // 
-            this.textBox1.Location = new System.Drawing.Point(47, 60);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(165, 20);
-            this.textBox1.TabIndex = 2;
+            this.txtMail.Location = new System.Drawing.Point(47, 60);
+            this.txtMail.Name = "txtMail";
+            this.txtMail.Size = new System.Drawing.Size(165, 20);
+            this.txtMail.TabIndex = 2;
             // 
             // label3
             // 
@@ -76,13 +75,13 @@
             this.label3.TabIndex = 3;
             this.label3.Text = "Tipo de doc.:";
             // 
-            // comboBox1
+            // cBTipoDoc
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(91, 33);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 4;
+            this.cBTipoDoc.FormattingEnabled = true;
+            this.cBTipoDoc.Location = new System.Drawing.Point(91, 33);
+            this.cBTipoDoc.Name = "cBTipoDoc";
+            this.cBTipoDoc.Size = new System.Drawing.Size(121, 21);
+            this.cBTipoDoc.TabIndex = 4;
             // 
             // label4
             // 
@@ -93,12 +92,12 @@
             this.label4.TabIndex = 5;
             this.label4.Text = "Nro de doc. :";
             // 
-            // textBox2
+            // txtNDoc
             // 
-            this.textBox2.Location = new System.Drawing.Point(316, 33);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(123, 20);
-            this.textBox2.TabIndex = 6;
+            this.txtNDoc.Location = new System.Drawing.Point(316, 33);
+            this.txtNDoc.Name = "txtNDoc";
+            this.txtNDoc.Size = new System.Drawing.Size(123, 20);
+            this.txtNDoc.TabIndex = 6;
             // 
             // dataGridView1
             // 
@@ -110,45 +109,37 @@
             // 
             // btnBusquedaClie
             // 
-            this.btnBusquedaClie.Location = new System.Drawing.Point(168, 95);
+            this.btnBusquedaClie.Location = new System.Drawing.Point(104, 86);
             this.btnBusquedaClie.Name = "btnBusquedaClie";
             this.btnBusquedaClie.Size = new System.Drawing.Size(82, 31);
             this.btnBusquedaClie.TabIndex = 8;
             this.btnBusquedaClie.Text = "Buscar";
             this.btnBusquedaClie.UseVisualStyleBackColor = true;
+            this.btnBusquedaClie.Click += new System.EventHandler(this.btnBusquedaClie_Click);
             // 
-            // btnGenerarReserva
+            // btnLimpieza
             // 
-            this.btnGenerarReserva.Location = new System.Drawing.Point(47, 274);
-            this.btnGenerarReserva.Name = "btnGenerarReserva";
-            this.btnGenerarReserva.Size = new System.Drawing.Size(90, 36);
-            this.btnGenerarReserva.TabIndex = 9;
-            this.btnGenerarReserva.Text = "Generar";
-            this.btnGenerarReserva.UseVisualStyleBackColor = true;
-            // 
-            // btnModifReserva
-            // 
-            this.btnModifReserva.Location = new System.Drawing.Point(335, 274);
-            this.btnModifReserva.Name = "btnModifReserva";
-            this.btnModifReserva.Size = new System.Drawing.Size(90, 36);
-            this.btnModifReserva.TabIndex = 10;
-            this.btnModifReserva.Text = "Modificar";
-            this.btnModifReserva.UseVisualStyleBackColor = true;
+            this.btnLimpieza.Location = new System.Drawing.Point(357, 86);
+            this.btnLimpieza.Name = "btnLimpieza";
+            this.btnLimpieza.Size = new System.Drawing.Size(82, 31);
+            this.btnLimpieza.TabIndex = 9;
+            this.btnLimpieza.Text = "Limpiar";
+            this.btnLimpieza.UseVisualStyleBackColor = true;
+            this.btnLimpieza.Click += new System.EventHandler(this.btnLimpieza_Click);
             // 
             // BuscarCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(480, 333);
-            this.Controls.Add(this.btnModifReserva);
-            this.Controls.Add(this.btnGenerarReserva);
+            this.Controls.Add(this.btnLimpieza);
             this.Controls.Add(this.btnBusquedaClie);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtNDoc);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cBTipoDoc);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtMail);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "BuscarCliente";
@@ -163,14 +154,13 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtMail;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cBTipoDoc;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtNDoc;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button btnBusquedaClie;
-        private System.Windows.Forms.Button btnGenerarReserva;
-        private System.Windows.Forms.Button btnModifReserva;
+        private System.Windows.Forms.Button btnLimpieza;
     }
 }

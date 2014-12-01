@@ -19,7 +19,9 @@ namespace FrbaHotel.Sistema
         public SQLConnector() {
             try
             {
-                connection = new SqlConnection("Data Source=localhost\\SQLSERVER2008;Initial Catalog=GD2C2014;user=gd;password=gd2014");
+                
+                connection = new SqlConnection();
+                connection.ConnectionString = ConfigurationSettings.AppSettings["ConexionBD"];
                 connection.Open();
             }
             catch (Exception e) {

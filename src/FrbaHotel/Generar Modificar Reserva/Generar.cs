@@ -19,6 +19,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         DataTable hoteles;
         DataTable tiposHabs;
         Decimal precio = 0;
+        string clienteId;
         public Generar(SQLConnector conec,String condicion)
         {
             InitializeComponent();
@@ -31,6 +32,9 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             cBHoteles.Items.Add(usuario.getHotelAsignado());
             cBHoteles.Enabled = false;
             inicializar();
+        }
+        public void setClienteId(string cliente) {
+            clienteId = cliente;
         }
 
         private void inicializar() {
@@ -89,18 +93,41 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 }
                 if (confirmarReserva(precio) == DialogResult.Yes)
                 {
-                    //LANZAR SQL DE GENERAR RESERVA
+                    if (clienteEnSistema() == DialogResult.Yes) {
+                        BuscarCliente levantarBusqueda = new BuscarCliente(usuario,this);
+                        this.Hide();
+                        levantarBusqueda.ShowDialog();
+                        MessageBox.Show("El cliente que quiere la reserva es:"+clienteId);
+                        string query = "EXEC NENE_MALLOC.generar_reserva";
+                    }
                 }
                 else {
-                    //Preguntar si desea hacer otra reserva o salir ???
+                    DialogResult resul = MessageBox.Show("La reserva no se ha efectuado desea hacer otra ?","confirmacion",MessageBoxButtons.YesNo);
+                    if (resul == DialogResult.Yes)
+                    {
+                        limpiarTODO();
+                    }
+                    else {
+                        this.Close();
+                    }
                 }
              
             }
         }
 
+        private void limpiarTODO() {
+            cBtiposHabs.SelectedIndex = -1;
+            dataGridView1.DataSource = null;
+            dataGridView1.Refresh();
+            dGVRegimen.Refresh();
+        }
+
         private DialogResult confirmarReserva(Decimal unPrecio) {
              DialogResult resultado = MessageBox.Show("La reserva cuesta: " + unPrecio.ToString() + " u$s.\n ¿Desea confimar ?", "confirmacion", MessageBoxButtons.YesNo);
              return resultado;
+        }
+        private DialogResult clienteEnSistema() {
+            return MessageBox.Show("¿Esta registrado en nuestra cadena hotelera?","confirmacion",MessageBoxButtons.YesNo);
         }
         private Decimal calcularPrecio() {
             Decimal porcHab =0;

@@ -81,5 +81,13 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 }
             }
         }
+
+        private void btnModificarReser_Click(object sender, EventArgs e)
+        {
+            /*create procedure NENE_MALLOC.modificar_reserva @fecha_modificacion nvarchar(15), @fecha_desde nvarchar(15),
+											   @fecha_hasta nvarchar(15), @tipo_regimen numeric(18,0), 
+		                                       @id_cliente numeric(18,0), @user_reservador numeric(18,0),
+		                                       @reserva_id numeric(18,0), @id_hotel numeric(18,0)*/
+        }
     }
 }

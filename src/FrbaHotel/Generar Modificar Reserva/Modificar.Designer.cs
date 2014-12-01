@@ -227,6 +227,7 @@
             this.btnModificarReser.TabIndex = 19;
             this.btnModificarReser.Text = "Modificar";
             this.btnModificarReser.UseVisualStyleBackColor = true;
+            this.btnModificarReser.Click += new System.EventHandler(this.btnModificarReser_Click);
             // 
             // btnCancelar
             // 
