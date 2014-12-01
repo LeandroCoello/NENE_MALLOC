@@ -1315,11 +1315,47 @@ begin transaction
 commit 
 GO
 
+--CANCELAR RESERVAS (POR VENCIMIENTO DE FECHA)
+create procedure cancelar_reservas @fecha numeric(15,0)
+as begin transaction
+
+declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha
+
+Update NENE_MALLOC.Reserva
+	set Reserva_Estado = 'Cancelada por No Show'
+	where Reserva_Estado = 'Correcta' or
+		  Reserva_Estado != 'Modificada' and
+		  Reserva_FechaIng < @fecha_correcta
+
+commit
+GO
+
 --GENERAR ESTADIA - ITEM FACTURA de Estadia
 
-create procedure NENE_MALLOC.generar_estadia @rph_id numeric(18,0)
+create procedure NENE_MALLOC.generar_estadia @rph_id numeric(18,0), @fecha numeric(15,0)
 as
 begin transaction
+
+if exists (select * from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id)
+	begin
+	rollback
+	raiserror('Reserva ya efectivizada.',16,1)
+	return
+	end
+
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha
+	
+if exists (select * from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Reserva r 
+							where rph.RPH_Id= @rph_id and
+								  rph.Reserva_Id = r.Reserva_Id and
+								  r.Reserva_FechaIng != @fecha_correcta)
+	begin
+	rollback
+	raiserror('Reserva ya cancelada.',16,1)
+	return
+	end
 
 	declare @id_item_fact numeric(18,0)
 	set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
@@ -1358,6 +1394,8 @@ begin transaction
 		 
 commit 
 GO
+
+-- Procedure para cancelar reservas por fecha 
 
 --AGREGAR CONSUMIBLE POR HABITACION - ITEM FACTURA de Consumible
 
