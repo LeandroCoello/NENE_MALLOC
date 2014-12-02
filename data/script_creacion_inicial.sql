@@ -214,7 +214,8 @@ GO
 
 CREATE TABLE NENE_MALLOC.Estadia(
 		Estadia_Id numeric(18,0) primary key references NENE_MALLOC.Item_Factura(Item_Factura_Id),
-		Estadia_RPH numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id)
+		Estadia_RPH numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id),
+		Estadia_Fecha_Salida datetime
 		)
 GO
 
