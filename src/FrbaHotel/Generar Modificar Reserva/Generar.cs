@@ -19,12 +19,15 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         DataTable hoteles;
         DataTable tiposHabs;
         Decimal precio = 0;
+        string regimenId;
         string clienteId;
+        string condi=null;
         public Generar(SQLConnector conec,String condicion)
         {
             InitializeComponent();
             coneccion = conec;
             inicializar();
+            condi = condicion;
         }
         public Generar(UsuarioLogueado userLog) {
             InitializeComponent();
@@ -57,7 +60,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 {
                     cBtiposHabs.Items.Add(dr["Tipo_Hab_Desc"].ToString());
                 }
-                dGVRegimen.DataSource = coneccion.consulta("SELECT R.Regimen_Desc,R.Regimen_Precio FROM NENE_MALLOC.Regimen R,NENE_MALLOC.Regimen_Por_Hotel RH WHERE R.Regimen_Id = RH.Regimen_Id AND R.Regimen_Inactivo = 0 AND RH.Hotel_Id = " + cBHoteles.SelectedItem);
+               dGVRegimen.DataSource = coneccion.consulta("SELECT R.Regimen_Id,R.Regimen_Desc,R.Regimen_Precio FROM NENE_MALLOC.Regimen R,NENE_MALLOC.Regimen_Por_Hotel RH WHERE R.Regimen_Id = RH.Regimen_Id AND R.Regimen_Inactivo = 0 AND RH.Hotel_Id = " + cBHoteles.SelectedItem);
             }
         }
 
@@ -97,8 +100,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                         BuscarCliente levantarBusqueda = new BuscarCliente(usuario,this);
                         this.Hide();
                         levantarBusqueda.ShowDialog();
-                        MessageBox.Show("El cliente que quiere la reserva es:"+clienteId);
-                        string query = "EXEC NENE_MALLOC.generar_reserva";
+                        finalizarReserva();
                     }
                 }
                 else {
@@ -114,7 +116,24 @@ namespace FrbaHotel.Generar_Modificar_Reserva
              
             }
         }
+        private void finalizarReserva() {
 
+            if (condi == null)
+            {
+                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema + "','" + inicioDateTimePicker1.Value.ToString("yyyy/MM/dd")
+                    + "','" + finDateTimePicker.Value.ToString("yyyy/MM/dd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + "," + usuario.conseguirIdUser() + ",@regimenId out" +
+                    " SELECT @idReserva";
+                DataTable idReser = coneccion.consulta(query);
+                MessageBox.Show("Reserva generada exitosamente.\n ID:" + idReser.ToString());
+            }
+            else {
+                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema + "','" + inicioDateTimePicker1.Value.ToString("yyyy/MM/dd")
+                         + "','" + finDateTimePicker.Value.ToString("yyyy/MM/dd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + ",NULL, @regimenId out" +
+                        " SELECT @idReserva";
+                DataTable idReser = coneccion.consulta(query);
+                MessageBox.Show("Reserva generada exitosamente.\n ID:" + idReser.ToString());
+            }
+        }
         private void limpiarTODO() {
             cBtiposHabs.SelectedIndex = -1;
             dataGridView1.DataSource = null;
@@ -147,6 +166,8 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             }
             foreach (DataGridViewRow dr in dGVRegimen.SelectedRows) {
                 valorRegimen = Convert.ToDecimal(dr.Cells["Regimen_Precio"].Value);
+                regimenId = Convert.ToString(dr.Cells["Regimen_Id"].Value);
+                
             }
 
             return (valorRegimen*porcHab)+recargaHotel;

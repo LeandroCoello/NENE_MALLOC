@@ -58,5 +58,14 @@ namespace FrbaHotel.Sistema
             }
             return hotelesId;
         }
+        public string conseguirIdUser() {
+            string ID = null;
+            string queryId = "SELECT U.Usuario_Id FROM NENE_MALLOC.Usuario U Where U.Usuario_name =" + nombreUsuario;
+            DataTable id = conexion.consulta(queryId);
+            foreach(DataRow row in id.Rows){
+                ID = row[0].ToString();
+            }
+            return ID;
+        }
     }
 }
