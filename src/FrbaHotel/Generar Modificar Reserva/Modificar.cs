@@ -1,21 +1,33 @@
 ﻿using System;
 using System.Configuration;
+
 using System.Collections.Generic;
+
 using System.ComponentModel;
+
 using System.Data;
 using System.Drawing;
+
 using System.Linq;
 using System.Text;
+
 using System.Windows.Forms;
+
 using FrbaHotel.Sistema;
+
 namespace FrbaHotel.Generar_Modificar_Reserva
 {
-    public partial class Modificar : Form
+    
+public partial class Modificar : Form
     {
-        SQLConnector conexion;
-        UsuarioLogueado usuario;
-        DataTable tiposHabs;
-        DataTable regimenes;
+        
+	SQLConnector conexion;
+        
+	UsuarioLogueado usuario;
+        
+	DataTable tiposHabs;
+        
+	DataTable regimenes;
         DateTime fechaSistema;
         string hotelID;
         string condi=null;
