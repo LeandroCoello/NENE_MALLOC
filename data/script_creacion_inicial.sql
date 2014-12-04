@@ -1317,7 +1317,7 @@ commit
 GO
 
 --CANCELAR RESERVAS (POR VENCIMIENTO DE FECHA)
-create procedure cancelar_reservas @fecha numeric(15,0)
+create procedure NENE_MALLOC.cancelar_reservas @fecha nvarchar(15)
 as begin transaction
 
 declare @fecha_correcta datetime
@@ -1332,9 +1332,9 @@ Update NENE_MALLOC.Reserva
 commit
 GO
 
---GENERAR ESTADIA - ITEM FACTURA de Estadia
+--CHECK IN - ITEM FACTURA de Estadia
 
-create procedure NENE_MALLOC.generar_estadia @rph_id numeric(18,0), @fecha numeric(15,0)
+create procedure NENE_MALLOC.check_in @rph_id numeric(18,0), @fecha nvarchar(15)
 as
 begin transaction
 
@@ -1394,6 +1394,60 @@ if exists (select * from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Res
 		where Habitacion_Id = @habitacion_id
 		 
 commit 
+GO
+
+--CHECK OUT - ITEM FACTURA de Estadia
+create procedure NENE_MALLOC.check_out @rph_id numeric(18,0), @fecha nvarchar(15)
+as 
+begin transaction
+
+	declare @fecha_correcta datetime
+	set @fecha_correcta = @fecha
+	
+	declare @fecha_fin datetime
+	set @fecha_fin = (select res.Reserva_FechaIng+res.Reserva_CantNoches from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Reserva res
+								where rph.Reserva_Id = res.Reserva_Id)
+
+	
+	if(@fecha_fin > @fecha_correcta)
+		begin
+					
+		declare @cant_noches_efectivizadas numeric(3,0)
+		set @cant_noches_efectivizadas = DATEDIFF(DAY,@fecha_correcta,@fecha_fin)
+		
+		declare @id_item_fact numeric(18,0)
+		set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
+
+		declare @cant_noches numeric(18,0)
+		set @cant_noches = (select r.Reserva_CantNoches 
+							from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+							where rph.RPH_Id = @rph_id and
+								  r.Reserva_Id = rph.Reserva_Id)
+		
+		declare @item_monto_nuevo numeric(18,2)
+		set @item_monto_nuevo = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches-@cant_noches_efectivizadas))
+		
+
+		Update NENE_MALLOC.Item_Factura
+			set Item_Factura_Monto = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches_efectivizadas))
+				where Item_Factura_Id = (select Estadia_Id from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id)
+		
+		Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
+						values (@id_item_fact, 1, @item_monto_nuevo)
+		
+
+		Insert into NENE_MALLOC.Estadia(Estadia_Id, Estadia_RPH) values(@id_item_fact,@rph_id)
+						
+		
+		end
+
+		Update NENE_MALLOC.Habitacion
+			set Habitacion_Ocupada = 0
+				where Habitacion_Id = (select rph.Habitacion_Id from NENE_MALLOC.Reserva_Por_Habitacion rph
+												 where rph.RPH_Id = @rph_id)
+		
+		
+commit
 GO
 
 -- Procedure para cancelar reservas por fecha 
@@ -1700,7 +1754,6 @@ _CANCELAR RESERVA
 _ALTA PERIODO DE CIERRE
 -ALTA HUESPED_POR_HABITACION
 -BAJA HUESPED_POR_HABITACION
--SETEAR EL CAMPO HABITACION_OCUPADA EN 0 A LA HORA DE REALIZAR EL CHECKOUT
 -VERIFICAR EL TIPO DE HABITACION DE LA RESERVA (USEN LA TABLA TIPO_HABITACION)
 
 */

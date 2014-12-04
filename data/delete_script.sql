@@ -45,7 +45,8 @@ drop procedure [NENE_MALLOC].[modificacion_cliente]
 drop procedure [NENE_MALLOC].[modificacion_hotel]
 drop procedure [NENE_MALLOC].[modificacion_habitacion]
 drop procedure [NENE_MALLOC].[modificacion_rol]
-drop procedure [NENE_MALLOC].[generar_estadia]
+drop procedure [NENE_MALLOC].[check_in]
+drop procedure [NENE_MALLOC].[check_out]
 drop procedure [NENE_MALLOC].[alta_consumible_habitacion]
 drop procedure [NENE_MALLOC].[generar_factura]
 drop procedure [NENE_MALLOC].[agregar_items]
@@ -53,7 +54,7 @@ drop procedure [NENE_MALLOC].[generar_reserva]
 drop procedure [NENE_MALLOC].[modificar_reserva]
 drop procedure [NENE_MALLOC].[agregar_tarjeta]
 drop procedure [NENE_MALLOC].[cancelar_reserva]
-
+drop procedure [NENE_MALLOC].[cancelar_reservas]
 GO
 
 drop function [NENE_MALLOC].[costo_estadia]
