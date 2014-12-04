@@ -157,7 +157,7 @@ GO
 CREATE TABLE NENE_MALLOC.Huesped_Por_Habitacion(
 		Huesped_Por_Habitacion_Id numeric(18,0) primary key identity, 
 		RPH_Id numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id) not null,
-		Cliente_Id numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id)not null
+		Cliente_nombre nvarchar(60) 
 		)
 GO
 
@@ -1396,7 +1396,7 @@ if exists (select * from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Res
 commit 
 GO
 
---CHECK OUT - ITEM FACTURA de Estadia
+--CHECK OUT - ITEM FACTURA de Estadia (cuando se retira antes de finalizarla)
 create procedure NENE_MALLOC.check_out @rph_id numeric(18,0), @fecha nvarchar(15)
 as 
 begin transaction
@@ -1446,6 +1446,8 @@ begin transaction
 				where Habitacion_Id = (select rph.Habitacion_Id from NENE_MALLOC.Reserva_Por_Habitacion rph
 												 where rph.RPH_Id = @rph_id)
 		
+		Delete from NENE_MALLOC.Huesped_Por_Habitacion
+			where RPH_Id = @rph_id
 		
 commit
 GO
