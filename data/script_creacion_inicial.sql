@@ -601,7 +601,7 @@ Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre, Datos_Apellido, Datos_Tel
 			values('James', 'Bond', 45855047, 'DNI', 35486987, 'admingral@gmail.com', 'Corrientes', 458, 5, 'A', 'Argentina', @fecha)
 			
 Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_Pass, Usuario_Datos)
-				values('admin','w23e', (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
+				values('admin','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7', (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
 
 Insert into NENE_MALLOC.Usuario_Por_Rol_Por_Hotel(Usuario_Id, Hotel_Id, Rol_Id)
 					values((select max(Usuario_Id) from NENE_MALLOC.Usuario),8,4)
