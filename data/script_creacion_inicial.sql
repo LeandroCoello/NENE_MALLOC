@@ -227,6 +227,7 @@ GO
 Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (1, 'Administrador')
 Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (2, 'Recepcionista')
 Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (3, 'Guest')
+Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (4, 'Administrador General')
 GO
 
 --FUNCIONALIDAD
@@ -299,6 +300,34 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,25)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,27)
+
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,1)		
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,2)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,3)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,4)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,5)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,6)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,7)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,8)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,9)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,10)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,11)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,12)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,13)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,14)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,15)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,16)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,17)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,18)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,19)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,20)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,21)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,22)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,23)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,24)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,25)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,26)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,27)
 GO
 
 --REGIMEN
@@ -561,6 +590,24 @@ update NENE_MALLOC.Factura
 						 where i.Item_Factura = Factura_Id)
 
 GO
+
+
+--Insert de Administrador General
+declare @fecha datetime
+set @fecha = '19880512'
+
+Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre, Datos_Apellido, Datos_Telefono, Datos_Tipo_Ident, Datos_Nro_Ident, Datos_Mail,
+							 Datos_Dom_Calle, Datos_Dom_Nro_Calle, Datos_Dom_Piso, Datos_Dom_Depto, Datos_Pais_Origen, Datos_Fecha_Nac)
+			values('James', 'Bond', 45855047, 'DNI', 35486987, 'admingral@gmail.com', 'Corrientes', 458, 5, 'A', 'Argentina', @fecha)
+			
+Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_Pass, Usuario_Datos)
+				values('admin','w23e', (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
+
+Insert into NENE_MALLOC.Usuario_Por_Rol_Por_Hotel(Usuario_Id, Hotel_Id, Rol_Id)
+					values((select max(Usuario_Id) from NENE_MALLOC.Usuario),8,4)
+GO
+
+
 			     
 --Insert de Administrador
 declare @fecha datetime
@@ -1744,7 +1791,7 @@ begin transaction
 		      
 commit
 GO
-		
+
 /*
 Los siguientes procedimientos/triggers no los desarrollamos así los hacen los chicos:
 -BAJA ROL
