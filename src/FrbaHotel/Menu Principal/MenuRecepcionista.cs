@@ -21,10 +21,10 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnGENRESER_Click(object sender, EventArgs e)
         {
-            Generar_Modificar_Reserva.Generar levantarGenerar = new FrbaHotel.Generar_Modificar_Reserva.Generar(userLog);
+            FrbaHotel.Generar_Modificar_Reserva.Generar levantarGenerar = new FrbaHotel.Generar_Modificar_Reserva.Generar(userLog);
             this.Hide();
             levantarGenerar.ShowDialog();
-            this.ShowDialog();
+            this.Show();
         }
 
         private void btnCancelReser_Click(object sender, EventArgs e)
@@ -74,5 +74,16 @@ namespace FrbaHotel.Menu_Principal
             levantarListado.ShowDialog();
             this.Show();
         }
+
+        private void btnModReser_Click(object sender, EventArgs e)
+        {
+            Generar_Modificar_Reserva.Modificar levantarModificar = new FrbaHotel.Generar_Modificar_Reserva.Modificar(userLog);
+            this.Hide();
+            levantarModificar.ShowDialog();
+            this.Show();
+
+        }
+
+
     }
 }

@@ -31,7 +31,6 @@ namespace FrbaHotel.Login
             else {
                 userLog.setHotelAsignado(Convert.ToDouble(cBHoteles.SelectedItem.ToString()));
                 Menu_Principal.CargaMenu cargarMenu = new FrbaHotel.Menu_Principal.CargaMenu(rolSeleccionado,userLog);
-                
                 this.Close();
             }
         }

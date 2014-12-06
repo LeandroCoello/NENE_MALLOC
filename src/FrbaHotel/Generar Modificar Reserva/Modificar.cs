@@ -1,39 +1,28 @@
-ï»¿using System;
+using System;
 using System.Configuration;
-
 using System.Collections.Generic;
-
 using System.ComponentModel;
-
 using System.Data;
 using System.Drawing;
-
 using System.Linq;
 using System.Text;
-
 using System.Windows.Forms;
-
 using FrbaHotel.Sistema;
-
 namespace FrbaHotel.Generar_Modificar_Reserva
 {
-    
-public partial class Modificar : Form
+    public partial class Modificar : Form
     {
-        
-	SQLConnector conexion;
-        
-	UsuarioLogueado usuario;
-        
-	DataTable tiposHabs;
-        
-	DataTable regimenes;
+        SQLConnector conexion;
+        UsuarioLogueado usuario;
+        DataTable regimenes;
+        DataTable fechas;
         DateTime fechaSistema;
         string hotelID;
         string condi=null;
         string clienteId;
-        string idTipoHab;
         string idregmin;
+        Decimal porc;
+        Decimal recargaHotel;
         public Modificar(SQLConnector conec,String condicion)
         {
             InitializeComponent();
@@ -53,17 +42,9 @@ public partial class Modificar : Form
             dateTimePicker2.Value = fechaSistema.AddDays(1);
         }
 
-        private void btnCambiarTipoHab_Click(object sender, EventArgs e)
-        {
-            Tipos_Habitaciones levantarTipos = new Tipos_Habitaciones(txtHabActual.Text,tiposHabs);
-            this.Hide();
-            levantarTipos.ShowDialog();
-            this.Show();
-        }
-
         private void btnCambiarRegimen_Click(object sender, EventArgs e)
         {
-            Regimenes levantarRegimenes = new Regimenes(txtCodReser.Text,regimenes,this);
+            Regimenes levantarRegimenes = new Regimenes(txtRegimenActual.Text,regimenes,this);
             this.Hide();
             levantarRegimenes.ShowDialog();
             this.Show();
@@ -76,16 +57,22 @@ public partial class Modificar : Form
                 MessageBox.Show("Ingrese un codigo reserva");
             }
             else {
-                string query = "SELECT H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc,R.Reserva_Regimen FROM NENE_MALLOC.Reserva R, NENE_MALLOC.Reserva_Por_Habitacion RPH,NENE_MALLOC.Habitacion H WHERE H.Habitacion_Id = RPH.Habitacion_Id AND RPH.Reserva_Id =" + txtCodReser.Text+"AND R.Reserva_Id ="+txtCodReser.Text;
-                hotelID = dataGridView1.Rows[0].Cells["H.Habitacion_Hotel"].Value.ToString();
-                setClienteIdyRegimenId();
+                string query = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc,R.Reserva_Regimen FROM NENE_MALLOC.Reserva R, NENE_MALLOC.Reserva_Por_Habitacion RPH,NENE_MALLOC.Habitacion H WHERE H.Habitacion_Id = RPH.Habitacion_Id AND RPH.Reserva_Id =" + txtCodReser.Text+"AND R.Reserva_Id ="+txtCodReser.Text;
                 dataGridView1.DataSource = conexion.consulta(query);
-                txtRegimenActual.Text = dataGridView1.Rows[0].Cells["R.Reserva_Regimen"].Value.ToString();
-                txtHabActual.Text = dataGridView1.Rows[0].Cells["H.Habitacion_Tipo"].Value.ToString();
-                string habitacionesDisp = "SELECT H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc FROM NENE_MALLOC.Habitacion H WHERE H.Habitacion_Ocupada = 0 AND H.Habitacion_Cerrada = 0 AND H.Habitacion_Hotel = "+hotelID;
+                hotelID = dataGridView1.Rows[0].Cells["Habitacion_Hotel"].Value.ToString();
+                DataTable porcs = conexion.consulta("SELECT Tipo_Hab_Porc FROM NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Id = " + dataGridView1.Rows[0].Cells["Habitacion_Tipo"].Value.ToString());
+                porc = Convert.ToDecimal(porcs.Rows[0][0]);
+                DataTable recargas = conexion.consulta("SELECT Hotel_Recarga_Estrella FROM NENE_MALLOC.Hotel WHERE Hotel_Id ="+hotelID);
+                recargaHotel = Convert.ToDecimal(recargas.Rows[0][0]);
+                setClienteIdyRegimenId();              
+                txtRegimenActual.Text = dataGridView1.Rows[0].Cells["Reserva_Regimen"].Value.ToString();
+                dataGridView1.Columns.Remove("Reserva_Regimen");
+                string habitacionesDisp = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc FROM NENE_MALLOC.Habitacion H WHERE H.Habitacion_Ocupada = 0 AND H.Habitacion_Cerrada = 0 AND H.Habitacion_Hotel = "+hotelID;
                 dataGridView2.DataSource = conexion.consulta(habitacionesDisp);
-                tiposHabs = conexion.consulta("SELECT TH.Tipo_Hab_Desc,TH.Tipo_Hab_Porc FROM NENE_MALLOC.Habitacion H,NENE_MALLOC.Tipo_Habitacion TH WHERE H.Habitacion_Tipo = TH.Tipo_Hab_Id AND H.Habitacion_Hotel = " + hotelID+" GROUP BY TH.Tipo_Hab_Desc");
                 regimenes = conexion.consulta("SELECT R.Regimen_Id,R.Regimen_Desc,R.Regimen_Precio FROM NENE_MALLOC.Regimen R,NENE_MALLOC.Regimen_Por_Hotel RH WHERE R.Regimen_Id = RH.Regimen_Id AND R.Regimen_Inactivo = 0 AND RH.Hotel_Id = " + hotelID);
+                fechas = conexion.consulta("SELECT R.Reserva_FechaIng FROM NENE_MALLOC.Reserva R WHERE R.Reserva_Id ="+txtCodReser.Text);
+                dateTimePicker1.Value = Convert.ToDateTime(fechas.Rows[0][0].ToString());
+                dateTimePicker2.Value = dateTimePicker1.Value.AddDays(1);
             }
         }
 
@@ -93,44 +80,54 @@ public partial class Modificar : Form
         {
             if (dataGridView1.SelectedRows.Count >= 1) {
                 foreach (DataGridViewRow dr in dataGridView1.SelectedRows) {
+                    string deleteQuery = "DELETE FROM NENE_MALLOC.Reserva_Por_Habitacion WHERE Reserva_Id ="+txtCodReser.Text+" AND Habitacion_Id =" + dr.Cells["Habitacion_Id"].Value.ToString();
+                    MessageBox.Show(deleteQuery);
                     dataGridView1.Rows.RemoveAt(dr.Index);
+                    conexion.executeOnly(deleteQuery);
                 }
             }
         }
         private void btnAgregarHab_Click(object sender, EventArgs e)
         {
+            DataTable reservadas = dataGridView1.DataSource as DataTable;
+            DataTable agregar = new DataTable();
             if (dataGridView2.SelectedRows.Count >= 1)
             {
                 foreach (DataGridViewRow dr in dataGridView2.SelectedRows)
                 {
-                    dataGridView1.Rows.Add(dr);
+                    DataRow row = (dr.DataBoundItem as DataRowView).Row;
+                    reservadas.ImportRow(row);
+                    string miniQuery = "INSERT INTO NENE_MALLOC.Reserva_Por_Habitacion VALUES(" + txtCodReser.Text + "," + dr.Cells["Habitacion_Id"].Value.ToString() + ")";
+                    conexion.executeOnly(miniQuery);
                     dataGridView2.Rows.RemoveAt(dr.Index);
                 }
             }
+            dataGridView1.DataSource = reservadas;
         }
-
+        private DialogResult confirmarModificacion(Decimal unPrecio)
+        {
+            DialogResult resultado = MessageBox.Show("La modificacion cuesta: " + unPrecio.ToString() + " u$s.\n ¿Desea confimar ?", "confirmacion", MessageBoxButtons.YesNo);
+            return resultado;
+        }
         private void btnModificarReser_Click(object sender, EventArgs e)
         {
-            if (condi == null)
-            {
-                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.modificar_reserva '" + fechaSistema + "','" + dateTimePicker1.Value.ToString("yyyy/MM/dd")
-                    + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + "," + hotelID + "," + usuario.conseguirIdUser() + ",@regimenId out" +
-                    " SELECT @idReserva";
-                DataTable idReser = conexion.consulta(query);
-                MessageBox.Show("Reserva modificada exitosamente.");
-            }
-            else
-            {
-                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.modificar_reserva '" + fechaSistema + "','" + dateTimePicker1.Value.ToString("yyyy/MM/dd")
-                         + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + "," + hotelID + ",NULL, @regimenId out" +
-                        " SELECT @idReserva";
-                DataTable idReser = conexion.consulta(query);
-                MessageBox.Show("Reserva modificada exitosamente.");
-            }
-        }
-        private void btnCancelar_Click(object sender, EventArgs e)
-        {
-            this.Close();
+            Decimal precio = this.calcularPrecio();
+            MessageBox.Show("La reserva ahora va a costar:"+precio.ToString());
+                if (condi == null)
+                {
+                    string query = "EXEC NENE_MALLOC.modificar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + dateTimePicker1.Value.ToString("yyyyMMdd")
+                        + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + "," + usuario.conseguirIdUser() +","+txtCodReser.Text+","+ hotelID + ",";
+                    /*@fecha_modificacion nvarchar(15), @fecha_desde nvarchar(15),@fecha_hasta nvarchar(15), @tipo_regimen numeric(18,0), @id_cliente numeric(18,0), @user_reservador numeric(18,0),@reserva_id numeric(18,0), @id_hotel numeric(18,0)*/
+                    DataTable idReser = conexion.consulta(query);
+                    MessageBox.Show("Reserva modificada exitosamente.");
+                }
+                else
+                {
+                    string query = "EXEC NENE_MALLOC.modificar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + dateTimePicker1.Value.ToString("yyyyMMdd")
+                        + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + ",NULL," + txtCodReser.Text + "," + hotelID + ",";
+                    DataTable idReser = conexion.consulta(query);
+                    MessageBox.Show("Reserva modificada exitosamente.");
+                }
         }
         private void setClienteIdyRegimenId() {
             string query = "SELECT R.Reserva_Cliente,R.Reserva_Regimen FROM NENE_MALLOC.Reserva R WHERE R.Reserva_Id =" + txtCodReser.Text;
@@ -142,35 +139,15 @@ public partial class Modificar : Form
         }
         public void setearNuevoRegimen(DataGridViewRow row) {
             idregmin = row.Cells["Regimen_Id"].Value.ToString();
-            txtRegimenActual.Text = row.Cells["Regimen_Desc"].Value.ToString();
+            txtRegimenActual.Text = row.Cells["Regimen_Id"].Value.ToString();
         }
-        /*private Decimal calcularPrecio()
+       private Decimal calcularPrecio()
         {
-            Decimal porcHab = 0;
-            Decimal recargaHotel = 0;
-            Decimal valorRegimen = 0;
-            foreach (DataRow dr in tiposHabs.Rows)
-            {
-                if (dr["Tipo_Hab_Desc"].ToString() == cBtiposHabs.SelectedItem.ToString())
-                {
-                    porcHab = Convert.ToDecimal(dr["Tipo_Hab_Porc"]);
-                }
-            }
-            foreach (DataRow dr in hoteles.Rows)
-            {
-                if (dr["Hotel_ID"].ToString() == cBHoteles.SelectedItem.ToString())
-                {
-                    recargaHotel = Convert.ToDecimal(dr["Hotel_Recarga_Estrella"]);
-                }
-            }
-            foreach (DataGridViewRow dr in dGVRegimen.SelectedRows)
-            {
-                valorRegimen = Convert.ToDecimal(dr.Cells["Regimen_Precio"].Value);
-                regimenId = Convert.ToString(dr.Cells["Regimen_Id"].Value);
+            DataTable regimen = conexion.consulta("SELECT Regimen_Precio FROM NENE_MALLOC.Regimen WHERE Regimen_Id =" + idregmin); 
+           Decimal valorRegimen = Convert.ToDecimal(regimen.Rows[0][0]);
+           
 
-            }
-
-            return (valorRegimen * porcHab) + recargaHotel;
-        }*/
+            return (valorRegimen * porc) + recargaHotel;
+        }
     }
 }

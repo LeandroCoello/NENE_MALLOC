@@ -19,14 +19,6 @@ namespace FrbaHotel.Menu_Principal
             conexion = conec;
         }
 
-        private void btnModificar_Click(object sender, EventArgs e)
-        {
-            Generar_Modificar_Reserva.Modificar levantarGenMod = new FrbaHotel.Generar_Modificar_Reserva.Modificar(conexion,"guest");
-            this.Hide();
-            levantarGenMod.ShowDialog();
-            this.ShowDialog();
-        }
-
         private void bnCancelGuest_Click(object sender, EventArgs e)
         {
             Cancelar_Reserva.CancelReser levantarCancel = new FrbaHotel.Cancelar_Reserva.CancelReser(conexion,"guest");
@@ -41,6 +33,14 @@ namespace FrbaHotel.Menu_Principal
             Generar_Modificar_Reserva.Generar levantarCancel = new FrbaHotel.Generar_Modificar_Reserva.Generar(conexion, "guest");
             this.Hide();
             levantarCancel.ShowDialog();
+            this.Show();
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            Generar_Modificar_Reserva.Modificar levantarGenMod = new FrbaHotel.Generar_Modificar_Reserva.Modificar(conexion, "guest");
+            this.Hide();
+            levantarGenMod.ShowDialog();
             this.Show();
         }
     }

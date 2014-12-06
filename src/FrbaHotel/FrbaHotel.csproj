@@ -402,6 +402,9 @@
     <EmbeddedResource Include="Generar Modificar Reserva\Modificar.resx">
       <DependentUpon>Modificar.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Generar Modificar Reserva\Regimenes.resx">
+      <DependentUpon>Regimenes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Listado Estadistico\ListEstadistico.resx">
       <DependentUpon>ListEstadistico.cs</DependentUpon>
     </EmbeddedResource>

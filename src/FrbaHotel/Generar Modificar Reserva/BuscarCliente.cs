@@ -53,8 +53,9 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 e.RowIndex >= 0)
             {
 
-                clienteId = dataGridView1.Rows[e.RowIndex].Cells["C.Cliente_Id"].Value.ToString();
+                clienteId = dataGridView1.Rows[e.RowIndex].Cells["Cliente_Id"].Value.ToString();
                 generarForm.setClienteId(clienteId);
+                generarForm.Show();
                 this.Close();
                 
             }
@@ -66,6 +67,5 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             txtNDoc.Text = "";
             cBTipoDoc.SelectedIndex = -1;
         }
-
     }
 }

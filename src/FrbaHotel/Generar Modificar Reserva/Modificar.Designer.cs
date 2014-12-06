@@ -35,9 +35,6 @@
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtHabActual = new System.Windows.Forms.TextBox();
-            this.btnCambiarTipoHab = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.txtRegimenActual = new System.Windows.Forms.TextBox();
             this.btnCambiarRegimen = new System.Windows.Forms.Button();
@@ -48,7 +45,6 @@
             this.btnQuitarHab = new System.Windows.Forms.Button();
             this.btnAgregarHab = new System.Windows.Forms.Button();
             this.btnModificarReser = new System.Windows.Forms.Button();
-            this.btnCancelar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
@@ -111,37 +107,10 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Fecha fin:";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(239, 75);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(114, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Tipo Habitacion actual";
-            // 
-            // txtHabActual
-            // 
-            this.txtHabActual.Location = new System.Drawing.Point(359, 72);
-            this.txtHabActual.Name = "txtHabActual";
-            this.txtHabActual.ReadOnly = true;
-            this.txtHabActual.Size = new System.Drawing.Size(100, 20);
-            this.txtHabActual.TabIndex = 8;
-            // 
-            // btnCambiarTipoHab
-            // 
-            this.btnCambiarTipoHab.Location = new System.Drawing.Point(474, 70);
-            this.btnCambiarTipoHab.Name = "btnCambiarTipoHab";
-            this.btnCambiarTipoHab.Size = new System.Drawing.Size(75, 23);
-            this.btnCambiarTipoHab.TabIndex = 9;
-            this.btnCambiarTipoHab.Text = "Cambiar";
-            this.btnCambiarTipoHab.UseVisualStyleBackColor = true;
-            this.btnCambiarTipoHab.Click += new System.EventHandler(this.btnCambiarTipoHab_Click);
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(239, 114);
+            this.label5.Location = new System.Drawing.Point(239, 75);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(100, 13);
             this.label5.TabIndex = 10;
@@ -149,7 +118,7 @@
             // 
             // txtRegimenActual
             // 
-            this.txtRegimenActual.Location = new System.Drawing.Point(359, 111);
+            this.txtRegimenActual.Location = new System.Drawing.Point(359, 72);
             this.txtRegimenActual.Name = "txtRegimenActual";
             this.txtRegimenActual.ReadOnly = true;
             this.txtRegimenActual.Size = new System.Drawing.Size(100, 20);
@@ -157,7 +126,7 @@
             // 
             // btnCambiarRegimen
             // 
-            this.btnCambiarRegimen.Location = new System.Drawing.Point(474, 109);
+            this.btnCambiarRegimen.Location = new System.Drawing.Point(474, 70);
             this.btnCambiarRegimen.Name = "btnCambiarRegimen";
             this.btnCambiarRegimen.Size = new System.Drawing.Size(75, 23);
             this.btnCambiarRegimen.TabIndex = 12;
@@ -179,13 +148,13 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(16, 166);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(533, 74);
+            this.dataGridView1.Size = new System.Drawing.Size(874, 185);
             this.dataGridView1.TabIndex = 14;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 270);
+            this.label7.Location = new System.Drawing.Point(9, 402);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(96, 13);
             this.label7.TabIndex = 15;
@@ -194,14 +163,14 @@
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(16, 286);
+            this.dataGridView2.Location = new System.Drawing.Point(12, 418);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(533, 74);
+            this.dataGridView2.Size = new System.Drawing.Size(874, 158);
             this.dataGridView2.TabIndex = 16;
             // 
             // btnQuitarHab
             // 
-            this.btnQuitarHab.Location = new System.Drawing.Point(474, 246);
+            this.btnQuitarHab.Location = new System.Drawing.Point(815, 357);
             this.btnQuitarHab.Name = "btnQuitarHab";
             this.btnQuitarHab.Size = new System.Drawing.Size(75, 23);
             this.btnQuitarHab.TabIndex = 17;
@@ -211,7 +180,7 @@
             // 
             // btnAgregarHab
             // 
-            this.btnAgregarHab.Location = new System.Drawing.Point(474, 366);
+            this.btnAgregarHab.Location = new System.Drawing.Point(815, 582);
             this.btnAgregarHab.Name = "btnAgregarHab";
             this.btnAgregarHab.Size = new System.Drawing.Size(75, 23);
             this.btnAgregarHab.TabIndex = 18;
@@ -221,7 +190,7 @@
             // 
             // btnModificarReser
             // 
-            this.btnModificarReser.Location = new System.Drawing.Point(16, 404);
+            this.btnModificarReser.Location = new System.Drawing.Point(16, 593);
             this.btnModificarReser.Name = "btnModificarReser";
             this.btnModificarReser.Size = new System.Drawing.Size(75, 23);
             this.btnModificarReser.TabIndex = 19;
@@ -229,22 +198,11 @@
             this.btnModificarReser.UseVisualStyleBackColor = true;
             this.btnModificarReser.Click += new System.EventHandler(this.btnModificarReser_Click);
             // 
-            // btnCancelar
-            // 
-            this.btnCancelar.Location = new System.Drawing.Point(115, 404);
-            this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.Size = new System.Drawing.Size(75, 23);
-            this.btnCancelar.TabIndex = 20;
-            this.btnCancelar.Text = "Cancelar";
-            this.btnCancelar.UseVisualStyleBackColor = true;
-            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
-            // 
             // Modificar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(575, 445);
-            this.Controls.Add(this.btnCancelar);
+            this.ClientSize = new System.Drawing.Size(902, 628);
             this.Controls.Add(this.btnModificarReser);
             this.Controls.Add(this.btnAgregarHab);
             this.Controls.Add(this.btnQuitarHab);
@@ -255,9 +213,6 @@
             this.Controls.Add(this.btnCambiarRegimen);
             this.Controls.Add(this.txtRegimenActual);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.btnCambiarTipoHab);
-            this.Controls.Add(this.txtHabActual);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.dateTimePicker2);
@@ -283,9 +238,6 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txtHabActual;
-        private System.Windows.Forms.Button btnCambiarTipoHab;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtRegimenActual;
         private System.Windows.Forms.Button btnCambiarRegimen;
@@ -296,6 +248,5 @@
         private System.Windows.Forms.Button btnQuitarHab;
         private System.Windows.Forms.Button btnAgregarHab;
         private System.Windows.Forms.Button btnModificarReser;
-        private System.Windows.Forms.Button btnCancelar;
     }
 }

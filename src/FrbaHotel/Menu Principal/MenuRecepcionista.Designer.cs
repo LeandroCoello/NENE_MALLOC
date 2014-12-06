@@ -46,6 +46,7 @@
             this.btnGENRESER.TabIndex = 0;
             this.btnGENRESER.Text = "Generar Reserva";
             this.btnGENRESER.UseVisualStyleBackColor = true;
+            this.btnGENRESER.Click += new System.EventHandler(this.btnGENRESER_Click);
             // 
             // btnCancelReser
             // 
@@ -115,6 +116,7 @@
             this.btnModReser.TabIndex = 7;
             this.btnModReser.Text = "Modificar Reserva";
             this.btnModReser.UseVisualStyleBackColor = true;
+            this.btnModReser.Click += new System.EventHandler(this.btnModReser_Click);
             // 
             // MenuRecepcionista
             // 

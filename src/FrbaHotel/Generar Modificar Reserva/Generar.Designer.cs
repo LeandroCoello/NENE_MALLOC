@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.label6 = new System.Windows.Forms.Label();
-            this.cBtiposHabs = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cBHoteles = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,28 +47,11 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(260, 45);
+            this.label6.Location = new System.Drawing.Point(258, 12);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(76, 13);
             this.label6.TabIndex = 13;
             this.label6.Text = "Tipo Regimen:";
-            // 
-            // cBtiposHabs
-            // 
-            this.cBtiposHabs.FormattingEnabled = true;
-            this.cBtiposHabs.Location = new System.Drawing.Point(343, 9);
-            this.cBtiposHabs.Name = "cBtiposHabs";
-            this.cBtiposHabs.Size = new System.Drawing.Size(204, 21);
-            this.cBtiposHabs.TabIndex = 12;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(260, 12);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(85, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "Tipo Habitación:";
             // 
             // label1
             // 
@@ -139,9 +120,9 @@
             // dGVRegimen
             // 
             this.dGVRegimen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGVRegimen.Location = new System.Drawing.Point(272, 61);
+            this.dGVRegimen.Location = new System.Drawing.Point(272, 28);
             this.dGVRegimen.Name = "dGVRegimen";
-            this.dGVRegimen.Size = new System.Drawing.Size(275, 61);
+            this.dGVRegimen.Size = new System.Drawing.Size(275, 106);
             this.dGVRegimen.TabIndex = 24;
             // 
             // inicioDateTimePicker1
@@ -184,8 +165,6 @@
             this.Controls.Add(this.cBHoteles);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.cBtiposHabs);
-            this.Controls.Add(this.label5);
             this.Name = "Generar";
             this.Text = "Generar";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -198,8 +177,6 @@
         #endregion
 
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.ComboBox cBtiposHabs;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cBHoteles;
         private System.Windows.Forms.Label label2;
