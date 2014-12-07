@@ -157,7 +157,7 @@ GO
 CREATE TABLE NENE_MALLOC.Huesped_Por_Habitacion(
 		Huesped_Por_Habitacion_Id numeric(18,0) primary key identity, 
 		RPH_Id numeric(18,0) references NENE_MALLOC.Reserva_Por_Habitacion(RPH_Id) not null,
-		Cliente_nombre nvarchar(60) 
+		Cliente_Id numeric(18,0) references NENE_MALLOC.Cliente(Cliente_Id) not null 
 		)
 GO
 
@@ -1381,7 +1381,7 @@ GO
 
 --CHECK IN - ITEM FACTURA de Estadia
 
-create procedure NENE_MALLOC.check_in @rph_id numeric(18,0), @fecha nvarchar(15)
+create procedure NENE_MALLOC.check_in @rph_id numeric(18,0), @fecha_entrada nvarchar(15)
 as
 begin transaction
 
@@ -1393,7 +1393,7 @@ if exists (select * from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id)
 	end
 
 	declare @fecha_correcta datetime
-	set @fecha_correcta = @fecha
+	set @fecha_correcta = @fecha_entrada
 	
 if exists (select * from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Reserva r 
 							where rph.RPH_Id= @rph_id and
@@ -1444,12 +1444,19 @@ commit
 GO
 
 --CHECK OUT - ITEM FACTURA de Estadia (cuando se retira antes de finalizarla)
-create procedure NENE_MALLOC.check_out @rph_id numeric(18,0), @fecha nvarchar(15)
+create procedure NENE_MALLOC.check_out @rph_id numeric(18,0), @fecha_salida nvarchar(15)
 as 
 begin transaction
 
+if (select top 1 Estadia_Fecha_Salida from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id) is not null
+	begin
+	rollback
+	raiserror('Ya se registró el egreso de esa Habitación.',16,1)
+	return
+	end
+
 	declare @fecha_correcta datetime
-	set @fecha_correcta = @fecha
+	set @fecha_correcta = @fecha_salida
 	
 	declare @fecha_fin datetime
 	set @fecha_fin = (select res.Reserva_FechaIng+res.Reserva_CantNoches from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Reserva res
@@ -1459,33 +1466,46 @@ begin transaction
 	if(@fecha_fin > @fecha_correcta)
 		begin
 					
-		declare @cant_noches_efectivizadas numeric(3,0)
-		set @cant_noches_efectivizadas = DATEDIFF(DAY,@fecha_correcta,@fecha_fin)
-		
-		declare @id_item_fact numeric(18,0)
-		set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
+			declare @cant_noches_efectivizadas numeric(3,0)
+			set @cant_noches_efectivizadas = DATEDIFF(DAY,@fecha_correcta,@fecha_fin)
+			
+			declare @id_item_fact numeric(18,0)
+			set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
 
-		declare @cant_noches numeric(18,0)
-		set @cant_noches = (select r.Reserva_CantNoches 
-							from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
-							where rph.RPH_Id = @rph_id and
-								  r.Reserva_Id = rph.Reserva_Id)
-		
-		declare @item_monto_nuevo numeric(18,2)
-		set @item_monto_nuevo = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches-@cant_noches_efectivizadas))
-		
+			declare @cant_noches numeric(18,0)
+			set @cant_noches = (select r.Reserva_CantNoches 
+								from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+								where rph.RPH_Id = @rph_id and
+									  r.Reserva_Id = rph.Reserva_Id)
+			
+			declare @item_monto_nuevo numeric(18,2)
+			set @item_monto_nuevo = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches-@cant_noches_efectivizadas))
+			
 
-		Update NENE_MALLOC.Item_Factura
-			set Item_Factura_Monto = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches_efectivizadas))
-				where Item_Factura_Id = (select Estadia_Id from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id)
+			Update NENE_MALLOC.Item_Factura
+				set Item_Factura_Monto = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches_efectivizadas))
+					where Item_Factura_Id = (select Estadia_Id from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id)
+			
+			Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
+							values (@id_item_fact, 1, @item_monto_nuevo)
+			
+			Update NENE_MALLOC.Estadia 
+				set Estadia_Fecha_Salida = @fecha_correcta
+					where Estadia_RPH = @rph_id
+			
+			Insert into NENE_MALLOC.Estadia(Estadia_Id, Estadia_RPH,Estadia_Fecha_Salida) 
+							values(@id_item_fact,@rph_id,@fecha_correcta)
+							
 		
-		Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
-						values (@id_item_fact, 1, @item_monto_nuevo)
+		end
 		
-
-		Insert into NENE_MALLOC.Estadia(Estadia_Id, Estadia_RPH) values(@id_item_fact,@rph_id)
-						
-		
+	else --cuando se retira en la fecha
+		begin 
+			
+			Update NENE_MALLOC.Estadia 
+			set Estadia_Fecha_Salida = @fecha_correcta
+				where Estadia_RPH = @rph_id
+				
 		end
 
 		Update NENE_MALLOC.Habitacion
