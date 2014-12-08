@@ -38,7 +38,6 @@ CREATE TABLE NENE_MALLOC.Datos_Personales(
 		Datos_Dom_Nro_Calle numeric(18,0),
 		Datos_Dom_Piso numeric(18,0),
 		Datos_Dom_Depto nvarchar(50),
-		Datos_Pais_Origen nvarchar(50),
 		Datos_Fecha_Nac datetime
 		)
 GO
@@ -226,8 +225,7 @@ GO
 
 Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (1, 'Administrador')
 Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (2, 'Recepcionista')
-Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (3, 'Guest')
-Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (4, 'Administrador General')
+Insert into NENE_MALLOC.Rol(Rol_Id, Rol_Desc) values (3, 'Administrador General')
 GO
 
 --FUNCIONALIDAD
@@ -279,7 +277,6 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,9)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,10)	
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,10)	
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,11)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,11)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,12)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,13)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,14)
@@ -290,9 +287,7 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,18)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,19)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,20)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,21)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,21)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,22)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,22)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,23)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,24)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,25)
@@ -301,33 +296,33 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,27)
 
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,1)		
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,2)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,3)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,4)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,5)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,6)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,7)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,8)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,9)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,10)	
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,11)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,12)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,13)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,14)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,15)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,16)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,17)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,18)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,19)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,20)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,21)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,22)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,23)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,24)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,25)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,26)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (4,27)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,1)		
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,2)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,3)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,4)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,5)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,6)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,7)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,8)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,9)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,10)	
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,11)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,12)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,13)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,14)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,15)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,16)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,17)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,18)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,19)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,20)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,21)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,22)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,23)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,24)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,25)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,26)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,27)
 GO
 
 --REGIMEN
@@ -597,8 +592,8 @@ declare @fecha datetime
 set @fecha = '19880512'
 
 Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre, Datos_Apellido, Datos_Telefono, Datos_Tipo_Ident, Datos_Nro_Ident, Datos_Mail,
-							 Datos_Dom_Calle, Datos_Dom_Nro_Calle, Datos_Dom_Piso, Datos_Dom_Depto, Datos_Pais_Origen, Datos_Fecha_Nac)
-			values('James', 'Bond', 45855047, 'DNI', 35486987, 'admingral@gmail.com', 'Corrientes', 458, 5, 'A', 'Argentina', @fecha)
+							 Datos_Dom_Calle, Datos_Dom_Nro_Calle, Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac)
+			values('James', 'Bond', 45855047, 'DNI', 35486987, 'admingral@gmail.com', 'Corrientes', 458, 5, 'A', @fecha)
 			
 Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_Pass, Usuario_Datos)
 				values('admin','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7', (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
@@ -614,8 +609,8 @@ declare @fecha datetime
 set @fecha = '19880512'
 
 Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre, Datos_Apellido, Datos_Telefono, Datos_Tipo_Ident, Datos_Nro_Ident, Datos_Mail,
-							 Datos_Dom_Calle, Datos_Dom_Nro_Calle, Datos_Dom_Piso, Datos_Dom_Depto, Datos_Pais_Origen, Datos_Fecha_Nac)
-			values('Admin', 'Rodriguez', 45895047, 'DNI', 25486987, 'adminrod@gmail.com', 'Corrientes', 458, 5, 'A', 'Argentina', @fecha)
+							 Datos_Dom_Calle, Datos_Dom_Nro_Calle, Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac)
+			values('Admin', 'Rodriguez', 45895047, 'DNI', 25486987, 'adminrod@gmail.com', 'Corrientes', 458, 5, 'A', @fecha)
 			
 Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_Pass, Usuario_Datos)
 				values('AdminRodriguez','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
@@ -629,8 +624,8 @@ declare @fecha datetime
 set @fecha = '19880512'
 
 Insert into NENE_MALLOC.Datos_Personales(Datos_Nombre, Datos_Apellido, Datos_Telefono, Datos_Tipo_Ident, Datos_Nro_Ident, Datos_Mail,
-							 Datos_Dom_Calle, Datos_Dom_Nro_Calle, Datos_Dom_Piso, Datos_Dom_Depto, Datos_Pais_Origen, Datos_Fecha_Nac)
-			values('Recep', 'Rodriguez', 45896047, 'DNI', 25586987, 'receprod@gmail.com', 'Corrientes', 458, 5, 'A', 'Argentina', @fecha)
+							 Datos_Dom_Calle, Datos_Dom_Nro_Calle, Datos_Dom_Piso, Datos_Dom_Depto, Datos_Fecha_Nac)
+			values('Recep', 'Rodriguez', 45896047, 'DNI', 25586987, 'receprod@gmail.com', 'Corrientes', 458, 5, 'A', @fecha)
 			
 Insert into NENE_MALLOC.Usuario(Usuario_name, Usuario_Pass, Usuario_Datos)
 				values('RecepRodriguez','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', (select MAX(Datos_Id) from NENE_MALLOC.Datos_Personales))
