@@ -150,7 +150,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
              DialogResult resultado = MessageBox.Show("La reserva cuesta: " + unPrecio.ToString() + " u$s.\n ¿Desea confimar ?", "confirmacion", MessageBoxButtons.YesNo);
              return resultado;
         }
-        private DialogResult clienteEnSistema() {
+        public DialogResult clienteEnSistema() {
             return MessageBox.Show("¿Esta registrado en nuestra cadena hotelera?","confirmacion",MessageBoxButtons.YesNo);
         }
         private Decimal calcularPrecio() {

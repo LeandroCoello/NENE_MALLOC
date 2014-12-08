@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using FrbaHotel.Sistema;
+using FrbaHotel.Registrar_Estadia;
 
 namespace FrbaHotel.Generar_Modificar_Reserva
 {
@@ -15,6 +16,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         UsuarioLogueado usuario;
         string clienteId;
         Generar generarForm;
+        Ingreso_Egreso ingreso;
         public BuscarCliente(UsuarioLogueado userLog,Generar genForm)
         {
             InitializeComponent();
@@ -23,6 +25,18 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             cBTipoDoc.Items.Add("Pasaporte");
             cBTipoDoc.Items.Add("Cedula");
             generarForm = genForm;
+            ingreso = null;
+        }
+        public BuscarCliente(UsuarioLogueado userLog, Ingreso_Egreso ingForm)
+        {
+            InitializeComponent();
+            usuario = userLog;
+            ingreso = ingForm;
+            generarForm = null;
+            cBTipoDoc.Items.Add("DNI");
+            cBTipoDoc.Items.Add("Pasaporte");
+            cBTipoDoc.Items.Add("Cedula");
+            
         }
 
         private void btnBusquedaClie_Click(object sender, EventArgs e)
@@ -54,10 +68,20 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             {
 
                 clienteId = dataGridView1.Rows[e.RowIndex].Cells["Cliente_Id"].Value.ToString();
-                generarForm.setClienteId(clienteId);
-                generarForm.Show();
+                cargarId(clienteId);
                 this.Close();
                 
+            }
+        }
+        public void cargarId(string id) {
+            if (ingreso == null)
+            {
+                generarForm.setClienteId(id);
+                generarForm.Show();
+            }
+            else {
+                ingreso.setClienteID(id);
+                ingreso.Show();
             }
         }
 

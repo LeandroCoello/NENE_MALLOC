@@ -19,9 +19,17 @@ namespace FrbaHotel.Login
             InitializeComponent();
             rolSeleccionado = selected;
             userLog = usuario;
-            foreach(var hotelId in userLog.conseguirHotelesId())
-            {
+            if (selected == "Administrador General") {
+                string hotelesID = "SELECT Hotel_Id FROM NENE_MALLOC.Hotel";
+                foreach (DataRow rowId in userLog.getConexion().consulta(hotelesID).Rows)
+                {
+                    cBHoteles.Items.Add(rowId["Hotel_Id"].ToString());
+                }
+            }else{
+                foreach(var hotelId in userLog.conseguirHotelesId())
+                {
                 cBHoteles.Items.Add(hotelId);
+                }
             }
         }
 
@@ -34,6 +42,5 @@ namespace FrbaHotel.Login
                 this.Close();
             }
         }
-
     }
 }

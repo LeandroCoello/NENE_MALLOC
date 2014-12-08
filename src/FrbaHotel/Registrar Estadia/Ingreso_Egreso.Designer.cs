@@ -30,10 +30,11 @@
         {
             this.btnBuscar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.txt = new System.Windows.Forms.TextBox();
+            this.txtNroReser = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnIngresar = new System.Windows.Forms.Button();
+            this.btnLimpiar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -45,6 +46,7 @@
             this.btnBuscar.TabIndex = 0;
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = true;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
             // label1
             // 
@@ -55,21 +57,21 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Nro Reserva:";
             // 
-            // txt
+            // txtNroReser
             // 
-            this.txt.Location = new System.Drawing.Point(89, 10);
-            this.txt.Name = "txt";
-            this.txt.Size = new System.Drawing.Size(100, 20);
-            this.txt.TabIndex = 2;
+            this.txtNroReser.Location = new System.Drawing.Point(89, 10);
+            this.txtNroReser.Name = "txtNroReser";
+            this.txtNroReser.Size = new System.Drawing.Size(100, 20);
+            this.txtNroReser.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(13, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 13);
+            this.label2.Size = new System.Drawing.Size(72, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Reserva:";
+            this.label2.Text = "Habitaciones:";
             // 
             // dataGridView1
             // 
@@ -87,16 +89,28 @@
             this.btnIngresar.TabIndex = 5;
             this.btnIngresar.Text = "Registrar";
             this.btnIngresar.UseVisualStyleBackColor = true;
+            this.btnIngresar.Click += new System.EventHandler(this.btnIngresar_Click);
+            // 
+            // btnLimpiar
+            // 
+            this.btnLimpiar.Location = new System.Drawing.Point(420, 183);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.Size = new System.Drawing.Size(75, 23);
+            this.btnLimpiar.TabIndex = 6;
+            this.btnLimpiar.Text = "Limpiar";
+            this.btnLimpiar.UseVisualStyleBackColor = true;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
             // Ingreso_Egreso
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(526, 361);
+            this.ClientSize = new System.Drawing.Size(526, 224);
+            this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.btnIngresar);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.txt);
+            this.Controls.Add(this.txtNroReser);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnBuscar);
             this.Name = "Ingreso_Egreso";
@@ -111,9 +125,10 @@
 
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txt;
+        private System.Windows.Forms.TextBox txtNroReser;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button btnIngresar;
+        private System.Windows.Forms.Button btnLimpiar;
     }
 }

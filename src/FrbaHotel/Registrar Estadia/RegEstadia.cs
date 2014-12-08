@@ -12,17 +12,16 @@ namespace FrbaHotel.Registrar_Estadia
 {
     public partial class RegEstadia : Form
     {
-        SQLConnector conexion;
-        public RegEstadia(SQLConnector conecc)
+        UsuarioLogueado usuario;
+        public RegEstadia(UsuarioLogueado userLog)
         {
             InitializeComponent();
-            conexion = conecc;
+            usuario = userLog;
         }
 
         private void btnIngreso_Click(object sender, EventArgs e)
         {
-            Ingreso_Egreso levantarCheck = new Ingreso_Egreso();
-            levantarCheck.configurarIN();
+            Ingreso_Egreso levantarCheck = new Ingreso_Egreso(usuario);
             levantarCheck.ShowDialog();
             this.Hide();
 
@@ -30,7 +29,7 @@ namespace FrbaHotel.Registrar_Estadia
 
         private void btnEgreso_Click(object sender, EventArgs e)
         {
-            Ingreso_Egreso levantarOUT = new Ingreso_Egreso();
+            Ingreso_Egreso levantarOUT = new Ingreso_Egreso(usuario);
             levantarOUT.configurarOUT();
             levantarOUT.ShowDialog();
             this.Hide();

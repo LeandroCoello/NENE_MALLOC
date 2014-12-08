@@ -16,6 +16,10 @@ namespace FrbaHotel.Menu_Principal
                     MenuAdmin levantarAdmin = new MenuAdmin(usuario);
                     levantarAdmin.ShowDialog();
                     break;
+                case "Administrador General":
+                    MegaAdmin levantarMega = new MegaAdmin(usuario);
+                    levantarMega.ShowDialog();
+                    break;
                 case "Recepcionista":
                     MenuRecepcionista levantarRecepcion = new MenuRecepcionista(usuario);
                     levantarRecepcion.ShowDialog();

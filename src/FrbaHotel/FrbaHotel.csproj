@@ -274,6 +274,12 @@
       <DependentUpon>EleccionRol.cs</DependentUpon>
     </Compile>
     <Compile Include="Menu Principal\CargaMenu.cs" />
+    <Compile Include="Menu Principal\MegaAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menu Principal\MegaAdmin.Designer.cs">
+      <DependentUpon>MegaAdmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Menu Principal\MenuAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -416,6 +422,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Login\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu Principal\MegaAdmin.resx">
+      <DependentUpon>MegaAdmin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menu Principal\MenuAdmin.resx">
       <DependentUpon>MenuAdmin.cs</DependentUpon>

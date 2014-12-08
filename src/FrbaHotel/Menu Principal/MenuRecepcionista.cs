@@ -45,7 +45,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnRegEst_Click(object sender, EventArgs e)
         {
-            Registrar_Estadia.RegEstadia levantarReg = new FrbaHotel.Registrar_Estadia.RegEstadia(userLog.getConexion());
+            Registrar_Estadia.RegEstadia levantarReg = new FrbaHotel.Registrar_Estadia.RegEstadia(userLog);
             this.Hide();
             levantarReg.ShowDialog();
             this.Show();
