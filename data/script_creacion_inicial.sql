@@ -1346,8 +1346,27 @@ begin transaction
 	
 	declare @fecha_cancelacion_correcta datetime
 	set @fecha_cancelacion_correcta = @fecha_cancelacion
+		
+	if (select r.Reserva_Estado from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id) = 'Cancelada'
+	begin
+		rollback
+		raiserror('Reserva ya cancelada.',16,1)
+		return
+	end
 	
-	if (select r.Reserva_FechaIng from Reserva r where r.Reserva_Id = @reserva_id) >  DATEADD(DAY, 1, @fecha_cancelacion_correcta)
+	
+	if exists (select e.Estadia_Id from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Estadia e, NENE_MALLOC.Item_Factura i
+					 where rph.Reserva_Id = @reserva_id and
+						   e.Estadia_RPH = rph.RPH_Id and
+						   e.Estadia_Id = i.Item_Factura_Id) 
+	begin
+		rollback
+		raiserror('No se puede cancelar una reserva ya efectivizada.',16,1)
+		return
+	end
+	
+	
+	if (select r.Reserva_FechaIng from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id) >  DATEADD(DAY, 1, @fecha_cancelacion_correcta)
 	begin
 		rollback
 		raiserror('No se puede cancelar a un día de la reserva',16,1)
@@ -1362,6 +1381,7 @@ begin transaction
 	
 commit 
 GO
+
 
 --CANCELAR RESERVAS (POR VENCIMIENTO DE FECHA)
 create procedure NENE_MALLOC.cancelar_reservas @fecha nvarchar(15)
