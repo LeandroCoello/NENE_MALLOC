@@ -30,21 +30,22 @@ namespace FrbaHotel.Cancelar_Reserva
         private void btnAceptarCancel_Click(object sender, EventArgs e)
         {
         string queryCancel = "";
-        if (txtIDRecepcionista.ReadOnly == true)
+        if (txtIDRecepcionista.Text == "" && !string.IsNullOrEmpty(txtMotivo.Text) && !string.IsNullOrEmpty(txtNroReserva.Text))
         {
             queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + ",NULL,'" + txtMotivo.Text + "'";
         }
-        else { queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + "," + txtIDRecepcionista.Text + ",'" + txtMotivo.Text + "'"; 
-        }
-            if (string.IsNullOrEmpty(txtFecCancel.Text) || string.IsNullOrEmpty(txtMotivo.Text) || string.IsNullOrEmpty(txtNroReserva.Text) ||
-                string.IsNullOrEmpty(txtIDRecepcionista.Text))
+        else if(!string.IsNullOrEmpty(txtMotivo.Text) && !string.IsNullOrEmpty(txtNroReserva.Text) &&
+                !string.IsNullOrEmpty(txtIDRecepcionista.Text)) 
             {
-                MessageBox.Show("Por favor complete todo los campos");
-                this.limpiarCampos();
-            }
-            else 
+            queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + "," + txtIDRecepcionista.Text + ",'" + txtMotivo.Text + "'";
+              
+          }
+         else
             {
-                try {
+              MessageBox.Show("Por favor complete todo los campos");
+               this.limpiarCampos();
+             }  
+         try {
                    
                     conexion.executeOnly(queryCancel);
                     MessageBox.Show("Reserva Cancelada con exito");
@@ -53,7 +54,7 @@ namespace FrbaHotel.Cancelar_Reserva
                 catch (Exception ex) { 
                     MessageBox.Show(ex.Message); 
                 }
-            }
+            
            
         }
         private void limpiarCampos() { txtNroReserva.Text = ""; txtMotivo.Text = ""; txtIDRecepcionista.Text = ""; }

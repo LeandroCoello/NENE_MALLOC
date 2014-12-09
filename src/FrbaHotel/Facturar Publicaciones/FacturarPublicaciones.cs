@@ -14,7 +14,8 @@ namespace FrbaHotel.Facturar_Publicaciones
     public partial class FacturarPublicaciones : Form
     {
         UsuarioLogueado usuario;
-        String fechaSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]).ToString("yyyyMMdd"); 
+        String fechaSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]).ToString("yyyyMMdd");
+        string RPH_ID = "";
         public FacturarPublicaciones(UsuarioLogueado userLog)
         {
             InitializeComponent();
@@ -49,26 +50,27 @@ namespace FrbaHotel.Facturar_Publicaciones
 
         private void btnBuscarConsu_Click(object sender, EventArgs e)
         {
-            btnFacturar.Enabled = true;
-            foreach (DataGridViewRow dr in dataGridViewEsta.SelectedRows) {
-                string RPH_ID = dr.Cells["RPH_Id"].Value.ToString();
-                string query = "SELECT Consumible.Consumible_Desc,Consumible_Por_Habitacion.Consumible_Cantidad FROM NENE_MALLOC.Consumible_Por_Habitacion,NENE_MALLOC.Consumible WHERE Consumible_Por_Habitacion.RPH_Id ="+RPH_ID+"AND Consumible.Consumible_Id = Consumible_Por_Habitacion.Consumible_Id";
-                dataGridViewConsu.DataSource = usuario.getConexion().consulta(query);
+            if (dataGridViewEsta.SelectedRows.Count >= 1)
+            {
+                btnFacturar.Enabled = true;
+                foreach (DataGridViewRow dr in dataGridViewEsta.SelectedRows)
+                {
+                   RPH_ID = dr.Cells["RPH_Id"].Value.ToString();
+                    string query = "SELECT Consumible.Consumible_Desc,Consumible_Por_Habitacion.Consumible_Cantidad FROM NENE_MALLOC.Consumible_Por_Habitacion,NENE_MALLOC.Consumible WHERE Consumible_Por_Habitacion.RPH_Id =" + RPH_ID + "AND Consumible.Consumible_Id = Consumible_Por_Habitacion.Consumible_Id";
+                    dataGridViewConsu.DataSource = usuario.getConexion().consulta(query);
+                }
             }
+            else { MessageBox.Show("Eliga una estadia para facturar"); }
         }
 
         private void btnFacturar_Click(object sender, EventArgs e)
         {
-            Decimal total = 0;
-            string queryFinal = "declare @total numeric(18,0) EXEC NENE_MALLOC.generar_factura "+txtClieCod.Text+","+fechaSistema+",@total out"
-                                +" SELECT @total";
-            total = Convert.ToDecimal(usuario.getConexion().consulta(queryFinal).Rows[0].ItemArray[0]);
-
-            MessageBox.Show("Cliente: "+txtClieCod.Text
-                            +"\n Estadia:"+dataGridViewEsta.SelectedRows.ToString()
-                            +"\n Consumibles:"+dataGridViewConsu.ToString()
-                            +"\n total:"+total.ToString());
-
+            string queryFinal = "declare @facturaId numeric(18,0) EXEC NENE_MALLOC.generar_factura "+txtClieCod.Text+","+fechaSistema+",@facturaId out"
+                                +" SELECT @facturaId";
+            string facturaID = usuario.getConexion().consulta(queryFinal).Rows[0].ItemArray[0].ToString();
+            usuario.getConexion().executeOnly("EXEC NENE_MALLOC.agregar_items " +facturaID+"," + RPH_ID);
+            MessageBox.Show("Cliente: "+txtClieCod.Text+
+                "\n Total a pagar:"+ usuario.getConexion().consulta("SELECT Factura_Total FROM NENE_MALLOC.Factura WHERE Factura_Id ="+facturaID).Rows[0].ItemArray[0].ToString());
             this.btnLimpieza_Click(sender,e);
         }
 
