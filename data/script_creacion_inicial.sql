@@ -740,7 +740,8 @@ as
 begin transaction
 	
 	if exists(select r.Rol_Desc from NENE_MALLOC.Rol r 
-				where r.Rol_Desc = @descripcion)
+				where r.Rol_Desc = @descripcion and 
+					  r.Rol_Id != @rol_id)
 		begin
 			raiserror('El rol ya existe',16,1)
 		end
@@ -1416,7 +1417,7 @@ if exists (select * from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Res
 								  r.Reserva_FechaIng != @fecha_correcta)
 	begin
 	rollback
-	raiserror('Reserva ya cancelada.',16,1)
+	raiserror('Imposible realizar el check in, fecha de ingreso incorrecta.',16,1)
 	return
 	end
 
@@ -1542,6 +1543,17 @@ create procedure NENE_MALLOC.alta_consumible_habitacion @rph_id numeric(18,0), @
 as
 begin transaction
 
+
+if (select i.Item_Factura from NENE_MALLOC.Estadia e, NENE_MALLOC.Item_Factura i
+			where e.Estadia_RPH = @rph_id and
+				  i.Item_Factura_Id = e.Estadia_Id) is not null
+	begin
+	rollback
+	raiserror('Reserva ya facturada.',16,1)
+	return
+	end
+
+
 declare @id_item_fact numeric(18,0)
 set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Factura),0)) + 1
 
@@ -1552,8 +1564,8 @@ set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Fa
 									where c.Consumible_Id = @consumible_id))
 	
 
-	Insert into NENE_MALLOC.Consumible_Por_Habitacion(Consumible_Id, RPH_Id, Consumible_Cantidad) 
-					values(@id_item_fact, @rph_id, @cant)
+	Insert into NENE_MALLOC.Consumible_Por_Habitacion(Consumible_Por_Habitacion_Id, Consumible_Id, RPH_Id, Consumible_Cantidad) 
+					values(@id_item_fact, @consumible_id, @rph_id, @cant)
 	
 commit 
 GO
