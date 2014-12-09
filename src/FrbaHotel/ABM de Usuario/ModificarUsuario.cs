@@ -67,9 +67,15 @@ namespace FrbaHotel.ABM_de_Usuario
             {
                 string query = "EXEC NENE_MALLOC.modificacion_usuario '" + txtUser.Text + "','" + txtPass.Text + "','" + txtNom.Text + "','" + txtApellido.Text +
                     "'," + txtTelefono.Text + ",'" + txtTDoc.Text + "'," + txtNDoc.Text + ",'" + txtMail.Text + "','" + txtCalle.Text + "'," + txtNcalle.Text + "," + txtPiso.Text
-                    + ",'" + txtDepto.Text + "','" + txtFecNac.Text + "," + usuarioId + "," +  txtHotelTrabaja.Text + ",'" + cBRolesAAsignar.SelectedItem.ToString() + "'";
-                conexion.executeOnly(query);
-                MessageBox.Show("Usuario modificado con exito");
+                    + ",'" + txtDepto.Text + "','" + txtFecNac.Text + "'," + usuarioId + "," +  txtHotelTrabaja.Text +", '"+cBRolesAAsignar.SelectedItem.ToString()+"'";
+                try
+                {
+                    conexion.executeOnly(query);
+                    MessageBox.Show("Usuario modificado con exito");
+                }
+                catch (Exception ex) {
+                    MessageBox.Show(ex.Message);
+                }
                 this.Close();
             }
         }

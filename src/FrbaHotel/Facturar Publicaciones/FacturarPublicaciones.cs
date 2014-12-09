@@ -61,7 +61,7 @@ namespace FrbaHotel.Facturar_Publicaciones
         {
             Decimal total = 0;
             string queryFinal = "declare @total numeric(18,0) EXEC NENE_MALLOC.generar_factura "+txtClieCod.Text+","+fechaSistema+",@total out"
-                                +"SELECT @total";
+                                +" SELECT @total";
             total = Convert.ToDecimal(usuario.getConexion().consulta(queryFinal).Rows[0].ItemArray[0]);
 
             MessageBox.Show("Cliente: "+txtClieCod.Text

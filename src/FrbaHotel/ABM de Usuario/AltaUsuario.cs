@@ -50,11 +50,12 @@ namespace FrbaHotel.ABM_de_Usuario
         private void btnGuardar_Click(object sender, EventArgs e)
         {
 
-            if (this.estanTodosCompletos()) {
+            if (estanTodosCompletos())
+            {
                 string passFinal = inicio.SHA256Encripta(txtPass.Text);
-                string queryAlta = "exec NENE_MALLOC.Alta_Usuario '"+txtUser.Text+"' '"+passFinal+"' '"+cBRolesAAsignar.SelectedItem.ToString()+"' '"+
-                    txtNom.Text+"' '"+txtApellido.Text+"' '"+txtTelefono.Text+"' '"+txtTDoc.Text+"' '"+txtNDoc.Text+"' '"+txtMail.Text+"' '"
-                    +txtCalle.Text+"' '"+txtNcalle.Text+"' '"+txtPiso.Text+"' '"+txtDepto.Text+"' '"+txtFecNac.Text+"' '"+txtHotelTrabaja.Text+ "'";
+                string queryAlta = "exec NENE_MALLOC.Alta_Usuario '" + txtUser.Text + "','" + passFinal + "','" + cBRolesAAsignar.SelectedItem.ToString() + "','" +
+                    txtNom.Text + "','" + txtApellido.Text + "','" + txtTelefono.Text + "','" + txtTDoc.Text + "','" + txtNDoc.Text + "','" + txtMail.Text + "','"
+                    + txtCalle.Text + "','" + txtNcalle.Text + "','" + txtPiso.Text + "','" + txtDepto.Text + "','" + txtFecNac.Text + "','" + txtHotelTrabaja.Text + "'";
                 try
                 {
                     conec.executeOnly(queryAlta);
@@ -63,6 +64,7 @@ namespace FrbaHotel.ABM_de_Usuario
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message); }
             }
+            else { MessageBox.Show("MIRA Q ROMPO"); }
         }
         private Boolean estanTodosCompletos() {
             foreach (TextBox texto in txtBoxes) { 
@@ -71,11 +73,10 @@ namespace FrbaHotel.ABM_de_Usuario
                     return false;
                 }
             }
-            if (String.IsNullOrEmpty(cBRolesAAsignar.SelectedText)) { 
+            if (cBRolesAAsignar.SelectedIndex == -1) { 
                 return false; 
             }
             return true;
         }
-
     }
 }

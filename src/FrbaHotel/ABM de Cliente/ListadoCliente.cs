@@ -43,27 +43,27 @@ namespace FrbaHotel.ABM_de_Cliente
                 +" FROM NENE_MALLOC.Datos_Personales D, NENE_MALLOC.Cliente C WHERE D.Datos_Id = C.Cliente_Datos";
             string agregarCondicion;
             if(!string.IsNullOrEmpty(txtApe.Text)){
-                agregarCondicion = "and D.Datos_Apellido LIKE '%"+txtApe.Text+"%'";
+                agregarCondicion = " AND D.Datos_Apellido LIKE '%"+txtApe.Text+"%'";
                 queryFinal += agregarCondicion;
             }
             if (!string.IsNullOrEmpty(txtNom.Text))
             {
-                agregarCondicion = "and D.Datos_Nombre LIKE '%" + txtNom.Text + "%'";
+                agregarCondicion = " AND D.Datos_Nombre LIKE '%" + txtNom.Text + "%'";
                 queryFinal += agregarCondicion;
             }
             if (!string.IsNullOrEmpty(txtNDoc.Text))
             {
-                agregarCondicion = "and D.Datos_Nro_Ident LIKE '%" + txtNDoc.Text + "%'";
+                agregarCondicion = " AND D.Datos_Nro_Ident LIKE '%" + txtNDoc.Text + "%'";
                 queryFinal += agregarCondicion;
             }
             if (!string.IsNullOrEmpty(txtMail.Text))
             {
-                agregarCondicion = "and D.Datos_Mail LIKE '%" + txtMail.Text + "%'";
+                agregarCondicion = " AND D.Datos_Mail LIKE '%" + txtMail.Text + "%'";
                 queryFinal += agregarCondicion;
             }
             if(!string.IsNullOrEmpty(cBtipoIdent.SelectedText.ToString()))
             {
-                agregarCondicion = "and D.Datos_Tipo_Ident ='" + cBtipoIdent.SelectedItem.ToString()+"'";
+                agregarCondicion = " AND D.Datos_Tipo_Ident ='" + cBtipoIdent.SelectedItem.ToString()+"'";
                 queryFinal += agregarCondicion;
             }
             dGVListadoSeleccionados.DataSource = conexion.consulta(queryFinal);

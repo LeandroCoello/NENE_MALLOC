@@ -45,7 +45,6 @@ namespace FrbaHotel.ABM_de_Habitacion
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             string queryModif = "EXEC NENE_MALLOC.modificacion_habitacion "+txtNHab.Text+","+txtPH.Text+","+txtH.Text+","+txtTHab.Text+",'"+txtUbi.Text+"','"+txtDesc.Text+"',"+habitacionId;
-            MessageBox.Show(queryModif);
             try
             {
                 conexion.executeOnly(queryModif);

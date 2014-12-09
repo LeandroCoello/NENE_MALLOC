@@ -41,8 +41,8 @@ namespace FrbaHotel.ABM_de_Cliente
                 +txtTipoDoc.Text+"',"+txtNroDoc.Text+",'"+txtMail.Text+"','"+txtDireccion.Text+"',"+txtNroCalle.Text+","+txtPiso.Text+",'"+txtDepto.Text+"','"+txtFecNac.Text+"','"+txtNacionalidad.Text+"',@Id  SELECT @Id";
             try
             {
-                conexion.executeOnly(queryCliente);
-                MessageBox.Show("Cliente registrado con exito");
+                DataTable clienteId = conexion.consulta(queryCliente);
+                MessageBox.Show("Cliente registrado con exito ID:"+clienteId.Rows[0].ItemArray[0].ToString());
                 this.Close();
             }
             catch(Exception excep) 

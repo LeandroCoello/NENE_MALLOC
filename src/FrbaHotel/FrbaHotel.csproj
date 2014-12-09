@@ -243,6 +243,12 @@
     <Compile Include="Generar Modificar Reserva\Generar.Designer.cs">
       <DependentUpon>Generar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Generar Modificar Reserva\IngresoId.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generar Modificar Reserva\IngresoId.Designer.cs">
+      <DependentUpon>IngresoId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generar Modificar Reserva\Modificar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -404,6 +410,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Generar Modificar Reserva\Generar.resx">
       <DependentUpon>Generar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generar Modificar Reserva\IngresoId.resx">
+      <DependentUpon>IngresoId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generar Modificar Reserva\Modificar.resx">
       <DependentUpon>Modificar.cs</DependentUpon>

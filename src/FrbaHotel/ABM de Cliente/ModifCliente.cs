@@ -55,7 +55,6 @@ namespace FrbaHotel.ABM_de_Cliente
         private void btnGuardarCambios_Click(object sender, EventArgs e)
         {
             string queryModif = "EXEC NENE_MALLOC.modificacion_cliente '"+txt1.Text+"','"+txt2.Text+"',"+txt3.Text+",'"+txt4.Text+"',"+txt5.Text+",'"+txt6.Text+"','"+txt7.Text+"',"+txt8.Text+","+txt9.Text+",'"+txt10.Text+"','"+txt11.Text+"','"+txt12.Text+"',"+clienteId;
-            MessageBox.Show(queryModif);
             try
             {
                 conexion.executeOnly(queryModif);

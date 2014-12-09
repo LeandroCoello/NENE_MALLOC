@@ -47,7 +47,7 @@ namespace FrbaHotel.ABM_de_Hotel
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            string query = "UPDATE NENE_MALLOC.Hotel set Hotel_Cerrado WHERE Hotel_Id ="+hotelId;
+            string query = "UPDATE NENE_MALLOC.Hotel set Hotel_Cerrado = 1 WHERE Hotel_Id ="+hotelId;
             MessageBox.Show("Hotel dado de baja");
             this.Close();
         }

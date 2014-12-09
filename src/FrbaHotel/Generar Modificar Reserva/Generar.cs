@@ -93,10 +93,17 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 }
                 if (confirmarReserva(precio) == DialogResult.Yes)
                 {
-                    if (clienteEnSistema() == DialogResult.Yes) {
-                        BuscarCliente levantarBusqueda = new BuscarCliente(usuario,this);
+                    if (clienteEnSistema() == DialogResult.Yes)
+                    {
+                        BuscarCliente levantarBusqueda = new BuscarCliente(usuario, this);
                         this.Hide();
                         levantarBusqueda.ShowDialog();
+                        finalizarReserva();
+                    }
+                    else {
+                        ABM_de_Cliente.AltaCliente levantarAlta = new FrbaHotel.ABM_de_Cliente.AltaCliente(usuario.getConexion());
+                        this.Hide();
+                        levantarAlta.ShowDialog();
                         finalizarReserva();
                     }
                 }
@@ -117,6 +124,9 @@ namespace FrbaHotel.Generar_Modificar_Reserva
 
             if (condi == null)
             {
+                IngresoId levantar = new IngresoId(this);
+                this.Hide();
+                levantar.Show();
                 string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") +"','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
                     + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + "," + usuario.conseguirIdUser() + ",@idReserva out" +
                     " SELECT @idReserva";

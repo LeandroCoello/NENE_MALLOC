@@ -43,16 +43,18 @@ namespace FrbaHotel.ABM_de_Rol
             string queryFinal = "SELECT R.Rol_Id,R.Rol_Desc,R.Rol_estado FROM NENE_MALLOC.Rol R, NENE_MALLOC.Func_Por_Rol FR, NENE_MALLOC.Funcionalidad F WHERE R.Rol_Id = FR.Rol_Id AND FR.Func_Id = F.Func_Id";          
             if (!string.IsNullOrEmpty(txtNomRol.Text)) 
             {
-                queryFinal += "and R.Rol_Desc LIKE '%"+txtNomRol.Text+"%'";
+                queryFinal += " AND R.Rol_Desc LIKE '%"+txtNomRol.Text+"%'";
             }
             if (cBFuncionalidades.SelectedIndex != -1) 
             {
-                queryFinal += "and F.Func_Desc LIKE '%"+cBFuncionalidades.SelectedItem.ToString()+"'%";
+                queryFinal += " AND F.Func_Desc LIKE '%"+cBFuncionalidades.SelectedItem.ToString()+"%'";
             }
             if (cBEstadoRol.SelectedIndex != -1) 
             {
-                queryFinal +=  "and R.Rol_Estado LIKE '%"+cBEstadoRol.SelectedItem.ToString()+"'%";
+                queryFinal +=  " AND R.Rol_Estado LIKE '%"+cBEstadoRol.SelectedItem.ToString()+"%'";
             }
+            queryFinal += " GROUP BY R.Rol_Id,R.Rol_Desc,R.Rol_estado";
+            MessageBox.Show(queryFinal);
               dataGridView1.DataSource =  conexion.consulta(queryFinal);
               DataGridViewButtonColumn col = new DataGridViewButtonColumn();
               col.UseColumnTextForButtonValue = true;

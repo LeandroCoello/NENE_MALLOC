@@ -41,22 +41,18 @@ namespace FrbaHotel.Generar_Modificar_Reserva
 
         private void btnBusquedaClie_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtNDoc.Text) || string.IsNullOrEmpty(txtMail.Text) || cBTipoDoc.SelectedIndex == -1)
-            {
-                MessageBox.Show("Complete todos los campos");
-            }
-            else {
-                string query = "SELECT * FROM NENE_MALLOC.Cliente C,NENE_MALLOC.Datos_Personales DP WHERE C.Cliente_Datos = DP.Datos_Id"+
-                    " AND DP.Datos_Mail LIKE '%"+txtMail.Text+"%'"+
-                    " AND DP.Datos_Tipo_Ident LIKE '%"+cBTipoDoc.SelectedItem.ToString()+"%'"+
-                    " AND DP.Datos_Nro_Ident ="+txtNDoc.Text;
+            string query = "SELECT * FROM NENE_MALLOC.Cliente C,NENE_MALLOC.Datos_Personales DP WHERE C.Cliente_Datos = DP.Datos_Id" +
+                " AND DP.Datos_Mail LIKE '%" + txtMail.Text + "%'" +
+                " AND DP.Datos_Tipo_Ident LIKE '%" + cBTipoDoc.SelectedItem.ToString() + "%'";
+               if(txtNDoc.Text != ""){
+                  query += " AND DP.Datos_Nro_Ident ="+txtNDoc.Text;
+                }
                 dataGridView1.DataSource = usuario.getConexion().consulta(query);
                 DataGridViewButtonColumn col = new DataGridViewButtonColumn();
                 col.UseColumnTextForButtonValue = true;
                 col.Text = "Seleccionar";
                 col.Name = "Seleccionar";
                 dataGridView1.Columns.Add(col);
-            }
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

@@ -17,7 +17,10 @@ namespace FrbaHotel.ABM_de_Rol
         {
             InitializeComponent();
             conexion = conec;
-            DataTable funcionalidades = conec.consulta("");
+            DataTable funcionalidades = conec.consulta("SELECT Func_Desc FROM NENE_MALLOC.Funcionalidad");
+            foreach (DataRow dr in funcionalidades.Rows) {
+                cBFuncio.Items.Add(dr["Func_Desc"].ToString());
+            }
         }
 
         private void btnCrearRol_Click(object sender, EventArgs e)
@@ -28,7 +31,8 @@ namespace FrbaHotel.ABM_de_Rol
             }
             else
             {
-                string query = "EXEC NENE_MALLOC.Rol '" + txtNomRol.Text + "'," + txtEstado.Text + ",'" +cBFuncio.SelectedItem.ToString() + "', ";
+                string query = "EXEC NENE_MALLOC.alta_rol '" + txtNomRol.Text + "'," + txtEstado.Text + ",'" + cBFuncio.SelectedItem.ToString() + "'";
+                MessageBox.Show(query);
                 try
                 {
                     conexion.executeOnly(query);

@@ -74,15 +74,15 @@ namespace FrbaHotel.Registrar_Consumible
             else
             {
                 string rphId;
-                string desc;
                 string cant;
                 DataTable phid = conexion.consulta("SELECT RPH_Id FROM NENE_MALLOC.Reserva_Por_Habitacion WHERE Reserva_Id = " + txtNroReserva.Text + " AND Habitacion_Id = " + txtNroHab.Text);
                 rphId = phid.Rows[0].ItemArray[0].ToString();
-                foreach (DataRow row in dataGridView1.Rows)
+                foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
-                    desc = row.ItemArray[0].ToString();
-                    cant = row.ItemArray[1].ToString();
-                    string query = "EXEC NENE_MALLOC.alta_consumible_habitacion " + rphId + "," + desc + "," + cant;
+                    cant = row.Cells[1].Value.ToString();
+                    DataTable consuId = conexion.consulta("SELECT Consumible_Id FROM NENE_MALLOC.Consumible WHERE Consumible_Desc LIKE '%"+row.Cells[0].Value.ToString()+"%'");
+                    string query = "EXEC NENE_MALLOC.alta_consumible_habitacion " + rphId + "," + consuId.Rows[0].ItemArray[0].ToString() + "," + cant;
+                    MessageBox.Show(query);
                     conexion.executeOnly(query);
                     MessageBox.Show("Registracion exitosa");
                     this.Close();
