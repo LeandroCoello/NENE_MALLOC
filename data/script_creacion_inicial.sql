@@ -1596,9 +1596,10 @@ as
 begin transaction
 
 
-if exists (select * from NENE_MALLOC.Item_Factura, NENE_MALLOC.Estadia 
-				where Item_Factura_Id = Estadia_Id and
-					  Estadia_RPH = @rph_id)
+if exists (select * from NENE_MALLOC.Item_Factura i, NENE_MALLOC.Estadia 
+				where i.Item_Factura_Id = Estadia_Id and
+					  Estadia_RPH = @rph_id and 
+					  i.Item_Factura is not null)
 	begin 
 	
 	rollback
