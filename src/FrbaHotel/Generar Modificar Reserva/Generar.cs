@@ -33,6 +33,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             InitializeComponent();
             usuario = userLog;
             coneccion = userLog.getConexion();
+            coneccion = userLog.getConexion();
             cBHoteles.Items.Add(usuario.getHotelAsignado());
             cBHoteles.SelectedIndex = 0;
             cBHoteles.Enabled = false;
@@ -101,7 +102,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                         finalizarReserva();
                     }
                     else {
-                        ABM_de_Cliente.AltaCliente levantarAlta = new FrbaHotel.ABM_de_Cliente.AltaCliente(usuario.getConexion());
+                        FrbaHotel.ABM_de_Cliente.AltaCliente levantarAlta = new FrbaHotel.ABM_de_Cliente.AltaCliente(coneccion);
                         this.Hide();
                         levantarAlta.ShowDialog();
                         finalizarReserva();
@@ -124,9 +125,6 @@ namespace FrbaHotel.Generar_Modificar_Reserva
 
             if (condi == null)
             {
-                IngresoId levantar = new IngresoId(this);
-                this.Hide();
-                levantar.Show();
                 string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") +"','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
                     + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + "," + usuario.conseguirIdUser() + ",@idReserva out" +
                     " SELECT @idReserva";
@@ -138,7 +136,10 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 MessageBox.Show("Reserva generada exitosamente.\n ID:" + idReser.Rows[0][0].ToString());
             }
             else {
-                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema + "','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
+                IngresoId levantar = new IngresoId(this);
+                this.Hide();
+                levantar.ShowDialog();
+                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
                          + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + ",NULL, @idReserva out" +
                         " SELECT @idReserva";
                 DataTable idReser = coneccion.consulta(query);

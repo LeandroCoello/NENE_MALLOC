@@ -32,24 +32,33 @@ namespace FrbaHotel.ABM_de_Cliente
         }
         private void btnAceptar_Click(object sender, EventArgs e)
         {
+            string queryCliente = "";
             foreach (var texto in txtBoxes) {
                 if (String.IsNullOrEmpty(texto.Text)) {
                     MessageBox.Show("Complete todos los campos");
                     break;
                 }
             }
-            string queryCliente = " declare @Id numeric(1,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
-                +txtTipoDoc.Text+"',"+txtNroDoc.Text+",'"+txtMail.Text+"','"+txtDireccion.Text+"',"+txtNroCalle.Text+","+txtPiso.Text+",'"+txtDepto.Text+"','"+dateTimePicker1.Value.ToString("yyyyMMdd")+"','"+txtNacionalidad.Text+"',@Id  SELECT @Id";
+            if (txtPiso.Text == "" && txtDepto.Text == "")
+            {
+                queryCliente = " declare @Id numeric(18,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
+                    + txtTipoDoc.Text + "'," + txtNroDoc.Text + ",'" + txtMail.Text + "','" + txtDireccion.Text + "'," + txtNroCalle.Text + ",NULL,NULL,'" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtNacionalidad.Text + "',@Id out SELECT @Id";
+            }
+            else
+            {
+                queryCliente = " declare @Id numeric(18,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
+                 + txtTipoDoc.Text + "'," + txtNroDoc.Text + ",'" + txtMail.Text + "','" + txtDireccion.Text + "'," + txtNroCalle.Text + "," + txtPiso.Text + ",'" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtNacionalidad.Text + "',@Id out SELECT @Id";
+            }
             try
             {
                 DataTable clienteId = conexion.consulta(queryCliente);
-                MessageBox.Show("Cliente registrado con exito ID:"+clienteId.Rows[0].ItemArray[0].ToString());
+                MessageBox.Show("Cliente registrado con exito ID:"+ clienteId.Rows[0].ItemArray[0].ToString());
                 this.Close();
             }
             catch(Exception excep) 
             {
                 MessageBox.Show(excep.Message);
             }
-        }    /*inicioDateTimePicker1.Value.ToString("yyyyMMdd")*/
+        }
     }
 }

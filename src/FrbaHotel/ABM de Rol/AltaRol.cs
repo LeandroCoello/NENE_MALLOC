@@ -32,7 +32,6 @@ namespace FrbaHotel.ABM_de_Rol
             else
             {
                 string query = "EXEC NENE_MALLOC.alta_rol '" + txtNomRol.Text + "'," + txtEstado.Text + ",'" + cBFuncio.SelectedItem.ToString() + "'";
-                MessageBox.Show(query);
                 try
                 {
                     conexion.executeOnly(query);

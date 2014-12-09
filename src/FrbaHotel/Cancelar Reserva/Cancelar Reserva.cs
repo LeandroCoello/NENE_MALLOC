@@ -29,6 +29,13 @@ namespace FrbaHotel.Cancelar_Reserva
 
         private void btnAceptarCancel_Click(object sender, EventArgs e)
         {
+        string queryCancel = "";
+        if (txtIDRecepcionista.ReadOnly == true)
+        {
+            queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + ",NULL,'" + txtMotivo.Text + "'";
+        }
+        else { queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + "," + txtIDRecepcionista.Text + ",'" + txtMotivo.Text + "'"; 
+        }
             if (string.IsNullOrEmpty(txtFecCancel.Text) || string.IsNullOrEmpty(txtMotivo.Text) || string.IsNullOrEmpty(txtNroReserva.Text) ||
                 string.IsNullOrEmpty(txtIDRecepcionista.Text))
             {
@@ -38,7 +45,7 @@ namespace FrbaHotel.Cancelar_Reserva
             else 
             {
                 try {
-                    string queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '"+txtFecCancel.Text+"',"+txtNroReserva.Text+","+txtIDRecepcionista.Text+",'"+txtMotivo.Text+"'";
+                   
                     conexion.executeOnly(queryCancel);
                     MessageBox.Show("Reserva Cancelada con exito");
                     this.Close();
