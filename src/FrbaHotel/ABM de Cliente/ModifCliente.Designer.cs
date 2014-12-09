@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.txt12 = new System.Windows.Forms.TextBox();
-            this.txt11 = new System.Windows.Forms.TextBox();
             this.txt10 = new System.Windows.Forms.TextBox();
             this.txt9 = new System.Windows.Forms.TextBox();
             this.txt8 = new System.Windows.Forms.TextBox();
@@ -53,6 +52,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btnGuardarCambios = new System.Windows.Forms.Button();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // txt12
@@ -61,13 +61,6 @@
             this.txt12.Name = "txt12";
             this.txt12.Size = new System.Drawing.Size(142, 20);
             this.txt12.TabIndex = 48;
-            // 
-            // txt11
-            // 
-            this.txt11.Location = new System.Drawing.Point(87, 236);
-            this.txt11.Name = "txt11";
-            this.txt11.Size = new System.Drawing.Size(142, 20);
-            this.txt11.TabIndex = 47;
             // 
             // txt10
             // 
@@ -257,14 +250,21 @@
             this.btnGuardarCambios.UseVisualStyleBackColor = true;
             this.btnGuardarCambios.Click += new System.EventHandler(this.btnGuardarCambios_Click);
             // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Location = new System.Drawing.Point(87, 235);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(142, 20);
+            this.dateTimePicker1.TabIndex = 50;
+            // 
             // ModifCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(577, 335);
+            this.ClientSize = new System.Drawing.Size(248, 335);
+            this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.btnGuardarCambios);
             this.Controls.Add(this.txt12);
-            this.Controls.Add(this.txt11);
             this.Controls.Add(this.txt10);
             this.Controls.Add(this.txt9);
             this.Controls.Add(this.txt8);
@@ -297,7 +297,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox txt12;
-        private System.Windows.Forms.TextBox txt11;
         private System.Windows.Forms.TextBox txt10;
         private System.Windows.Forms.TextBox txt9;
         private System.Windows.Forms.TextBox txt8;
@@ -321,5 +320,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnGuardarCambios;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }

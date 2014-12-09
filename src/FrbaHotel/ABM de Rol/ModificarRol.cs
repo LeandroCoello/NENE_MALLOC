@@ -38,19 +38,22 @@ namespace FrbaHotel.ABM_de_Rol
             {
                 string query = "EXEC NENE_MALLOC.modificacion_rol "+rolId+",'"+txtNomRol.Text+"',"+txtEstado.Text;
                 conexion.executeOnly(query);
-                if (cBFuncAAgregar.SelectedIndex != -1) {
-                    query = "EXEC NENE_MALLOC.alta_funcionalidad_por_rol '"+cBFuncAAgregar.SelectedItem.ToString()+"','"+txtNomRol.Text+"'";
+            }
+            else { 
+                MessageBox.Show("Complete los campos nombre y estado"); 
+            }
+              if (cBFuncAAgregar.SelectedIndex != -1) {
+                   string  query = "EXEC NENE_MALLOC.alta_funcionalidad_por_rol '"+cBFuncAAgregar.SelectedItem.ToString()+"','"+txtNomRol.Text+"'";
                     conexion.executeOnly(query);
                 }
-                if (cBFuncActuales.SelectedIndex != -1) {
-                    query = "EXEC NENE_MALLOC.baja_funcionalidad_por_rol '" + cBFuncActuales.SelectedItem.ToString() + "','" + txtNomRol.Text + "'";
+             if (cBFuncActuales.SelectedIndex != -1) {
+                  string   query = "EXEC NENE_MALLOC.baja_funcionalidad_por_rol '" + cBFuncActuales.SelectedItem.ToString() + "','" + txtNomRol.Text + "'";
                     conexion.executeOnly(query);
                 }
                 MessageBox.Show("Rol modificado con exito");
                 this.Close();
             }
-            else { MessageBox.Show("Complete los campos nombre y estado"); }
+            
             
         }
-    }
 }

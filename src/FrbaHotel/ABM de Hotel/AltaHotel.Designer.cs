@@ -43,12 +43,12 @@
             this.txtPais = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.txtFecNac = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.btnAlta = new System.Windows.Forms.Button();
             this.lBRegim = new System.Windows.Forms.ListBox();
             this.txtEstrellas = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // label1
@@ -172,13 +172,6 @@
             this.label8.TabIndex = 14;
             this.label8.Text = "Regimenes:";
             // 
-            // txtFecNac
-            // 
-            this.txtFecNac.Location = new System.Drawing.Point(105, 310);
-            this.txtFecNac.Name = "txtFecNac";
-            this.txtFecNac.Size = new System.Drawing.Size(100, 20);
-            this.txtFecNac.TabIndex = 17;
-            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -223,16 +216,23 @@
             this.label10.TabIndex = 20;
             this.label10.Text = "Estrellas:";
             // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Location = new System.Drawing.Point(103, 309);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(102, 20);
+            this.dateTimePicker1.TabIndex = 22;
+            // 
             // AltaHotel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(261, 376);
+            this.ClientSize = new System.Drawing.Size(224, 376);
+            this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.txtEstrellas);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.lBRegim);
             this.Controls.Add(this.btnAlta);
-            this.Controls.Add(this.txtFecNac);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.txtPais);
@@ -273,11 +273,11 @@
         private System.Windows.Forms.TextBox txtPais;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox txtFecNac;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btnAlta;
         private System.Windows.Forms.ListBox lBRegim;
         private System.Windows.Forms.TextBox txtEstrellas;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }

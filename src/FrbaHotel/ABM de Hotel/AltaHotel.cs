@@ -24,7 +24,7 @@ namespace FrbaHotel.ABM_de_Hotel
             foreach (DataRow row in regim.Rows) {
                 lBRegim.Items.Add(row["Regimen_Desc"].ToString());
             }
-            txtFecNac.Text = fechaActualSistema.ToString("yyyyMMdd");
+            dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
             this.generarBoxes();
         }
         private void generarBoxes()
@@ -36,7 +36,6 @@ namespace FrbaHotel.ABM_de_Hotel
             boxes.Add(txtNroCalle);
             boxes.Add(txtDom);
             boxes.Add(txtCiudad);
-            boxes.Add(txtFecNac);
             boxes.Add(txtEstrellas);
         }
 
@@ -54,7 +53,7 @@ namespace FrbaHotel.ABM_de_Hotel
                     }
                 }
                 string queryHotel = " declare @Id numeric(1,0) exec NENE_MALLOC.alta_hotel '" + txtNom.Text + "','" + txtMail.Text + "'," + txtTelefono.Text + ",'"
-                + txtDom.Text + "'," + txtNroCalle.Text + ",'" + txtCiudad.Text + "','" + txtPais.Text + "','" + txtFecNac.Text + "'," + txtEstrellas.Text + ",10,@Id";
+                + txtDom.Text + "'," + txtNroCalle.Text + ",'" + txtCiudad.Text + "','" + txtPais.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "'," + txtEstrellas.Text + ",10,@Id";
                 try
                 {
                     usuario.getConexion().executeOnly(queryHotel);

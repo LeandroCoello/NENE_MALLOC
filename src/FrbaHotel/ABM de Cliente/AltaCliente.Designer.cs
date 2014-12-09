@@ -50,9 +50,9 @@
             this.txtNroCalle = new System.Windows.Forms.TextBox();
             this.txtPiso = new System.Windows.Forms.TextBox();
             this.txtDepto = new System.Windows.Forms.TextBox();
-            this.txtFecNac = new System.Windows.Forms.TextBox();
             this.txtNacionalidad = new System.Windows.Forms.TextBox();
             this.btnAceptar = new System.Windows.Forms.Button();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // label1
@@ -233,13 +233,6 @@
             this.txtDepto.Size = new System.Drawing.Size(142, 20);
             this.txtDepto.TabIndex = 22;
             // 
-            // txtFecNac
-            // 
-            this.txtFecNac.Location = new System.Drawing.Point(88, 240);
-            this.txtFecNac.Name = "txtFecNac";
-            this.txtFecNac.Size = new System.Drawing.Size(142, 20);
-            this.txtFecNac.TabIndex = 23;
-            // 
             // txtNacionalidad
             // 
             this.txtNacionalidad.Location = new System.Drawing.Point(88, 264);
@@ -257,14 +250,21 @@
             this.btnAceptar.UseVisualStyleBackColor = true;
             this.btnAceptar.Click += new System.EventHandler(this.btnAceptar_Click);
             // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Location = new System.Drawing.Point(88, 239);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(142, 20);
+            this.dateTimePicker1.TabIndex = 26;
+            // 
             // AltaCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 324);
+            this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.btnAceptar);
             this.Controls.Add(this.txtNacionalidad);
-            this.Controls.Add(this.txtFecNac);
             this.Controls.Add(this.txtDepto);
             this.Controls.Add(this.txtPiso);
             this.Controls.Add(this.txtNroCalle);
@@ -289,7 +289,6 @@
             this.Controls.Add(this.label1);
             this.Name = "AltaCliente";
             this.Text = "AltaCliente";
-
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -319,8 +318,8 @@
         private System.Windows.Forms.TextBox txtNroCalle;
         private System.Windows.Forms.TextBox txtPiso;
         private System.Windows.Forms.TextBox txtDepto;
-        private System.Windows.Forms.TextBox txtFecNac;
         private System.Windows.Forms.TextBox txtNacionalidad;
         private System.Windows.Forms.Button btnAceptar;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }

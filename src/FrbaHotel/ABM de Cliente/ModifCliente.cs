@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -23,6 +24,7 @@ namespace FrbaHotel.ABM_de_Cliente
             conexion = conec;
             clienteId = listaValores[0];
             datosId = listaValores[1];
+            dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
             this.generarBoxes();
             this.cargarBoxes(listaValores);
             
@@ -48,13 +50,12 @@ namespace FrbaHotel.ABM_de_Cliente
             boxes.Add(txt8);
             boxes.Add(txt9);
             boxes.Add(txt10);
-            boxes.Add(txt11);
             boxes.Add(txt12);
         }
 
         private void btnGuardarCambios_Click(object sender, EventArgs e)
         {
-            string queryModif = "EXEC NENE_MALLOC.modificacion_cliente '"+txt1.Text+"','"+txt2.Text+"',"+txt3.Text+",'"+txt4.Text+"',"+txt5.Text+",'"+txt6.Text+"','"+txt7.Text+"',"+txt8.Text+","+txt9.Text+",'"+txt10.Text+"','"+txt11.Text+"','"+txt12.Text+"',"+clienteId;
+            string queryModif = "EXEC NENE_MALLOC.modificacion_cliente '"+txt1.Text+"','"+txt2.Text+"',"+txt3.Text+",'"+txt4.Text+"',"+txt5.Text+",'"+txt6.Text+"','"+txt7.Text+"',"+txt8.Text+","+txt9.Text+",'"+txt10.Text+"','"+dateTimePicker1.Value.ToString("yyyyMMdd")+"','"+txt12.Text+"',"+clienteId;
             try
             {
                 conexion.executeOnly(queryModif);

@@ -50,7 +50,6 @@
             this.txtMail = new System.Windows.Forms.TextBox();
             this.txtTelefono = new System.Windows.Forms.TextBox();
             this.txtCalle = new System.Windows.Forms.TextBox();
-            this.txtFecNac = new System.Windows.Forms.TextBox();
             this.txtHotelTrabaja = new System.Windows.Forms.TextBox();
             this.cBRolesAAsignar = new System.Windows.Forms.ComboBox();
             this.btnGuardar = new System.Windows.Forms.Button();
@@ -61,6 +60,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.txtDepto = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // label1
@@ -243,13 +243,6 @@
             this.txtCalle.Size = new System.Drawing.Size(100, 20);
             this.txtCalle.TabIndex = 21;
             // 
-            // txtFecNac
-            // 
-            this.txtFecNac.Location = new System.Drawing.Point(122, 372);
-            this.txtFecNac.Name = "txtFecNac";
-            this.txtFecNac.Size = new System.Drawing.Size(100, 20);
-            this.txtFecNac.TabIndex = 22;
-            // 
             // txtHotelTrabaja
             // 
             this.txtHotelTrabaja.Location = new System.Drawing.Point(122, 398);
@@ -333,11 +326,19 @@
             this.label16.TabIndex = 31;
             this.label16.Text = "Departamento:";
             // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Location = new System.Drawing.Point(122, 371);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(100, 20);
+            this.dateTimePicker1.TabIndex = 33;
+            // 
             // AltaUsuario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(303, 472);
+            this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.txtDepto);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.txtPiso);
@@ -348,7 +349,6 @@
             this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.cBRolesAAsignar);
             this.Controls.Add(this.txtHotelTrabaja);
-            this.Controls.Add(this.txtFecNac);
             this.Controls.Add(this.txtCalle);
             this.Controls.Add(this.txtTelefono);
             this.Controls.Add(this.txtMail);
@@ -402,7 +402,6 @@
         private System.Windows.Forms.TextBox txtMail;
         private System.Windows.Forms.TextBox txtTelefono;
         private System.Windows.Forms.TextBox txtCalle;
-        private System.Windows.Forms.TextBox txtFecNac;
         private System.Windows.Forms.TextBox txtHotelTrabaja;
         private System.Windows.Forms.ComboBox cBRolesAAsignar;
         private System.Windows.Forms.Button btnGuardar;
@@ -413,5 +412,6 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox txtDepto;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }

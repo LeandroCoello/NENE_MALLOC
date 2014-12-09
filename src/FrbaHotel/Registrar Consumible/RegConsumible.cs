@@ -82,11 +82,10 @@ namespace FrbaHotel.Registrar_Consumible
                     cant = row.Cells[1].Value.ToString();
                     DataTable consuId = conexion.consulta("SELECT Consumible_Id FROM NENE_MALLOC.Consumible WHERE Consumible_Desc LIKE '%"+row.Cells[0].Value.ToString()+"%'");
                     string query = "EXEC NENE_MALLOC.alta_consumible_habitacion " + rphId + "," + consuId.Rows[0].ItemArray[0].ToString() + "," + cant;
-                    MessageBox.Show(query);
                     conexion.executeOnly(query);
-                    MessageBox.Show("Registracion exitosa");
-                    this.Close();
                 }
+                MessageBox.Show("Registracion exitosa");
+                this.Close();
             }
 
         }

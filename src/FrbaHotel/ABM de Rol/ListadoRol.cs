@@ -54,7 +54,6 @@ namespace FrbaHotel.ABM_de_Rol
                 queryFinal +=  " AND R.Rol_Estado LIKE '%"+cBEstadoRol.SelectedItem.ToString()+"%'";
             }
             queryFinal += " GROUP BY R.Rol_Id,R.Rol_Desc,R.Rol_estado";
-            MessageBox.Show(queryFinal);
               dataGridView1.DataSource =  conexion.consulta(queryFinal);
               DataGridViewButtonColumn col = new DataGridViewButtonColumn();
               col.UseColumnTextForButtonValue = true;

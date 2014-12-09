@@ -57,7 +57,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 MessageBox.Show("Ingrese un codigo reserva");
             }
             else {
-                string query = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc,R.Reserva_Regimen FROM NENE_MALLOC.Reserva R, NENE_MALLOC.Reserva_Por_Habitacion RPH,NENE_MALLOC.Habitacion H WHERE H.Habitacion_Id = RPH.Habitacion_Id AND RPH.Reserva_Id =" + txtCodReser.Text+"AND R.Reserva_Id ="+txtCodReser.Text;
+                string query = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc,R.Reserva_Regimen FROM NENE_MALLOC.Reserva R, NENE_MALLOC.Reserva_Por_Habitacion RPH,NENE_MALLOC.Habitacion H WHERE H.Habitacion_Id = RPH.Habitacion_Id AND RPH.Reserva_Id =" + txtCodReser.Text+"AND R.Reserva_Id ="+txtCodReser.Text+" AND R.Reserva_Estado != 'Efectivizada'";
                 dataGridView1.DataSource = conexion.consulta(query);
                 hotelID = dataGridView1.Rows[0].Cells["Habitacion_Hotel"].Value.ToString();
                 DataTable porcs = conexion.consulta("SELECT Tipo_Hab_Porc FROM NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Id = " + dataGridView1.Rows[0].Cells["Habitacion_Tipo"].Value.ToString());
@@ -116,8 +116,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 if (condi == null)
                 {
                     string query = "EXEC NENE_MALLOC.modificar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + dateTimePicker1.Value.ToString("yyyyMMdd")
-                        + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + "," + usuario.conseguirIdUser() +","+txtCodReser.Text+","+ hotelID + ",";
-                    /*@fecha_modificacion nvarchar(15), @fecha_desde nvarchar(15),@fecha_hasta nvarchar(15), @tipo_regimen numeric(18,0), @id_cliente numeric(18,0), @user_reservador numeric(18,0),@reserva_id numeric(18,0), @id_hotel numeric(18,0)*/
+                        + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + "," + usuario.conseguirIdUser() +","+txtCodReser.Text+","+ hotelID + ",";                    
                     DataTable idReser = conexion.consulta(query);
                     MessageBox.Show("Reserva modificada exitosamente.");
                 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,6 +31,7 @@ namespace FrbaHotel.ABM_de_Usuario
             datosPersId = valores[1];
             this.generarBoxes();
             this.cargarBoxes(valores);
+            dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
         }
         private void generarBoxes() {
             boxes.Add(txtUser);
@@ -44,7 +46,6 @@ namespace FrbaHotel.ABM_de_Usuario
             boxes.Add(txtNcalle);
             boxes.Add(txtPiso);
             boxes.Add(txtDepto);
-            boxes.Add(txtFecNac);
             boxes.Add(txtHotelTrabaja);
         }
         private void cargarBoxes(string[] listaVal)
@@ -67,7 +68,7 @@ namespace FrbaHotel.ABM_de_Usuario
             {
                 string query = "EXEC NENE_MALLOC.modificacion_usuario '" + txtUser.Text + "','" + txtPass.Text + "','" + txtNom.Text + "','" + txtApellido.Text +
                     "'," + txtTelefono.Text + ",'" + txtTDoc.Text + "'," + txtNDoc.Text + ",'" + txtMail.Text + "','" + txtCalle.Text + "'," + txtNcalle.Text + "," + txtPiso.Text
-                    + ",'" + txtDepto.Text + "','" + txtFecNac.Text + "'," + usuarioId + "," +  txtHotelTrabaja.Text +", '"+cBRolesAAsignar.SelectedItem.ToString()+"'";
+                    + ",'" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "'," + usuarioId + "," +  txtHotelTrabaja.Text +", '"+cBRolesAAsignar.SelectedItem.ToString()+"'";
                 try
                 {
                     conexion.executeOnly(query);

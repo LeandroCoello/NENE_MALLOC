@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,7 +29,6 @@ namespace FrbaHotel.ABM_de_Usuario
             txtBoxes.Add(txtTelefono);
             txtBoxes.Add(txtCalle);
             txtBoxes.Add(txtNcalle);
-            txtBoxes.Add(txtFecNac);
             txtBoxes.Add(txtHotelTrabaja);
             Administrador admin = new Administrador(conexion);
             inicio = new Inicio(conexion);
@@ -37,6 +37,7 @@ namespace FrbaHotel.ABM_de_Usuario
             bs.DataSource = rolesActuales;
             cBRolesAAsignar.DataSource = bs;
             conec = conexion;
+            dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
         }
 
         private void btnLimpieza_Click(object sender, EventArgs e)
@@ -55,7 +56,7 @@ namespace FrbaHotel.ABM_de_Usuario
                 string passFinal = inicio.SHA256Encripta(txtPass.Text);
                 string queryAlta = "exec NENE_MALLOC.Alta_Usuario '" + txtUser.Text + "','" + passFinal + "','" + cBRolesAAsignar.SelectedItem.ToString() + "','" +
                     txtNom.Text + "','" + txtApellido.Text + "','" + txtTelefono.Text + "','" + txtTDoc.Text + "','" + txtNDoc.Text + "','" + txtMail.Text + "','"
-                    + txtCalle.Text + "','" + txtNcalle.Text + "','" + txtPiso.Text + "','" + txtDepto.Text + "','" + txtFecNac.Text + "','" + txtHotelTrabaja.Text + "'";
+                    + txtCalle.Text + "','" + txtNcalle.Text + "','" + txtPiso.Text + "','" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtHotelTrabaja.Text + "'";
                 try
                 {
                     conec.executeOnly(queryAlta);

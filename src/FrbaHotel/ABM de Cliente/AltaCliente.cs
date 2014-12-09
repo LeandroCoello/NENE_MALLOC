@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,8 +25,8 @@ namespace FrbaHotel.ABM_de_Cliente
             txtBoxes.Add(txtMail);
             txtBoxes.Add(txtDireccion);
             txtBoxes.Add(txtNroCalle);
-            txtBoxes.Add(txtFecNac);
             txtBoxes.Add(txtNacionalidad);
+            dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
             conexion = conec;
             
         }
@@ -38,7 +39,7 @@ namespace FrbaHotel.ABM_de_Cliente
                 }
             }
             string queryCliente = " declare @Id numeric(1,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
-                +txtTipoDoc.Text+"',"+txtNroDoc.Text+",'"+txtMail.Text+"','"+txtDireccion.Text+"',"+txtNroCalle.Text+","+txtPiso.Text+",'"+txtDepto.Text+"','"+txtFecNac.Text+"','"+txtNacionalidad.Text+"',@Id  SELECT @Id";
+                +txtTipoDoc.Text+"',"+txtNroDoc.Text+",'"+txtMail.Text+"','"+txtDireccion.Text+"',"+txtNroCalle.Text+","+txtPiso.Text+",'"+txtDepto.Text+"','"+dateTimePicker1.Value.ToString("yyyyMMdd")+"','"+txtNacionalidad.Text+"',@Id  SELECT @Id";
             try
             {
                 DataTable clienteId = conexion.consulta(queryCliente);
@@ -49,6 +50,6 @@ namespace FrbaHotel.ABM_de_Cliente
             {
                 MessageBox.Show(excep.Message);
             }
-        }    
+        }    /*inicioDateTimePicker1.Value.ToString("yyyyMMdd")*/
     }
 }
