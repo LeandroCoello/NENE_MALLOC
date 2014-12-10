@@ -65,9 +65,9 @@ namespace FrbaHotel.Registrar_Estadia
                 string query = "SELECT Tipo_Cant_Maxima_Huespedes FROM NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Id ="+row.Cells["Habitacion_Tipo"].Value.ToString();
                 cantPasajeros = Convert.ToDouble(conexion.consulta(query).Rows[0].ItemArray[0]);
                 rphId = row.Cells["RPH_Id"].Value.ToString();
-                cargarPasajeros(cantPasajeros);
                 if (btnIngresar.Text == "Registrar")
                 {
+                    cargarPasajeros(cantPasajeros);
                     string queryFinal = "EXEC NENE_MALLOC.check_in  "+row.Cells["RPH_Id"].Value.ToString()+","+fechaSistema.ToString("yyyyMMdd");
                     conexion.executeOnly(queryFinal);
                     MessageBox.Show("Check In realizado con exito");
