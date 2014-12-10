@@ -24,7 +24,7 @@ namespace FrbaHotel.Registrar_Consumible
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            AgregarConsu levantar = new AgregarConsu(this);
+            AgregarConsu levantar = new AgregarConsu(this,conexion);
             this.Hide();
             levantar.ShowDialog();
             this.Show();
