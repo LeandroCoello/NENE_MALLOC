@@ -29,13 +29,14 @@ namespace FrbaHotel.Registrar_Consumible
             }
             else
             {
+                try{
                 DataTable consus =conexion.consulta("SELECT Consumible_Desc FROM NENE_MALLOC.Consumible WHERE Consumible_Desc  ="+txtDesc.Text);
                 if (consus.Rows.Count >= 1)
                 {
                     form.agregarAlGrid(txtDesc.Text, txtCantidad.Text);
                     this.Close();
                 }
-                else {
+                }catch{
                     MessageBox.Show("Consumible no encontrado");
                 }
             }
