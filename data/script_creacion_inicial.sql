@@ -1097,12 +1097,6 @@ create procedure NENE_MALLOC.alta_hotel @nombre nvarchar(255), @mail nvarchar(25
 as
 begin transaction
 	
-	if exists(select *  from NENE_MALLOC.Hotel h where h.Hotel_Nombre = @nombre)
-		begin
-			rollback
-			raiserror('Ya existe un hotel con este nombre',16,1)
-			return
-		end
 
 	if exists(select *  from NENE_MALLOC.Hotel h where h.Hotel_Mail = @mail)
 		begin
