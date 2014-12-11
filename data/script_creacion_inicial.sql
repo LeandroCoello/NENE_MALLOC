@@ -1370,7 +1370,7 @@ begin transaction
 	end
 	
 	Insert into NENE_MALLOC.Log_Reserva(Log_Fecha, Log_Reservador, Log_Descripcion, Log_Reserva)
-	                            values(@fecha_cancelacion_correcta, @user_cancelador, @motivo, @reserva_id)
+	                            values(@fecha_cancelacion_correcta, @user_cancelador, 'Cancelada por:'+' '+@motivo, @reserva_id)
 	UPDATE Reserva
 	set Reserva_Estado = 'Cancelada'
 	where Reserva_Id = @reserva_id
@@ -1476,7 +1476,8 @@ if (select top 1 Estadia_Fecha_Salida from NENE_MALLOC.Estadia where Estadia_RPH
 	
 	declare @fecha_fin datetime
 	set @fecha_fin = (select res.Reserva_FechaIng+res.Reserva_CantNoches from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Reserva res
-								where rph.Reserva_Id = res.Reserva_Id)
+								where rph.Reserva_Id = res.Reserva_Id and
+									  rph.RPH_Id = @rph_id)
 
 	
 	if(@fecha_fin > @fecha_correcta)
