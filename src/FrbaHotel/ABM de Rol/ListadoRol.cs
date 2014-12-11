@@ -40,18 +40,28 @@ namespace FrbaHotel.ABM_de_Rol
 
         private void btnBusqueda_Click(object sender, EventArgs e)
         {
-            string queryFinal = "SELECT R.Rol_Id,R.Rol_Desc,R.Rol_estado FROM NENE_MALLOC.Rol R, NENE_MALLOC.Func_Por_Rol FR, NENE_MALLOC.Funcionalidad F WHERE R.Rol_Id = FR.Rol_Id AND FR.Func_Id = F.Func_Id";          
+            string queryFinal = "SELECT R.Rol_Id,R.Rol_Desc,R.Rol_estado FROM NENE_MALLOC.Rol R, NENE_MALLOC.Funcionalidad F ";
+            Boolean condicion = false;
+            string condiciones = " WHERE ";
             if (!string.IsNullOrEmpty(txtNomRol.Text)) 
             {
-                queryFinal += " AND R.Rol_Desc LIKE '%"+txtNomRol.Text+"%'";
+                condicion = true;
+                queryFinal += condiciones+ " R.Rol_Desc LIKE '%"+txtNomRol.Text+"%'";
             }
             if (cBFuncionalidades.SelectedIndex != -1) 
             {
-                queryFinal += " AND F.Func_Desc LIKE '%"+cBFuncionalidades.SelectedItem.ToString()+"%'";
+                if (condicion) { queryFinal += " AND F.Func_Desc LIKE '%" + cBFuncionalidades.SelectedItem.ToString() + "%'"; }
+                else
+                {
+                    condicion = true; 
+                    queryFinal += condiciones +"  F.Func_Desc LIKE '%" + cBFuncionalidades.SelectedItem.ToString() + "%'"; }
+                
             }
             if (cBEstadoRol.SelectedIndex != -1) 
             {
-                queryFinal +=  " AND R.Rol_Estado LIKE '%"+cBEstadoRol.SelectedItem.ToString()+"%'";
+                if (condicion) { queryFinal += " AND R.Rol_Estado LIKE '%" + cBEstadoRol.SelectedItem.ToString() + "%'"; }
+                else { queryFinal += condiciones+"  R.Rol_Estado LIKE '%" + cBEstadoRol.SelectedItem.ToString() + "%'"; }
+                
             }
             queryFinal += " GROUP BY R.Rol_Id,R.Rol_Desc,R.Rol_estado";
               dataGridView1.DataSource =  conexion.consulta(queryFinal);
