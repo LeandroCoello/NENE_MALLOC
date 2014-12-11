@@ -16,29 +16,30 @@ namespace FrbaHotel.Cancelar_Reserva
     {
         DateTime fechaActualSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
         SQLConnector conexion;
+        string idGral=null;
         public CancelReser(SQLConnector conecc,string criterio)
         {
             InitializeComponent();
             txtFecCancel.Text = fechaActualSistema.ToString("yyyyMMdd");
             conexion = conecc;
-            if (criterio == "guest") 
-            {   txtIDRecepcionista.ReadOnly = true;
-                txtIDRecepcionista.Text = null;
-            }
+        }
+        public CancelReser(UsuarioLogueado userLog) {
+            idGral = userLog.conseguirIdUser();
+            conexion = userLog.getConexion();
+            txtFecCancel.Text = fechaActualSistema.ToString("yyyyMMdd");
         }
 
         private void btnAceptarCancel_Click(object sender, EventArgs e)
         {
         string queryCancel = "";
-        if (txtIDRecepcionista.Text == "" && !string.IsNullOrEmpty(txtMotivo.Text) && !string.IsNullOrEmpty(txtNroReserva.Text))
+        if (idGral == null && !string.IsNullOrEmpty(txtMotivo.Text) && !string.IsNullOrEmpty(txtNroReserva.Text))
         {
             queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + ",NULL,'" + txtMotivo.Text + "'";
         }
         else if(!string.IsNullOrEmpty(txtMotivo.Text) && !string.IsNullOrEmpty(txtNroReserva.Text) &&
-                !string.IsNullOrEmpty(txtIDRecepcionista.Text)) 
+                !string.IsNullOrEmpty(idGral)) 
             {
-            queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + "," + txtIDRecepcionista.Text + ",'" + txtMotivo.Text + "'";
-              
+            queryCancel = "EXEC NENE_MALLOC.cancelar_reserva '" + txtFecCancel.Text + "'," + txtNroReserva.Text + "," + idGral + ",'" + txtMotivo.Text + "'";
           }
          else
             {
@@ -56,7 +57,7 @@ namespace FrbaHotel.Cancelar_Reserva
             
            
         }
-        private void limpiarCampos() { txtNroReserva.Text = ""; txtMotivo.Text = ""; txtIDRecepcionista.Text = ""; }
+        private void limpiarCampos() { txtNroReserva.Text = ""; txtMotivo.Text = "";}
 
     }
 }

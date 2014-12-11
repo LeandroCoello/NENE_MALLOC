@@ -31,9 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.txtNroReserva = new System.Windows.Forms.TextBox();
-            this.txtIDRecepcionista = new System.Windows.Forms.TextBox();
             this.txtFecCancel = new System.Windows.Forms.TextBox();
             this.txtMotivo = new System.Windows.Forms.TextBox();
             this.btnAceptarCancel = new System.Windows.Forms.Button();
@@ -60,20 +58,11 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 208);
+            this.label3.Location = new System.Drawing.Point(12, 186);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(102, 13);
             this.label3.TabIndex = 2;
             this.label3.Text = "Fecha Cancelación:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 181);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Id Recepcionista:";
             // 
             // txtNroReserva
             // 
@@ -82,17 +71,10 @@
             this.txtNroReserva.Size = new System.Drawing.Size(158, 20);
             this.txtNroReserva.TabIndex = 4;
             // 
-            // txtIDRecepcionista
-            // 
-            this.txtIDRecepcionista.Location = new System.Drawing.Point(102, 178);
-            this.txtIDRecepcionista.Name = "txtIDRecepcionista";
-            this.txtIDRecepcionista.Size = new System.Drawing.Size(122, 20);
-            this.txtIDRecepcionista.TabIndex = 5;
-            // 
             // txtFecCancel
             // 
             this.txtFecCancel.Enabled = false;
-            this.txtFecCancel.Location = new System.Drawing.Point(120, 205);
+            this.txtFecCancel.Location = new System.Drawing.Point(120, 183);
             this.txtFecCancel.Name = "txtFecCancel";
             this.txtFecCancel.ReadOnly = true;
             this.txtFecCancel.Size = new System.Drawing.Size(104, 20);
@@ -108,7 +90,7 @@
             // 
             // btnAceptarCancel
             // 
-            this.btnAceptarCancel.Location = new System.Drawing.Point(102, 252);
+            this.btnAceptarCancel.Location = new System.Drawing.Point(80, 222);
             this.btnAceptarCancel.Name = "btnAceptarCancel";
             this.btnAceptarCancel.Size = new System.Drawing.Size(75, 23);
             this.btnAceptarCancel.TabIndex = 8;
@@ -120,13 +102,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(289, 306);
+            this.ClientSize = new System.Drawing.Size(287, 268);
             this.Controls.Add(this.btnAceptarCancel);
             this.Controls.Add(this.txtMotivo);
             this.Controls.Add(this.txtFecCancel);
-            this.Controls.Add(this.txtIDRecepcionista);
             this.Controls.Add(this.txtNroReserva);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -142,9 +122,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtNroReserva;
-        private System.Windows.Forms.TextBox txtIDRecepcionista;
         private System.Windows.Forms.TextBox txtFecCancel;
         private System.Windows.Forms.TextBox txtMotivo;
         private System.Windows.Forms.Button btnAceptarCancel;
