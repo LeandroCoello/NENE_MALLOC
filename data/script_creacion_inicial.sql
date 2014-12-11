@@ -1485,9 +1485,9 @@ if (select top 1 Estadia_Fecha_Salida from NENE_MALLOC.Estadia where Estadia_RPH
 
 			declare @cant_noches numeric(18,0)
 			set @cant_noches = (select r.Reserva_CantNoches 
-								from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
-								where rph.RPH_Id = @rph_id and
-									  r.Reserva_Id = rph.Reserva_Id)
+								from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion resph
+c								where resph.RPH_Id = @rph_id and
+									  r.Reserva_Id = resph.Reserva_Id)
 			
 			declare @item_monto_nuevo numeric(18,2)
 			set @item_monto_nuevo = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches-@cant_noches_efectivizadas))
@@ -1495,7 +1495,7 @@ if (select top 1 Estadia_Fecha_Salida from NENE_MALLOC.Estadia where Estadia_RPH
 
 			Update NENE_MALLOC.Item_Factura
 				set Item_Factura_Monto = (select NENE_MALLOC.costo_estadia (@rph_id, @cant_noches_efectivizadas))
-					where Item_Factura_Id = (select Estadia_Id from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id)
+					where Item_Factura_Id = (select est.Estadia_Id from NENE_MALLOC.Estadia est where est.Estadia_RPH = @rph_id)
 			
 			Insert into NENE_MALLOC.Item_Factura(Item_Factura_Id, Item_Factura_Cantidad, Item_Factura_Monto) 
 							values (@id_item_fact, 1, @item_monto_nuevo)
@@ -1521,7 +1521,7 @@ if (select top 1 Estadia_Fecha_Salida from NENE_MALLOC.Estadia where Estadia_RPH
 
 		Update NENE_MALLOC.Habitacion
 			set Habitacion_Ocupada = 0
-				where Habitacion_Id = (select rph.Habitacion_Id from NENE_MALLOC.Reserva_Por_Habitacion rph
+				where Habitacion_Id in (select rph.Habitacion_Id from NENE_MALLOC.Reserva_Por_Habitacion rph
 												 where rph.RPH_Id = @rph_id)
 		
 		Delete from NENE_MALLOC.Huesped_Por_Habitacion
