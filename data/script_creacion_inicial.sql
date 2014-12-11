@@ -1486,7 +1486,7 @@ if (select top 1 Estadia_Fecha_Salida from NENE_MALLOC.Estadia where Estadia_RPH
 			declare @cant_noches numeric(18,0)
 			set @cant_noches = (select r.Reserva_CantNoches 
 								from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion resph
-c								where resph.RPH_Id = @rph_id and
+								where resph.RPH_Id = @rph_id and
 									  r.Reserva_Id = resph.Reserva_Id)
 			
 			declare @item_monto_nuevo numeric(18,2)
