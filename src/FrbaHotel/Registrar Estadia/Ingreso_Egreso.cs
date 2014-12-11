@@ -16,7 +16,8 @@ namespace FrbaHotel.Registrar_Estadia
         DateTime fechaSistema;
         UsuarioLogueado usuario;
         SQLConnector conexion;
-        double cantPasajeros;
+        double cantPasajeros=0;
+        string clienteInicial = null;
         string rphId;
         public Ingreso_Egreso(UsuarioLogueado userLog)
         {
@@ -62,28 +63,36 @@ namespace FrbaHotel.Registrar_Estadia
         private void btnIngresar_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in dataGridView1.SelectedRows) {
-                string query = "SELECT Tipo_Cant_Maxima_Huespedes FROM NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Id ="+row.Cells["Habitacion_Tipo"].Value.ToString();
-                cantPasajeros = Convert.ToDouble(conexion.consulta(query).Rows[0].ItemArray[0]);
-                rphId = row.Cells["RPH_Id"].Value.ToString();
+                
                 if (btnIngresar.Text == "Registrar")
                 {
-                    cargarPasajeros(cantPasajeros);
+                    clienteInicial = row.Cells["Reserva_Cliente"].Value.ToString();
+                    string query = "SELECT Tipo_Cant_Maxima_Huespedes FROM NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Id =" + row.Cells["Habitacion_Tipo"].Value.ToString();
+                    cantPasajeros = Convert.ToDouble(conexion.consulta(query).Rows[0].ItemArray[0]);
+                    rphId = row.Cells["RPH_Id"].Value.ToString();
+                    cargarPasajeros(cantPasajeros,clienteInicial);
                     string queryFinal = "EXEC NENE_MALLOC.check_in  "+row.Cells["RPH_Id"].Value.ToString()+","+fechaSistema.ToString("yyyyMMdd");
                     conexion.executeOnly(queryFinal);
                     MessageBox.Show("Check In realizado con exito");
                     this.Close();
                 }
                 else {
-                    string queryFinal = "EXEC NENE_MALLOC.check_out  "+row.Cells["RPH_Id"].Value.ToString()+","+fechaSistema.ToString("yyyyMMdd");
-                    conexion.executeOnly(queryFinal);
-                    MessageBox.Show("Check Out realizado con exito");
-                    this.Close();
+                    try
+                    {
+                        string queryFinal = "EXEC NENE_MALLOC.check_out  " + row.Cells["RPH_Id"].Value.ToString() + ",'" + fechaSistema.ToString("yyyyMMdd")+"'";
+                        MessageBox.Show(queryFinal);
+                        conexion.executeOnly(queryFinal);
+                        MessageBox.Show("Check Out realizado con exito");
+                        this.Close();
+                    }
+                    catch (Exception ex) { MessageBox.Show(ex.Message); }
                 }
             }
         }
-        private void cargarPasajeros(double cantidad) {
+        private void cargarPasajeros(double cantidad,string clienteInicial) {
+            setClienteID(clienteInicial);
             MessageBox.Show("A continuacion registre a los huespedes restantes.");
-            for (int i = 1; i <= cantidad; i++) {
+            for (double i = 1; i < cantidad; i++) {
                 Generar_Modificar_Reserva.Generar generar = new FrbaHotel.Generar_Modificar_Reserva.Generar(usuario);
                 DialogResult resultado = generar.clienteEnSistema();
                 if (resultado == DialogResult.Yes) {

@@ -168,6 +168,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             return MessageBox.Show("¿Esta registrado en nuestra cadena hotelera?","confirmacion",MessageBoxButtons.YesNo);
         }
         private Decimal calcularPrecio() {
+            Decimal valorFinal = 0;
             Decimal porcHab =0;
             Decimal recargaHotel = 0;
             Decimal valorRegimen = 0;
@@ -186,8 +187,8 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 regimenId = Convert.ToString(dr.Cells["Regimen_Id"].Value);
                 
             }
-
-            return (valorRegimen*porcHab)+recargaHotel;
+            valorFinal = (valorRegimen * porcHab) + recargaHotel;
+            return valorFinal;
         }
     }
 }
