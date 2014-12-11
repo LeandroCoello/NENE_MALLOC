@@ -37,6 +37,7 @@ namespace FrbaHotel.ABM_de_Cliente
                 txtB.Text = unaLista[i];
                 i++;
             }
+            dateTimePicker1.Value = Convert.ToDateTime(unaLista[i]);
         }
 
         private void generarBoxes(){

@@ -39,7 +39,7 @@ namespace FrbaHotel.ABM_de_Cliente
 
         private void btnBusqueda_Click(object sender, EventArgs e)
         {
-            string queryFinal = "SELECT C.Cliente_Id,D.Datos_Id,D.Datos_Nombre,D.Datos_Apellido,D.Datos_Telefono,D.Datos_Tipo_Ident,D.Datos_Nro_Ident,D.Datos_Mail,D.Datos_Dom_Calle,D.Datos_Dom_Nro_Calle,D.Datos_Dom_Piso,D.Datos_Dom_Depto,D.Datos_Fecha_Nac,C.Cliente_Nacionalidad"
+            string queryFinal = "SELECT C.Cliente_Id,D.Datos_Id,D.Datos_Nombre,D.Datos_Apellido,D.Datos_Telefono,D.Datos_Tipo_Ident,D.Datos_Nro_Ident,D.Datos_Mail,D.Datos_Dom_Calle,D.Datos_Dom_Nro_Calle,D.Datos_Dom_Piso,D.Datos_Dom_Depto,C.Cliente_Nacionalidad,D.Datos_Fecha_Nac"
                 +" FROM NENE_MALLOC.Datos_Personales D, NENE_MALLOC.Cliente C WHERE D.Datos_Id = C.Cliente_Datos";
             string agregarCondicion;
             if(!string.IsNullOrEmpty(txtApe.Text)){

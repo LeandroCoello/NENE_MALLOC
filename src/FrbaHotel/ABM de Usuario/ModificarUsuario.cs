@@ -56,6 +56,7 @@ namespace FrbaHotel.ABM_de_Usuario
                 txtB.Text = listaVal[i];
                 i++;
             }
+            dateTimePicker1.Value = Convert.ToDateTime(listaVal[i]);
         }
 
         private void btnModUser_Click(object sender, EventArgs e)
