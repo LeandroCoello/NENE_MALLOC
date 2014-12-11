@@ -65,13 +65,19 @@ namespace FrbaHotel.Facturar_Publicaciones
 
         private void btnFacturar_Click(object sender, EventArgs e)
         {
-            string queryFinal = "declare @facturaId numeric(18,0) EXEC NENE_MALLOC.generar_factura "+txtClieCod.Text+","+fechaSistema+",@facturaId out"
-                                +" SELECT @facturaId";
-            string facturaID = usuario.getConexion().consulta(queryFinal).Rows[0].ItemArray[0].ToString();
-            usuario.getConexion().executeOnly("EXEC NENE_MALLOC.agregar_items " +facturaID+"," + RPH_ID);
-            MessageBox.Show("Cliente: "+txtClieCod.Text+
-                "\n Total a pagar:"+ usuario.getConexion().consulta("SELECT Factura_Total FROM NENE_MALLOC.Factura WHERE Factura_Id ="+facturaID).Rows[0].ItemArray[0].ToString());
-            this.btnLimpieza_Click(sender,e);
+            try
+            {
+                string queryFinal = "declare @facturaId numeric(18,0) EXEC NENE_MALLOC.generar_factura " + txtClieCod.Text + "," + fechaSistema + ",@facturaId out"
+                                    + " SELECT @facturaId";
+                string facturaID = usuario.getConexion().consulta(queryFinal).Rows[0].ItemArray[0].ToString();
+                usuario.getConexion().executeOnly("EXEC NENE_MALLOC.agregar_items " + facturaID + "," + RPH_ID);
+                MessageBox.Show("Cliente: " + txtClieCod.Text +
+                    "\n Total a pagar:" + usuario.getConexion().consulta("SELECT Factura_Total FROM NENE_MALLOC.Factura WHERE Factura_Id =" + facturaID).Rows[0].ItemArray[0].ToString());
+                this.btnLimpieza_Click(sender, e);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 

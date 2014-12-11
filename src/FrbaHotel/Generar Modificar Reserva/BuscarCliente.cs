@@ -14,6 +14,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
     public partial class BuscarCliente : Form
     {
         UsuarioLogueado usuario;
+        SQLConnector conec;
         string clienteId;
         Generar generarForm;
         Ingreso_Egreso ingreso;
@@ -21,6 +22,17 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         {
             InitializeComponent();
             usuario = userLog;
+            conec = userLog.getConexion();
+            cBTipoDoc.Items.Add("DNI");
+            cBTipoDoc.Items.Add("Pasaporte");
+            cBTipoDoc.Items.Add("Cedula");
+            generarForm = genForm;
+            ingreso = null;
+        }
+        public BuscarCliente(SQLConnector conexion, Generar genForm)
+        {
+            InitializeComponent();
+            conec = conexion;
             cBTipoDoc.Items.Add("DNI");
             cBTipoDoc.Items.Add("Pasaporte");
             cBTipoDoc.Items.Add("Cedula");
@@ -31,6 +43,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         {
             InitializeComponent();
             usuario = userLog;
+            conec = userLog.getConexion();
             ingreso = ingForm;
             generarForm = null;
             cBTipoDoc.Items.Add("DNI");
@@ -52,7 +65,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                if(txtNDoc.Text != ""){
                   query += " AND DP.Datos_Nro_Ident ="+txtNDoc.Text;
                 }
-                dataGridView1.DataSource = usuario.getConexion().consulta(query);
+                dataGridView1.DataSource = conec.consulta(query);
                 DataGridViewButtonColumn col = new DataGridViewButtonColumn();
                 col.UseColumnTextForButtonValue = true;
                 col.Text = "Seleccionar";
@@ -67,11 +80,9 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-
                 clienteId = dataGridView1.Rows[e.RowIndex].Cells["Cliente_Id"].Value.ToString();
                 cargarId(clienteId);
-                this.Close();
-                
+                this.Close();   
             }
         }
         public void cargarId(string id) {

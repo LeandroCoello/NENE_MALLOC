@@ -49,31 +49,37 @@ namespace FrbaHotel.Listado_Estadistico
             else
             {
                 string queryFinal;
-                switch (cBListado.SelectedItem.ToString())
+                try
                 {
-                    case "Hoteles con mayor cantidad de reservas canceladas":
-                        queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_reservas_mas_canceladas ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
-                        dGVListEsta.DataSource = conector.consulta(queryFinal);
-                        break;
-                    case "Hoteles con mayor cantidad de consumibles facturados":
-                        queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_consumibles_facturados ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
-                        dGVListEsta.DataSource = conector.consulta(queryFinal);
-                        break;
-                    case "Hoteles con mayor cantidad de días fuera de servicio":
-                        queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_fuera_de_servicio ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
-                        dGVListEsta.DataSource = conector.consulta(queryFinal);
-                        break;
-                    case "Habitaciones con mayor cantidad de días y veces que fueron ocupadas":
-                        queryFinal = "SELECT * FROM NENE_MALLOC.habitaciones_mas_ocupadas ("+cBanios.SelectedItem.ToString()+","+txtMINI.Text+","+txtMFIN.Text+")";
-                        dGVListEsta.DataSource = conector.consulta(queryFinal);
-                        break;
-                    case "Clientes con mayor cantidad de puntos":
-                        queryFinal = "SELECT * FROM NENE_MALLOC.clientes_mas_puntos (" + cBanios.SelectedItem.ToString() + "," + txtMINI.Text + "," + txtMFIN.Text + ")";
-                        dGVListEsta.DataSource = conector.consulta(queryFinal);
-                        break;
-                    default:
-                        return;
-                        
+                    switch (cBListado.SelectedItem.ToString())
+                    {
+                        case "Hoteles con mayor cantidad de reservas canceladas":
+                            queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_reservas_mas_canceladas (" + cBanios.SelectedItem.ToString() + "," + txtMINI.Text + "," + txtMFIN.Text + ")";
+                            dGVListEsta.DataSource = conector.consulta(queryFinal);
+                            break;
+                        case "Hoteles con mayor cantidad de consumibles facturados":
+                            queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_consumibles_facturados (" + cBanios.SelectedItem.ToString() + "," + txtMINI.Text + "," + txtMFIN.Text + ")";
+                            dGVListEsta.DataSource = conector.consulta(queryFinal);
+                            break;
+                        case "Hoteles con mayor cantidad de días fuera de servicio":
+                            queryFinal = "SELECT * FROM NENE_MALLOC.hoteles_fuera_de_servicio (" + cBanios.SelectedItem.ToString() + "," + txtMINI.Text + "," + txtMFIN.Text + ")";
+                            dGVListEsta.DataSource = conector.consulta(queryFinal);
+                            break;
+                        case "Habitaciones con mayor cantidad de días y veces que fueron ocupadas":
+                            queryFinal = "SELECT * FROM NENE_MALLOC.habitaciones_mas_ocupadas (" + cBanios.SelectedItem.ToString() + "," + txtMINI.Text + "," + txtMFIN.Text + ")";
+                            dGVListEsta.DataSource = conector.consulta(queryFinal);
+                            break;
+                        case "Clientes con mayor cantidad de puntos":
+                            queryFinal = "SELECT * FROM NENE_MALLOC.clientes_mas_puntos (" + cBanios.SelectedItem.ToString() + "," + txtMINI.Text + "," + txtMFIN.Text + ")";
+                            dGVListEsta.DataSource = conector.consulta(queryFinal);
+                            break;
+                        default:
+                            return;
+
+                    }
+                }
+                catch (Exception ex) {
+                    MessageBox.Show(ex.Message);
                 }
             }
         }

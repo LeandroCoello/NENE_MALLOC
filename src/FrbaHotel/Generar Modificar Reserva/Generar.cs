@@ -94,9 +94,15 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 }
                 if (confirmarReserva(precio) == DialogResult.Yes)
                 {
-                    if (clienteEnSistema() == DialogResult.Yes)
+                    if (clienteEnSistema() == DialogResult.Yes && condi == null)
                     {
                         BuscarCliente levantarBusqueda = new BuscarCliente(usuario, this);
+                        this.Hide();
+                        levantarBusqueda.ShowDialog();
+                        finalizarReserva();
+                    }
+                    else if(condi != null){
+                        BuscarCliente levantarBusqueda = new BuscarCliente(coneccion, this);
                         this.Hide();
                         levantarBusqueda.ShowDialog();
                         finalizarReserva();
@@ -118,7 +124,6 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                         this.Close();
                     }
                 }
-             
             }
         }
         private void finalizarReserva() {
@@ -126,8 +131,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             if (condi == null)
             {
                 string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") +"','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
-                    + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + "," + usuario.conseguirIdUser() + ",@idReserva out" +
-                    " SELECT @idReserva";
+                    + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + "," + usuario.conseguirIdUser() + ",@idReserva out SELECT @idReserva";
                 DataTable idReser = coneccion.consulta(query);
                 foreach (DataGridViewRow dr in dataGridView1.SelectedRows) { 
                     string miniQuery="INSERT INTO NENE_MALLOC.Reserva_Por_Habitacion VALUES("+idReser.Rows[0][0].ToString()+","+dr.Cells["Habitacion_Id"].Value.ToString()+")";
@@ -140,8 +144,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 this.Hide();
                 levantar.ShowDialog();
                 string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
-                         + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + ",NULL, @idReserva out" +
-                        " SELECT @idReserva";
+                         + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + ",NULL,@idReserva out SELECT @idReserva";
                 DataTable idReser = coneccion.consulta(query);
                 foreach (DataGridViewRow dr in dataGridView1.SelectedRows)
                 {

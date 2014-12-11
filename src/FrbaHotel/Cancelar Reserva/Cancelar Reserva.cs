@@ -45,8 +45,7 @@ namespace FrbaHotel.Cancelar_Reserva
               MessageBox.Show("Por favor complete todo los campos");
                this.limpiarCampos();
              }  
-         try {
-                   
+         try {     
                     conexion.executeOnly(queryCancel);
                     MessageBox.Show("Reserva Cancelada con exito");
                     this.Close();

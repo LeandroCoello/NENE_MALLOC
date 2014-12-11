@@ -57,22 +57,29 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 MessageBox.Show("Ingrese un codigo reserva");
             }
             else {
-                string query = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc,R.Reserva_Regimen FROM NENE_MALLOC.Reserva R, NENE_MALLOC.Reserva_Por_Habitacion RPH,NENE_MALLOC.Habitacion H WHERE H.Habitacion_Id = RPH.Habitacion_Id AND RPH.Reserva_Id =" + txtCodReser.Text+"AND R.Reserva_Id ="+txtCodReser.Text+" AND R.Reserva_Estado != 'Efectivizada'";
-                dataGridView1.DataSource = conexion.consulta(query);
-                hotelID = dataGridView1.Rows[0].Cells["Habitacion_Hotel"].Value.ToString();
-                DataTable porcs = conexion.consulta("SELECT Tipo_Hab_Porc FROM NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Id = " + dataGridView1.Rows[0].Cells["Habitacion_Tipo"].Value.ToString());
-                porc = Convert.ToDecimal(porcs.Rows[0][0]);
-                DataTable recargas = conexion.consulta("SELECT Hotel_Recarga_Estrella FROM NENE_MALLOC.Hotel WHERE Hotel_Id ="+hotelID);
-                recargaHotel = Convert.ToDecimal(recargas.Rows[0][0]);
-                setClienteIdyRegimenId();              
-                txtRegimenActual.Text = dataGridView1.Rows[0].Cells["Reserva_Regimen"].Value.ToString();
-                dataGridView1.Columns.Remove("Reserva_Regimen");
-                string habitacionesDisp = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc FROM NENE_MALLOC.Habitacion H WHERE H.Habitacion_Ocupada = 0 AND H.Habitacion_Cerrada = 0 AND H.Habitacion_Hotel = "+hotelID;
-                dataGridView2.DataSource = conexion.consulta(habitacionesDisp);
-                regimenes = conexion.consulta("SELECT R.Regimen_Id,R.Regimen_Desc,R.Regimen_Precio FROM NENE_MALLOC.Regimen R,NENE_MALLOC.Regimen_Por_Hotel RH WHERE R.Regimen_Id = RH.Regimen_Id AND R.Regimen_Inactivo = 0 AND RH.Hotel_Id = " + hotelID);
-                fechas = conexion.consulta("SELECT R.Reserva_FechaIng FROM NENE_MALLOC.Reserva R WHERE R.Reserva_Id ="+txtCodReser.Text);
-                dateTimePicker1.Value = Convert.ToDateTime(fechas.Rows[0][0].ToString());
-                dateTimePicker2.Value = dateTimePicker1.Value.AddDays(1);
+                try
+                {
+                    string query = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc,R.Reserva_Regimen FROM NENE_MALLOC.Reserva R, NENE_MALLOC.Reserva_Por_Habitacion RPH,NENE_MALLOC.Habitacion H WHERE H.Habitacion_Id = RPH.Habitacion_Id AND RPH.Reserva_Id =" + txtCodReser.Text + "AND R.Reserva_Id =" + txtCodReser.Text + " AND R.Reserva_Estado != 'Efectivizada'";
+                    dataGridView1.DataSource = conexion.consulta(query);
+                    hotelID = dataGridView1.Rows[0].Cells["Habitacion_Hotel"].Value.ToString();
+                    DataTable porcs = conexion.consulta("SELECT Tipo_Hab_Porc FROM NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Id = " + dataGridView1.Rows[0].Cells["Habitacion_Tipo"].Value.ToString());
+                    porc = Convert.ToDecimal(porcs.Rows[0][0]);
+                    DataTable recargas = conexion.consulta("SELECT Hotel_Recarga_Estrella FROM NENE_MALLOC.Hotel WHERE Hotel_Id =" + hotelID);
+                    recargaHotel = Convert.ToDecimal(recargas.Rows[0][0]);
+                    setClienteIdyRegimenId();
+                    txtRegimenActual.Text = dataGridView1.Rows[0].Cells["Reserva_Regimen"].Value.ToString();
+                    dataGridView1.Columns.Remove("Reserva_Regimen");
+                    string habitacionesDisp = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc FROM NENE_MALLOC.Habitacion H WHERE H.Habitacion_Ocupada = 0 AND H.Habitacion_Cerrada = 0 AND H.Habitacion_Hotel = " + hotelID;
+                    dataGridView2.DataSource = conexion.consulta(habitacionesDisp);
+                    regimenes = conexion.consulta("SELECT R.Regimen_Id,R.Regimen_Desc,R.Regimen_Precio FROM NENE_MALLOC.Regimen R,NENE_MALLOC.Regimen_Por_Hotel RH WHERE R.Regimen_Id = RH.Regimen_Id AND R.Regimen_Inactivo = 0 AND RH.Hotel_Id = " + hotelID);
+                    fechas = conexion.consulta("SELECT R.Reserva_FechaIng FROM NENE_MALLOC.Reserva R WHERE R.Reserva_Id =" + txtCodReser.Text);
+                    dateTimePicker1.Value = Convert.ToDateTime(fechas.Rows[0][0].ToString());
+                    dateTimePicker2.Value = dateTimePicker1.Value.AddDays(1);
+                }
+                catch {
+                    MessageBox.Show("No se puede modificar una reserva efectivizada");
+                    txtCodReser.Text = "";
+                }
             }
         }
 
