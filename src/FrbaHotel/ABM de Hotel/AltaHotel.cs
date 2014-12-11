@@ -52,7 +52,7 @@ namespace FrbaHotel.ABM_de_Hotel
                         break;
                     }
                 }
-                string queryHotel = " declare @Id numeric(1,0) exec NENE_MALLOC.alta_hotel '" + txtNom.Text + "','" + txtMail.Text + "'," + txtTelefono.Text + ",'"
+                string queryHotel = " declare @Id numeric(18,0) exec NENE_MALLOC.alta_hotel '" + txtNom.Text + "','" + txtMail.Text + "'," + txtTelefono.Text + ",'"
                 + txtDom.Text + "'," + txtNroCalle.Text + ",'" + txtCiudad.Text + "','" + txtPais.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "'," + txtEstrellas.Text + ",10,@Id";
                 try
                 {
