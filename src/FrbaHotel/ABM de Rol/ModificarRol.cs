@@ -24,7 +24,7 @@ namespace FrbaHotel.ABM_de_Rol
                 cBFuncActuales.Items.Add(row["Func_Desc"].ToString());
             }
             DataTable funcSistema = conec.consulta("SELECT Func_Desc FROM NENE_MALLOC.Funcionalidad");
-            foreach (DataRow row in funcActuales.Rows)
+            foreach (DataRow row in funcSistema.Rows)
             {
                 cBFuncAAgregar.Items.Add(row["Func_Desc"].ToString());
             }
