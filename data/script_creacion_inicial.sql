@@ -1197,6 +1197,33 @@ begin transaction
 commit
 GO
 
+--ALTA PERIODO DE CIERRE
+
+create procedure NENE_MALLOC.alta_periodo_cierre @hotel numeric(18,0), @fechaInicio nvarchar(15), @fechaFin nvarchar(15),
+												 @motivo nvarchar(255)
+as 
+begin transaction
+	declare
+	@fecha_inicio_correcta datetime,
+	@fecha_fin_correcta datetime
+	
+	set @fecha_inicio_correcta = @fechaInicio
+	set @fecha_fin_correcta = @fechaFin
+	
+	if (@fecha_fin_correcta <= @fecha_inicio_correcta)
+		begin
+			rollback
+			raiserror('La Fecha de fin es menor a la Fecha de Inicio',16,1)
+			return	
+		end
+		
+	Insert into NENE_MALLOC.Periodos_De_Cierre(Periodo_Hotel, Periodo_FechaInicio, Periodo_FechaFin, Periodo_Motivo)
+				values (@hotel, @fecha_inicio_correcta, @fecha_fin_correcta, @motivo)
+
+
+commit
+GO
+
 --ALTA DE HABITACION
 
 create procedure NENE_MALLOC.alta_habitacion @numero numeric(18,0), @piso numeric(18,0), @hotel numeric(18,0),
@@ -1672,6 +1699,8 @@ declare @fecha_correcta datetime
 	
 commit
 GO
+
+
 
 --------------------------------FUNCIONES-----------------------------------------------------
 
