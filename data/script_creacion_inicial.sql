@@ -1402,6 +1402,17 @@ if exists (select * from NENE_MALLOC.Estadia where Estadia_RPH = @rph_id)
 	return
 	end
 
+if exists (select * from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+						 where rph.RPH_Id = @rph_id and
+							   rph.Reserva_Id = r.Reserva_Id and
+							   r.Reserva_Estado = 'Cancelada')
+	begin
+	rollback
+	raiserror('Reserva cancelada.',16,1)
+	return
+	end
+	
+	
 	declare @fecha_correcta datetime
 	set @fecha_correcta = @fecha_entrada
 	
@@ -1464,6 +1475,18 @@ if (select top 1 Estadia_Fecha_Salida from NENE_MALLOC.Estadia where Estadia_RPH
 	raiserror('Ya se registró el egreso de esa Habitación.',16,1)
 	return
 	end
+	
+if exists (select * from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+						 where rph.RPH_Id = @rph_id and
+							   rph.Reserva_Id = r.Reserva_Id and
+							   r.Reserva_Estado = 'Cancelada')
+	begin
+	rollback
+	raiserror('Reserva cancelada.',16,1)
+	return
+	end	
+	
+	
 
 	declare @fecha_correcta datetime
 	set @fecha_correcta = @fecha_salida
@@ -1835,17 +1858,4 @@ begin transaction
 commit
 GO
 
-/*
-Los siguientes procedimientos/triggers no los desarrollamos así los hacen los chicos:
--BAJA ROL
--BAJA USUARIO
--BAJA DE USUARIO POR HOTEL
--Modificacion de Usuario_Por_Rol_Por_Hotel
--ALTA HABITACION POR RESERVA
-_CANCELAR RESERVA
-_ALTA PERIODO DE CIERRE
--ALTA HUESPED_POR_HABITACION
--BAJA HUESPED_POR_HABITACION
--VERIFICAR EL TIPO DE HABITACION DE LA RESERVA (USEN LA TABLA TIPO_HABITACION)
 
-*/
