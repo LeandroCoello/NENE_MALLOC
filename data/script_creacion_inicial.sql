@@ -1598,6 +1598,16 @@ as
 begin transaction
 
 
+if (select count(e.Estadia_Id) from NENE_MALLOC.Estadia e
+			where e.Estadia_RPH = @rph_id)=0
+				  
+	begin
+	rollback
+	raiserror('Reserva no efectivizada.',16,1)
+	return
+	end
+
+
 if (select i.Item_Factura from NENE_MALLOC.Estadia e, NENE_MALLOC.Item_Factura i
 			where e.Estadia_RPH = @rph_id and
 				  i.Item_Factura_Id = e.Estadia_Id) is not null
@@ -1620,7 +1630,6 @@ set @id_item_fact = (ISNULL((select MAX(Item_Factura_Id)from NENE_MALLOC.Item_Fa
 
 	Insert into NENE_MALLOC.Consumible_Por_Habitacion(Consumible_Por_Habitacion_Id, Consumible_Id, RPH_Id, Consumible_Cantidad) 
 					values(@id_item_fact, @consumible_id, @rph_id, @cant)
-	
 commit 
 GO
 
