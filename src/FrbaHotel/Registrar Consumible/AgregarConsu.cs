@@ -19,26 +19,28 @@ namespace FrbaHotel.Registrar_Consumible
             InitializeComponent();
             form = consumibleForm;
             conexion = conec;
+            try{
+                DataTable consus =conexion.consulta("SELECT Consumible_Desc FROM NENE_MALLOC.Consumible");
+                foreach (DataRow row in consus.Rows) {
+                    cBlistado.Items.Add(row[0].ToString());
+                }
+            }
+            catch (Exception exec)
+            {
+                MessageBox.Show(exec.Message);
+            }
         }
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            if (txtCantidad.Text == "" || txtDesc.Text=="") 
+            if (txtCantidad.Text == "" || cBlistado.SelectedIndex==-1) 
             {
                 MessageBox.Show("Complete los campos");
             }
             else
             {
-                try{
-                DataTable consus =conexion.consulta("SELECT Consumible_Desc FROM NENE_MALLOC.Consumible WHERE Consumible_Desc  ='"+txtDesc.Text+"'");
-                if (consus.Rows.Count >= 1)
-                {
-                    form.agregarAlGrid(txtDesc.Text, txtCantidad.Text);
-                    this.Close();
-                }
-                }catch{
-                    MessageBox.Show("Consumible no encontrado");
-                }
+                form.agregarAlGrid(cBlistado.SelectedItem.ToString(), txtCantidad.Text);
+                this.Close();
             }
         }
     }
