@@ -1661,6 +1661,18 @@ if exists (select * from NENE_MALLOC.Item_Factura i, NENE_MALLOC.Estadia
 	return
 	
 	end
+	
+if exists (select * from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Reserva r
+				where rph.RPH_Id = @rph_id and
+					  rph.Reserva_Id = r.Reserva_Id and
+					  r.Reserva_Estado = 'Cancelada')
+	begin 
+	
+	rollback
+	raiserror('La Reserva esta cancelada.',16,1)
+	return
+	
+	end
 
 
 
