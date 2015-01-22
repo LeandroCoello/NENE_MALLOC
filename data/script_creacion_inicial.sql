@@ -1297,6 +1297,15 @@ begin transaction
 	set @cant_noches = DATEDIFF(DAY,@fecha_desde_correcta,@fecha_hasta_correcta)
 	set @id_reserva = (select MAX(r.Reserva_Id) from Reserva r) + 1
 	
+	
+	if (@fecha_hasta < @fecha_desde)
+		begin
+			rollback
+			raiserror('Fecha de Ingreso mayor Fecha Egreso.',16,1)
+			return
+		end
+	
+	
 	if exists (select p.Periodo_Id
 			   from NENE_MALLOC.Periodos_De_Cierre p
 			   where p.Periodo_Hotel = @id_hotel and
@@ -1307,7 +1316,7 @@ begin transaction
 	    begin
 			rollback
 			raiserror('Hotel cerrado.',16,1)
-			return -1
+			return 
 		end
 		
 	

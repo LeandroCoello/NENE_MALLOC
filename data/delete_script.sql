@@ -55,6 +55,7 @@ drop procedure [NENE_MALLOC].[modificar_reserva]
 drop procedure [NENE_MALLOC].[agregar_tarjeta]
 drop procedure [NENE_MALLOC].[cancelar_reserva]
 drop procedure [NENE_MALLOC].[cancelar_reservas]
+drop procedure [NENE_MALLOC].[alta_periodo_cierre]
 GO
 
 drop function [NENE_MALLOC].[costo_estadia]
