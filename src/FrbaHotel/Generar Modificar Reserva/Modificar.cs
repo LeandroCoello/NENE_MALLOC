@@ -123,7 +123,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 if (condi == null)
                 {
                     string query = "EXEC NENE_MALLOC.modificar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + dateTimePicker1.Value.ToString("yyyyMMdd")
-                        + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + "," + usuario.conseguirIdUser() +","+txtCodReser.Text+","+ hotelID + ",";                    
+                        + "','" + dateTimePicker2.Value.ToString("yyyy/MM/dd") + "'," + idregmin + "," + clienteId + "," + usuario.conseguirIdUser() +","+txtCodReser.Text+","+ hotelID;                    
                     DataTable idReser = conexion.consulta(query);
                     MessageBox.Show("Reserva modificada exitosamente.");
                 }
