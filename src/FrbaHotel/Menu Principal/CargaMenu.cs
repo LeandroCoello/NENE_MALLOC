@@ -8,9 +8,9 @@ namespace FrbaHotel.Menu_Principal
 {
     class CargaMenu
     {
-        public CargaMenu(string rolElegido, UsuarioLogueado usuario)
+        public CargaMenu(UsuarioLogueado usuario)
         {
-            switch (rolElegido)
+            switch (usuario.getRolAsignado())
             {
                 case "Administrador":
                     MenuAdmin levantarAdmin = new MenuAdmin(usuario);

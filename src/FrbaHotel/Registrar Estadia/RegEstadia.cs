@@ -18,8 +18,20 @@ namespace FrbaHotel.Registrar_Estadia
             InitializeComponent();
             usuario = userLog;
         }
+        public RegEstadia(UsuarioLogueado userLog,List<string> listaFuncionalidades)
+        {
+            InitializeComponent();
+            usuario = userLog;
+            if (!listaFuncionalidades.Contains("Check-In")) {
+                btnIngreso.Enabled = false;
+            }
+            if (!listaFuncionalidades.Contains("Check-Out"))
+            {
+                btnEgreso.Enabled = false;
+            }
+        }
 
-        private void btnIngreso_Click(object sender, EventArgs e)
+        public void btnIngreso_Click(object sender, EventArgs e)
         {
             Ingreso_Egreso levantarCheck = new Ingreso_Egreso(usuario);
             levantarCheck.ShowDialog();
@@ -27,7 +39,7 @@ namespace FrbaHotel.Registrar_Estadia
 
         }
 
-        private void btnEgreso_Click(object sender, EventArgs e)
+        public void btnEgreso_Click(object sender, EventArgs e)
         {
             Ingreso_Egreso levantarOUT = new Ingreso_Egreso(usuario);
             levantarOUT.configurarOUT();

@@ -38,7 +38,7 @@
             this.btnIngreso.Name = "btnIngreso";
             this.btnIngreso.Size = new System.Drawing.Size(75, 39);
             this.btnIngreso.TabIndex = 0;
-            this.btnIngreso.Text = "Ingreso";
+            this.btnIngreso.Text = "Check-In";
             this.btnIngreso.UseVisualStyleBackColor = true;
             this.btnIngreso.Click += new System.EventHandler(this.btnIngreso_Click);
             // 
@@ -48,7 +48,7 @@
             this.btnEgreso.Name = "btnEgreso";
             this.btnEgreso.Size = new System.Drawing.Size(75, 41);
             this.btnEgreso.TabIndex = 1;
-            this.btnEgreso.Text = "Egreso";
+            this.btnEgreso.Text = "Check-Out";
             this.btnEgreso.UseVisualStyleBackColor = true;
             this.btnEgreso.Click += new System.EventHandler(this.btnEgreso_Click);
             // 

@@ -14,12 +14,35 @@ namespace FrbaHotel.ABM_de_Hotel
     public partial class ABMHotel : Form
     {
         UsuarioLogueado usuario;
-        public ABMHotel(UsuarioLogueado user)
+        public ABMHotel(UsuarioLogueado user) 
         {
             InitializeComponent();
             usuario = user;
         }
-
+        public ABMHotel(UsuarioLogueado user, List<string> listaFunc)
+        {
+            InitializeComponent();
+            desactivarBotones();
+            usuario = user;
+            if (listaFunc.Contains("Alta de Hotel"))
+            {
+                btnAlta.Enabled = true;
+            }
+            if (listaFunc.Contains("Baja de Hotel"))
+            {
+                btnBaja.Enabled = true;
+            }
+            if (listaFunc.Contains("Modificacion de Hotel"))
+            {
+                btnModif.Enabled = true;
+            }
+        }
+        private void desactivarBotones()
+        {
+            btnAlta.Enabled = false;
+            btnBaja.Enabled = false;
+            btnModif.Enabled = false;
+        }
         private void btnAlta_Click(object sender, EventArgs e)
         {
             AltaHotel levantarAlta = new AltaHotel(usuario);
@@ -42,7 +65,6 @@ namespace FrbaHotel.ABM_de_Hotel
             this.Hide();
             levantarLista.ShowDialog();
             this.Show();
-
         }
     }
 }

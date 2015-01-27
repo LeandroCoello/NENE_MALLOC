@@ -13,10 +13,33 @@ namespace FrbaHotel.ABM_de_Rol
     public partial class ABMRol : Form
     {
         SQLConnector conexion;
-        public ABMRol(SQLConnector conec)
+        public ABMRol(SQLConnector conec) 
         {
             InitializeComponent();
             conexion = conec;
+        }
+        public ABMRol(UsuarioLogueado usuario,List<string>listaFunc)
+        {
+            InitializeComponent();
+            desactivarBotones();
+            conexion = usuario.getConexion();
+            if (listaFunc.Contains("Alta de Rol")){
+                btnAlta.Enabled = true;
+            }
+            if (listaFunc.Contains("Baja de Rol"))
+            {
+                btnBaja.Enabled = true;
+            } 
+            if (listaFunc.Contains("Modificacion de Rol"))
+            {
+                btnModificar.Enabled = true;
+            }
+        }
+        private void desactivarBotones()
+        {
+            btnAlta.Enabled = false;
+            btnBaja.Enabled = false;
+            btnModificar.Enabled = false;
         }
 
         private void btnAlta_Click(object sender, EventArgs e)

@@ -13,12 +13,34 @@ namespace FrbaHotel.ABM_de_Cliente
     public partial class ABMCliente : Form
     {
         SQLConnector coneccion;
-        public ABMCliente(SQLConnector conexion)
+        public ABMCliente(SQLConnector conexion) 
         {
             InitializeComponent();
             coneccion = conexion;
         }
-
+        public ABMCliente(SQLConnector conexion,List<string> lista)
+        {
+            InitializeComponent();
+            desactivarBotones();
+            coneccion = conexion;
+            if (!lista.Contains("Alta de Cliente")) {
+                btnAlta.Enabled = true;
+            }
+            if (!lista.Contains("Baja de Cliente"))
+            {
+                btnBaja.Enabled = true;
+            }
+            if (!lista.Contains("Modificacion de Cliente"))
+            {
+                btnModificar.Enabled = true;
+            }
+        }
+        private void desactivarBotones()
+        {
+            btnAlta.Enabled = false;
+            btnBaja.Enabled = false;
+            btnModificar.Enabled = false;
+        }
         private void btnAlta_Click(object sender, EventArgs e)
         {
             FrbaHotel.ABM_de_Cliente.AltaCliente levantarAlta = new AltaCliente(coneccion);

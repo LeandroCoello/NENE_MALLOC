@@ -13,6 +13,7 @@ namespace FrbaHotel.Sistema
         private String nombreUsuario;
         private String contraseñaHash;
         private Double hotelAsignado;
+        private String rolAsignado;
 
         public UsuarioLogueado(String n, String c, SQLConnector con)
         {
@@ -31,6 +32,14 @@ namespace FrbaHotel.Sistema
         public SQLConnector getConexion()
         {
             return conexion;
+        }
+        public void setRolAsignado(String unRol)
+        {
+           rolAsignado = unRol;
+        }
+        public String getRolAsignado()
+        {
+            return rolAsignado;
         }
         public void setHotelAsignado(Double hotelId)
         {

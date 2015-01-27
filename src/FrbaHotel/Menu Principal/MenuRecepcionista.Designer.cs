@@ -40,16 +40,19 @@
             // 
             // btnGENRESER
             // 
+            this.btnGENRESER.Enabled = false;
             this.btnGENRESER.Location = new System.Drawing.Point(12, 12);
             this.btnGENRESER.Name = "btnGENRESER";
+            this.btnGENRESER.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnGENRESER.Size = new System.Drawing.Size(109, 51);
             this.btnGENRESER.TabIndex = 0;
-            this.btnGENRESER.Text = "Generar Reserva";
+            this.btnGENRESER.Text = "Generar reserva";
             this.btnGENRESER.UseVisualStyleBackColor = true;
             this.btnGENRESER.Click += new System.EventHandler(this.btnGENRESER_Click);
             // 
             // btnCancelReser
             // 
+            this.btnCancelReser.Enabled = false;
             this.btnCancelReser.Location = new System.Drawing.Point(127, 12);
             this.btnCancelReser.Name = "btnCancelReser";
             this.btnCancelReser.Size = new System.Drawing.Size(109, 51);
@@ -70,6 +73,7 @@
             // 
             // btnRegConsu
             // 
+            this.btnRegConsu.Enabled = false;
             this.btnRegConsu.Location = new System.Drawing.Point(12, 126);
             this.btnRegConsu.Name = "btnRegConsu";
             this.btnRegConsu.Size = new System.Drawing.Size(109, 51);
@@ -80,11 +84,12 @@
             // 
             // btnFacPub
             // 
+            this.btnFacPub.Enabled = false;
             this.btnFacPub.Location = new System.Drawing.Point(127, 69);
             this.btnFacPub.Name = "btnFacPub";
             this.btnFacPub.Size = new System.Drawing.Size(109, 51);
             this.btnFacPub.TabIndex = 4;
-            this.btnFacPub.Text = "Facturar Publicaciones";
+            this.btnFacPub.Text = "Emitir Factura";
             this.btnFacPub.UseVisualStyleBackColor = true;
             this.btnFacPub.Click += new System.EventHandler(this.btnFacPub_Click);
             // 
@@ -110,6 +115,7 @@
             // 
             // btnModReser
             // 
+            this.btnModReser.Enabled = false;
             this.btnModReser.Location = new System.Drawing.Point(12, 69);
             this.btnModReser.Name = "btnModReser";
             this.btnModReser.Size = new System.Drawing.Size(109, 51);

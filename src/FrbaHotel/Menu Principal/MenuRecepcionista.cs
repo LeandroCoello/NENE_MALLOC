@@ -13,10 +13,22 @@ namespace FrbaHotel.Menu_Principal
     public partial class MenuRecepcionista : Form
     {
         UsuarioLogueado userLog;
+        List<string> listaFuncionalidades = new List<string>();
+        List<Button> listaBotones = new List<Button>();
         public MenuRecepcionista(UsuarioLogueado usuario)
         {
             InitializeComponent();
             userLog = usuario;
+            String query = "SELECT Funcionalidad.Func_Desc FROM NENE_MALLOC.Func_Por_Rol FR, NENE_MALLOC.Funcionalidad,NENE_MALLOC.Rol R"+
+			" WHERE FR.Func_Id = Funcionalidad.Func_Id"+
+			" AND R.Rol_Id = FR.Rol_Id"+
+			" AND R.Rol_Desc ='" +usuario.getRolAsignado()+"'";
+            DataTable funcionalidades = usuario.getConexion().consulta(query);
+            foreach (DataRow func in funcionalidades.Rows) {
+                listaFuncionalidades.Add(func[0].ToString());
+            }
+            agregarBotonesALista();
+            activarBotones();
         }
 
         private void btnGENRESER_Click(object sender, EventArgs e)
@@ -37,7 +49,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnABMCliente_Click(object sender, EventArgs e)
         {
-            ABM_de_Cliente.ABMCliente levantarCliente = new FrbaHotel.ABM_de_Cliente.ABMCliente(userLog.getConexion());
+            ABM_de_Cliente.ABMCliente levantarCliente = new FrbaHotel.ABM_de_Cliente.ABMCliente(userLog.getConexion(),listaFuncionalidades);
             this.Hide();
             levantarCliente.ShowDialog();
             this.Show();
@@ -45,7 +57,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnRegEst_Click(object sender, EventArgs e)
         {
-            Registrar_Estadia.RegEstadia levantarReg = new FrbaHotel.Registrar_Estadia.RegEstadia(userLog);
+            Registrar_Estadia.RegEstadia levantarReg = new FrbaHotel.Registrar_Estadia.RegEstadia(userLog,listaFuncionalidades);
             this.Hide();
             levantarReg.ShowDialog();
             this.Show();
@@ -83,7 +95,22 @@ namespace FrbaHotel.Menu_Principal
             this.Show();
 
         }
-
-
+        private void agregarBotonesALista(){
+            listaBotones.Add(btnABMCliente);
+            listaBotones.Add(btnCancelReser);
+            listaBotones.Add(btnFacPub);
+            listaBotones.Add(btnGENRESER);
+            listaBotones.Add(btnModReser);
+            listaBotones.Add(btnRegConsu);
+            listaBotones.Add(btnRegEst);
+        }
+        private void activarBotones(){
+            foreach(Button boton in listaBotones){
+                if (listaFuncionalidades.Contains(boton.Text)){
+                    boton.Enabled = true;
+                    listaFuncionalidades.Remove(boton.Text);
+                } 
+            }
+        }
     }
 }

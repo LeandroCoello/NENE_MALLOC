@@ -14,13 +14,35 @@ namespace FrbaHotel.ABM_de_Habitacion
     {
         SQLConnector conexion;
         Double hotelId;
-        public ABMHabitacion(SQLConnector conec, UsuarioLogueado userLog)
+        public ABMHabitacion(SQLConnector conec,UsuarioLogueado user) 
         {
             InitializeComponent();
             conexion = conec;
-            hotelId = userLog.getHotelAsignado();
+            hotelId = user.getHotelAsignado();
         }
-
+        public ABMHabitacion(UsuarioLogueado userLog,List<string> listaFunc)
+        {
+            InitializeComponent();
+            desactivarBotones();
+            conexion = userLog.getConexion();
+            hotelId = userLog.getHotelAsignado();
+            if(listaFunc.Contains("Alta de Habitacion")){
+                btnAlta.Enabled = true;
+            }
+            if (listaFunc.Contains("Baja de Habitacion"))
+            {
+                btnBaja.Enabled = true;
+            }
+            if (listaFunc.Contains("Modificacion de Habitacion"))
+            {
+                btnModificar.Enabled = true;
+            }
+        }
+        private void desactivarBotones(){
+            btnAlta.Enabled = false;
+            btnBaja.Enabled = false;
+            btnModificar.Enabled = false;
+        }
         private void btnAlta_Click(object sender, EventArgs e)
         {
             ABM_de_Habitacion.HabitacionAlta levantarAlta = new HabitacionAlta(conexion,hotelId);

@@ -13,15 +13,25 @@ namespace FrbaHotel.Menu_Principal
     public partial class MenuAdmin : Form
     {
         UsuarioLogueado userLog;
+        List<string> listaFuncionalidades = new List<string>();
         public MenuAdmin(UsuarioLogueado usuario)
         {
             InitializeComponent();
             userLog = usuario;
+            String query = "SELECT Funcionalidad.Func_Desc FROM NENE_MALLOC.Func_Por_Rol FR, NENE_MALLOC.Funcionalidad,NENE_MALLOC.Rol R" +
+            " WHERE FR.Func_Id = Funcionalidad.Func_Id" +
+            " AND R.Rol_Id = FR.Rol_Id" +
+            " AND R.Rol_Desc ='" + usuario.getRolAsignado() + "'";
+            DataTable funcionalidades = usuario.getConexion().consulta(query);
+            foreach (DataRow func in funcionalidades.Rows)
+            {
+                listaFuncionalidades.Add(func[0].ToString());
+            }
         }
 
         private void btnRol_Click(object sender, EventArgs e)
         {
-            ABM_de_Rol.ABMRol levantarRol = new FrbaHotel.ABM_de_Rol.ABMRol(userLog.getConexion());
+            ABM_de_Rol.ABMRol levantarRol = new FrbaHotel.ABM_de_Rol.ABMRol(userLog,listaFuncionalidades);
             this.Hide();
             levantarRol.ShowDialog();
             this.Show();
@@ -29,7 +39,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnUsuario_Click(object sender, EventArgs e)
         {
-            ABM_de_Usuario.ABMUsuario levantarUsuario = new FrbaHotel.ABM_de_Usuario.ABMUsuario(userLog.getConexion());
+            ABM_de_Usuario.ABMUsuario levantarUsuario = new FrbaHotel.ABM_de_Usuario.ABMUsuario(userLog, listaFuncionalidades);
             this.Hide();
             levantarUsuario.ShowDialog();
             this.Show();
@@ -37,7 +47,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnCliente_Click(object sender, EventArgs e)
         {
-            ABM_de_Cliente.ABMCliente levantarCliente = new FrbaHotel.ABM_de_Cliente.ABMCliente(userLog.getConexion());
+            ABM_de_Cliente.ABMCliente levantarCliente = new FrbaHotel.ABM_de_Cliente.ABMCliente(userLog.getConexion(), listaFuncionalidades);
             this.Hide();
             levantarCliente.ShowDialog();
             this.Show();
@@ -45,7 +55,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnHotel_Click(object sender, EventArgs e)
         {
-            ABM_de_Hotel.ABMHotel levantarHotel = new FrbaHotel.ABM_de_Hotel.ABMHotel(userLog);
+            ABM_de_Hotel.ABMHotel levantarHotel = new FrbaHotel.ABM_de_Hotel.ABMHotel(userLog,listaFuncionalidades);
             this.Hide();
             levantarHotel.ShowDialog();
             this.Show();
@@ -53,7 +63,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnHabitacion_Click(object sender, EventArgs e)
         {
-            ABM_de_Habitacion.ABMHabitacion levantarHabitacion = new FrbaHotel.ABM_de_Habitacion.ABMHabitacion(userLog.getConexion(),userLog);
+            ABM_de_Habitacion.ABMHabitacion levantarHabitacion = new FrbaHotel.ABM_de_Habitacion.ABMHabitacion(userLog,listaFuncionalidades);
             this.Hide();
             levantarHabitacion.ShowDialog();
             this.Show();
