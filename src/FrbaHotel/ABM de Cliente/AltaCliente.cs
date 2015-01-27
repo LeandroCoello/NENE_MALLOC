@@ -20,7 +20,9 @@ namespace FrbaHotel.ABM_de_Cliente
             InitializeComponent();
             txtBoxes.Add(txtNom);
             txtBoxes.Add(txtApellido);
-            txtBoxes.Add(txtTipoDoc);
+            tipoDocSelector.Items.Add("DNI");
+            tipoDocSelector.Items.Add("Pasaporte");
+            tipoDocSelector.Items.Add("Cedula");
             txtBoxes.Add(txtNroDoc);
             txtBoxes.Add(txtMail);
             txtBoxes.Add(txtDireccion);
@@ -42,12 +44,12 @@ namespace FrbaHotel.ABM_de_Cliente
             if (txtPiso.Text == "" && txtDepto.Text == "")
             {
                 queryCliente = " declare @Id numeric(18,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
-                    + txtTipoDoc.Text + "'," + txtNroDoc.Text + ",'" + txtMail.Text + "','" + txtDireccion.Text + "'," + txtNroCalle.Text + ",NULL,NULL,'" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtNacionalidad.Text + "',@Id out SELECT @Id";
+                    + tipoDocSelector.SelectedIndex.ToString() + "'," + txtNroDoc.Text + ",'" + txtMail.Text + "','" + txtDireccion.Text + "'," + txtNroCalle.Text + ",NULL,NULL,'" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtNacionalidad.Text + "',@Id out SELECT @Id";
             }
             else
             {
                 queryCliente = " declare @Id numeric(18,0) exec NENE_MALLOC.alta_cliente '" + txtNom.Text + "','" + txtApellido.Text + "'," + txtTelefono.Text + ",'"
-                 + txtTipoDoc.Text + "'," + txtNroDoc.Text + ",'" + txtMail.Text + "','" + txtDireccion.Text + "'," + txtNroCalle.Text + "," + txtPiso.Text + ",'" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtNacionalidad.Text + "',@Id out SELECT @Id";
+                 + tipoDocSelector.SelectedIndex.ToString() + "'," + txtNroDoc.Text + ",'" + txtMail.Text + "','" + txtDireccion.Text + "'," + txtNroCalle.Text + "," + txtPiso.Text + ",'" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtNacionalidad.Text + "',@Id out SELECT @Id";
             }
             try
             {
