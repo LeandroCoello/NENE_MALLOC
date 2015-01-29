@@ -1210,6 +1210,13 @@ begin transaction
 	set @fecha_inicio_correcta = @fechaInicio
 	set @fecha_fin_correcta = @fechaFin
 	
+	if (not(exists(select * from NENE_MALLOC.Hotel h where h.Hotel_Id = @hotel)))
+		begin
+			rollback
+			raiserror('El Hotel ingresado no existe.',16,1)
+			return
+		end
+	
 	if (@fecha_fin_correcta <= @fecha_inicio_correcta)
 		begin
 			rollback
