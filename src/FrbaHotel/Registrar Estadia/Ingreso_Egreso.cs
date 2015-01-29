@@ -71,10 +71,16 @@ namespace FrbaHotel.Registrar_Estadia
                     cantPasajeros = Convert.ToDouble(conexion.consulta(query).Rows[0].ItemArray[0]);
                     rphId = row.Cells["RPH_Id"].Value.ToString();
                     cargarPasajeros(cantPasajeros,clienteInicial);
-                    string queryFinal = "EXEC NENE_MALLOC.check_in  "+row.Cells["RPH_Id"].Value.ToString()+","+fechaSistema.ToString("yyyyMMdd");
-                    conexion.executeOnly(queryFinal);
-                    MessageBox.Show("Check In realizado con exito");
-                    this.Close();
+                    try
+                    {
+                        string queryFinal = "EXEC NENE_MALLOC.check_in  " + row.Cells["RPH_Id"].Value.ToString() + "," + fechaSistema.ToString("yyyyMMdd");
+                        conexion.executeOnly(queryFinal);
+                        MessageBox.Show("Check In realizado con exito");
+                        this.Close();
+                    }
+                    catch (Exception exec) {
+                        MessageBox.Show(exec.Message);
+                    }
                 }
                 else {
                     try
