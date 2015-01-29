@@ -73,7 +73,7 @@ namespace FrbaHotel.Facturar_Publicaciones
                 usuario.getConexion().executeOnly("EXEC NENE_MALLOC.agregar_items " + facturaID + "," + RPH_ID);
                 MessageBox.Show("Cliente: " + txtClieCod.Text +
                     "\n Total a pagar:" + usuario.getConexion().consulta("SELECT Factura_Total FROM NENE_MALLOC.Factura WHERE Factura_Id =" + facturaID).Rows[0].ItemArray[0].ToString());
-                if (cBFormaPago.SelectedItem.ToString() == "Tarjeta de credito")
+                if (cBFormaPago.SelectedItem.ToString().Equals("Tarjeta de credito"))
                 {
                     TarjetaDeCredito tarjetaDeCredito = new TarjetaDeCredito(txtClieCod.Text, facturaID, usuario);
                     this.Hide();

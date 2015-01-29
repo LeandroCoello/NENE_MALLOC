@@ -43,8 +43,7 @@ namespace FrbaHotel.Facturar_Publicaciones
                 {
                     //Lanzo una ventanita extra que pida una marca de tarjeta nueva
                 }
-                String queryTarjeta = "exec NENE_MALLOC.agregar_tarjeta" + facturaID + "," + nroTarjeta + ",'" + duenioTarjeta + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + ",'"+ tipoDeTarjeta +"'";
-
+                String queryTarjeta = "exec NENE_MALLOC.agregar_tarjeta " + facturaID + " , " + nroTarjeta.Text + ",'" + duenioTarjeta.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','"+ tipoDeTarjeta +"'";
                 usuario.getConexion().executeOnly(queryTarjeta);
 
                 this.Close();
