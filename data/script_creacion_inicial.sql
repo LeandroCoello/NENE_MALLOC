@@ -1718,15 +1718,52 @@ create procedure NENE_MALLOC.agregar_tarjeta @fact_nro numeric(18,0), @tarjeta_n
 as begin transaction
 
 declare @fecha_correcta datetime
-	set @fecha_correcta = @tarjeta_fecha_venc
+set @fecha_correcta = @tarjeta_fecha_venc
+declare @tarjeta numeric(16,0)
 
-	Insert into NENE_MALLOC.Datos_Tarjeta(Datos_Tarjeta_Nro, Datos_Duenio_Tarjeta, Datos_Tarjeta_Fecha_Venc, Datos_Tipo_Tarjeta)
-						values(@tarjeta_nro, @duenio, @fecha_correcta, @tipo_tarjeta)
+if exists(select d.Datos_Tarjeta_Id from NENE_MALLOC.Datos_Tarjeta d where 
+			(d.Datos_Tarjeta_Nro = @tarjeta_nro or
+			d.Datos_Duenio_Tarjeta = @duenio) and
+			(d.Datos_Tarjeta_Nro != @tarjeta_nro or
+			d.Datos_Duenio_Tarjeta != @duenio or
+			d.Datos_Tarjeta_Fecha_Venc != @fecha_correcta or
+			d.Datos_Tipo_Tarjeta != @tipo_tarjeta))
+	begin
+		rollback
+		raiserror('Datos de Tarjeta Incorrectos.',16,1)
+		return	
+	end			
+
+
+if exists(select d.Datos_Tarjeta_Id from NENE_MALLOC.Datos_Tarjeta d where 
+			d.Datos_Tarjeta_Nro = @tarjeta_nro and
+			d.Datos_Duenio_Tarjeta = @duenio and
+			d.Datos_Tarjeta_Fecha_Venc = @fecha_correcta and
+			d.Datos_Tipo_Tarjeta = @tipo_tarjeta)
+	begin
 	
-	Update NENE_MALLOC.Factura
-		set Factura_Tarjeta = (select MAX(Datos_Tarjeta_Id) from NENE_MALLOC.Datos_Tarjeta) 
-			where Factura_Id = @fact_nro
+		set @tarjeta = (select d.Datos_Tarjeta_Id from NENE_MALLOC.Datos_Tarjeta d where 
+							d.Datos_Tarjeta_Nro = @tarjeta_nro and
+							d.Datos_Duenio_Tarjeta = @duenio and
+							d.Datos_Tarjeta_Fecha_Venc = @fecha_correcta and
+							d.Datos_Tipo_Tarjeta = @tipo_tarjeta)
+		
+	end
 	
+else
+	begin
+			
+		Insert into NENE_MALLOC.Datos_Tarjeta(Datos_Tarjeta_Nro, Datos_Duenio_Tarjeta, Datos_Tarjeta_Fecha_Venc, Datos_Tipo_Tarjeta)
+							values(@tarjeta_nro, @duenio, @fecha_correcta, @tipo_tarjeta)
+				
+		set @tarjeta = (select MAX(Datos_Tarjeta_Id) from NENE_MALLOC.Datos_Tarjeta)
+		
+	end	
+	
+		Update NENE_MALLOC.Factura
+			set Factura_Tarjeta = @tarjeta
+				where Factura_Id = @fact_nro
+		
 commit
 GO
 
