@@ -1664,6 +1664,18 @@ as
 begin transaction
 
 
+if exists (select * from NENE_MALLOC.Estadia e 
+				where e.Estadia_RPH = @rph_id and
+				      e.Estadia_Fecha_Salida is null)
+	begin 
+	
+	rollback
+	raiserror('No se ha realizado el Check-in en esa Reserva.',16,1)
+	return
+	
+	end
+
+
 if exists (select * from NENE_MALLOC.Item_Factura i, NENE_MALLOC.Estadia 
 				where i.Item_Factura_Id = Estadia_Id and
 					  Estadia_RPH = @rph_id and 

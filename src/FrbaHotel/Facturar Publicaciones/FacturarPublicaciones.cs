@@ -33,7 +33,7 @@ namespace FrbaHotel.Facturar_Publicaciones
             }
             else
             {
-                string query = "SELECT * FROM NENE_MALLOC.Reserva_Por_Habitacion,NENE_MALLOC.Reserva,NENE_MALLOC.Estadia,NENE_MALLOC.Item_Factura WHERE Reserva_Cliente =" + txtClieCod.Text + " AND Reserva_Hotel =" + usuario.getHotelAsignado() + " AND Reserva.Reserva_Id = Reserva_Por_Habitacion.Reserva_Id AND Reserva_Por_Habitacion.RPH_Id = Estadia.Estadia_RPH AND Item_Factura.Item_Factura_Id = Estadia.Estadia_Id AND Item_Factura.Item_Factura IS NULL";
+                string query = "SELECT * FROM NENE_MALLOC.Reserva_Por_Habitacion,NENE_MALLOC.Reserva,NENE_MALLOC.Estadia,NENE_MALLOC.Item_Factura WHERE Reserva_Cliente =" + txtClieCod.Text + " AND Reserva_Hotel =" + usuario.getHotelAsignado() + " AND Reserva.Reserva_Id = Reserva_Por_Habitacion.Reserva_Id AND Reserva_Por_Habitacion.RPH_Id = Estadia.Estadia_RPH AND Item_Factura.Item_Factura_Id = Estadia.Estadia_Id AND Item_Factura.Item_Factura IS NULL AND Estadia.Estadia_Fecha_Salida is not null ";
                 dataGridViewEsta.DataSource = usuario.getConexion().consulta(query);
             }
         }
