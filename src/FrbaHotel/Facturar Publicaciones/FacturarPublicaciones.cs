@@ -22,7 +22,7 @@ namespace FrbaHotel.Facturar_Publicaciones
             btnFacturar.Enabled = false;
             usuario = userLog;
             cBFormaPago.Items.Add("Efectivo");
-            cBFormaPago.Items.Add("Tarjeta credito");
+            cBFormaPago.Items.Add("Tarjeta de credito");
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
@@ -33,7 +33,7 @@ namespace FrbaHotel.Facturar_Publicaciones
             }
             else
             {
-                string query = "SELECT * FROM NENE_MALLOC.Reserva_Por_Habitacion,NENE_MALLOC.Reserva,NENE_MALLOC.Estadia,NENE_MALLOC.Item_Factura WHERE Reserva_Cliente =" + txtClieCod.Text + " AND Reserva_Hotel =" + usuario.getHotelAsignado() + " AND Reserva.Reserva_Id = Reserva_Por_Habitacion.Reserva_Id AND Reserva_Por_Habitacion.RPH_Id = Estadia.Estadia_RPH AND Item_Factura.Item_Factura_Id = Estadia.Estadia_Id AND Item_Factura.Item_Factura IS NULL AND Reserva.Reserva_Estado != Cancelada Reserva AND Reserva.Reserva_Estado = Efectivizada";
+                string query = "SELECT * FROM NENE_MALLOC.Reserva_Por_Habitacion,NENE_MALLOC.Reserva,NENE_MALLOC.Estadia,NENE_MALLOC.Item_Factura WHERE Reserva_Cliente =" + txtClieCod.Text + " AND Reserva_Hotel =" + usuario.getHotelAsignado() + " AND Reserva.Reserva_Id = Reserva_Por_Habitacion.Reserva_Id AND Reserva_Por_Habitacion.RPH_Id = Estadia.Estadia_RPH AND Item_Factura.Item_Factura_Id = Estadia.Estadia_Id AND Item_Factura.Item_Factura IS NULL";
                 dataGridViewEsta.DataSource = usuario.getConexion().consulta(query);
             }
         }
@@ -74,6 +74,14 @@ namespace FrbaHotel.Facturar_Publicaciones
                 MessageBox.Show("Cliente: " + txtClieCod.Text +
                     "\n Total a pagar:" + usuario.getConexion().consulta("SELECT Factura_Total FROM NENE_MALLOC.Factura WHERE Factura_Id =" + facturaID).Rows[0].ItemArray[0].ToString());
                 this.btnLimpieza_Click(sender, e);
+                if (cBFormaPago.SelectedIndex.ToString() == "Tarjeta de credito")
+                {
+                    TarjetaDeCredito tarjetaDeCredito = new TarjetaDeCredito(txtClieCod.Text, facturaID);
+                    this.Hide();
+                    tarjetaDeCredito.ShowDialog();
+                    this.Show();
+
+                }
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message);
