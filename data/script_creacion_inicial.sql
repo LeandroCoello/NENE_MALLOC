@@ -1543,9 +1543,11 @@ if exists (select * from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitaci
 	set @fecha_fin = (select res.Reserva_FechaIng+res.Reserva_CantNoches from NENE_MALLOC.Reserva_Por_Habitacion rph, NENE_MALLOC.Reserva res
 								where rph.Reserva_Id = res.Reserva_Id and
 									  rph.RPH_Id = @rph_id)
-
+	declare @fecha_ing datetime
+	set @fecha_ing = (select r.Reserva_FechaIng from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+									where rph.RPH_Id = @rph_id and rph.Reserva_Id = r.Reserva_Id)
 	
-	if(@fecha_fin > @fecha_correcta)
+	if(@fecha_fin > @fecha_correcta and @fecha_correcta != @fecha_ing)
 		begin
 					
 			declare @cant_noches_efectivizadas numeric(3,0)
