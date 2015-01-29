@@ -63,27 +63,22 @@ namespace FrbaHotel.ABM_de_Hotel
         private void btnModifr_Click(object sender, EventArgs e)
         {
             string queryFinal = "EXEC NENE_MALLOC.modificacion_hotel '"+txtNom.Text+"','"+txtMail.Text+"',"+txtTelefono.Text+",'"+txtDom.Text+"',"+txtNroCalle.Text+",'"+txtCiudad.Text+"','"+txtPais.Text+"',"+txtEstrellas.Text+",10,"+hotelId;
-            MessageBox.Show(queryFinal);
             try
             {
                 conexion.executeOnly(queryFinal);
                 if (lBRegim.SelectedIndex != -1) {
                     foreach (var item in lBRegim.SelectedItems) {
                         DataTable iDR = conexion.consulta("SELECT Regimen_Id FROM NENE_MALLOC.Regimen WHERE Regimen_Desc = '" + item.ToString() + "'");
-                        MessageBox.Show("piola2");
                         string idRegimen = iDR.Rows[0].ItemArray[0].ToString();
                         conexion.executeOnly("DELETE NENE_MALLOC.Regimen_Por_Hotel WHERE Hotel_Id ="+hotelId+" AND Regimen_Id = "+idRegimen);
-                        MessageBox.Show("piola3");
-                    }
+                      }
                 }
                 if (lBRegimAgregar.SelectedIndex != -1) {
                     foreach (var item in lBRegimAgregar.SelectedItems)
                     {
                         DataTable iDR = conexion.consulta("SELECT Regimen_Id FROM NENE_MALLOC.Regimen WHERE Regimen_Desc = '" + item.ToString() + "'");
-                        MessageBox.Show("piola4");
                         string idRegimen = iDR.Rows[0].ItemArray[0].ToString();
                         conexion.executeOnly("INSERT INTO NENE_MALLOC.Regimen_Por_Hotel(Hotel_Id,Regimen_Id) values (" + hotelId + "," + idRegimen+")");
-                        MessageBox.Show("piola5");
                     }
                 }
                 MessageBox.Show("Hotel modificado con exito");
