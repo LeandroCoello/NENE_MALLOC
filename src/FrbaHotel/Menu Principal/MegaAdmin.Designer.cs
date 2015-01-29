@@ -36,7 +36,6 @@
             this.btnRol = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btnModReser = new System.Windows.Forms.Button();
-            this.btnABMCliente = new System.Windows.Forms.Button();
             this.btnListEsta = new System.Windows.Forms.Button();
             this.btnFacPub = new System.Windows.Forms.Button();
             this.btnRegConsu = new System.Windows.Forms.Button();
@@ -124,16 +123,6 @@
             this.btnModReser.UseVisualStyleBackColor = true;
             this.btnModReser.Click += new System.EventHandler(this.btnModReser_Click);
             // 
-            // btnABMCliente
-            // 
-            this.btnABMCliente.Location = new System.Drawing.Point(357, 124);
-            this.btnABMCliente.Name = "btnABMCliente";
-            this.btnABMCliente.Size = new System.Drawing.Size(109, 51);
-            this.btnABMCliente.TabIndex = 20;
-            this.btnABMCliente.Text = "ABM Cliente";
-            this.btnABMCliente.UseVisualStyleBackColor = true;
-            this.btnABMCliente.Click += new System.EventHandler(this.btnABMCliente_Click);
-            // 
             // btnListEsta
             // 
             this.btnListEsta.Location = new System.Drawing.Point(242, 124);
@@ -200,7 +189,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(485, 187);
             this.Controls.Add(this.btnModReser);
-            this.Controls.Add(this.btnABMCliente);
             this.Controls.Add(this.btnListEsta);
             this.Controls.Add(this.btnFacPub);
             this.Controls.Add(this.btnRegConsu);
@@ -231,7 +219,6 @@
         private System.Windows.Forms.Button btnRol;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnModReser;
-        private System.Windows.Forms.Button btnABMCliente;
         private System.Windows.Forms.Button btnListEsta;
         private System.Windows.Forms.Button btnFacPub;
         private System.Windows.Forms.Button btnRegConsu;

@@ -127,31 +127,39 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             }
         }
         private void finalizarReserva() {
-
-            if (condi == null)
+            try
             {
-                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") +"','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
-                    + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + "," + usuario.conseguirIdUser() + ",@idReserva out SELECT @idReserva";
-                DataTable idReser = coneccion.consulta(query);
-                foreach (DataGridViewRow dr in dataGridView1.SelectedRows) { 
-                    string miniQuery="INSERT INTO NENE_MALLOC.Reserva_Por_Habitacion VALUES("+idReser.Rows[0][0].ToString()+","+dr.Cells["Habitacion_Id"].Value.ToString()+")";
-                    coneccion.executeOnly(miniQuery);
-                }
-                MessageBox.Show("Reserva generada exitosamente.\n ID:" + idReser.Rows[0][0].ToString());
-            }
-            else {
-                IngresoId levantar = new IngresoId(this);
-                this.Hide();
-                levantar.ShowDialog();
-                string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
-                         + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + ",NULL,@idReserva out SELECT @idReserva";
-                DataTable idReser = coneccion.consulta(query);
-                foreach (DataGridViewRow dr in dataGridView1.SelectedRows)
+                if (condi == null)
                 {
-                    string miniQuery = "INSERT INTO NENE_MALLOC.Reserva_Por_Habitacion VALUES(" + idReser.Rows[0][0].ToString() + "," + dr.Cells["Habitacion_Id"].Value.ToString() + ")";
-                    coneccion.executeOnly(miniQuery);
+                    string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
+                        + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + "," + usuario.conseguirIdUser() + ",@idReserva out SELECT @idReserva";
+                    DataTable idReser = coneccion.consulta(query);
+                    foreach (DataGridViewRow dr in dataGridView1.SelectedRows)
+                    {
+                        string miniQuery = "INSERT INTO NENE_MALLOC.Reserva_Por_Habitacion VALUES(" + idReser.Rows[0][0].ToString() + "," + dr.Cells["Habitacion_Id"].Value.ToString() + ")";
+                        coneccion.executeOnly(miniQuery);
+                    }
+                    MessageBox.Show("Reserva generada exitosamente.\n ID:" + idReser.Rows[0][0].ToString());
                 }
-                MessageBox.Show("Reserva generada exitosamente.\n ID:" + idReser.Rows[0][0].ToString());
+                else
+                {
+                    IngresoId levantar = new IngresoId(this);
+                    this.Hide();
+                    levantar.ShowDialog();
+                    string query = "declare @idReserva numeric(18,0) EXEC NENE_MALLOC.generar_reserva '" + fechaSistema.ToString("yyyyMMdd") + "','" + inicioDateTimePicker1.Value.ToString("yyyyMMdd")
+                             + "','" + finDateTimePicker.Value.ToString("yyyyMMdd") + "'," + regimenId + "," + clienteId + "," + cBHoteles.SelectedItem + ",NULL,@idReserva out SELECT @idReserva";
+                    DataTable idReser = coneccion.consulta(query);
+                    foreach (DataGridViewRow dr in dataGridView1.SelectedRows)
+                    {
+                        string miniQuery = "INSERT INTO NENE_MALLOC.Reserva_Por_Habitacion VALUES(" + idReser.Rows[0][0].ToString() + "," + dr.Cells["Habitacion_Id"].Value.ToString() + ")";
+                        coneccion.executeOnly(miniQuery);
+                    }
+                    MessageBox.Show("Reserva generada exitosamente.\n ID:" + idReser.Rows[0][0].ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         private void limpiarTODO() {
