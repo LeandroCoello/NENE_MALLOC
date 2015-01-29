@@ -1335,6 +1335,23 @@ create procedure NENE_MALLOC.modificar_reserva @fecha_modificacion nvarchar(15),
 
 as
 begin transaction
+
+
+if exists(select from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id and r.Reserva_Estado = 'Cancelada')
+	begin
+		rollback
+		raiserror('No se puede modificar una reserva cancelada.',16,1)
+		return
+	end
+	
+if exists(select from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id and r.Reserva_Estado = 'Efectivizada')
+	begin
+		rollback
+		raiserror('No se puede modificar una reserva efectivizada.',16,1)
+		return
+	end
+
+
 	declare
 	@fecha_modificacion_correcta datetime,
 	@fecha_desde_correcta datetime,
