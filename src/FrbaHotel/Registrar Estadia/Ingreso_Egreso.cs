@@ -80,7 +80,6 @@ namespace FrbaHotel.Registrar_Estadia
                     try
                     {
                         string queryFinal = "EXEC NENE_MALLOC.check_out  " + row.Cells["RPH_Id"].Value.ToString() + ",'" + fechaSistema.ToString("yyyyMMdd")+"'";
-                        MessageBox.Show(queryFinal);
                         conexion.executeOnly(queryFinal);
                         MessageBox.Show("Check Out realizado con exito");
                         this.Close();
