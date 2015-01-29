@@ -170,6 +170,7 @@
             this.Controls.Add(this.label1);
             this.Name = "FacturarEstadia";
             this.Text = "FacturarPublicaciones";
+            this.Load += new System.EventHandler(this.FacturarEstadia_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEsta)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewConsu)).EndInit();
             this.ResumeLayout(false);
