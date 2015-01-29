@@ -926,18 +926,7 @@ begin transaction
 	declare @rol_id numeric(18,0)
 	set @rol_id = (select Rol_Id from NENE_MALLOC.Rol where Rol_Desc = @rol_desc)
 		
-	if exists(select *  from NENE_MALLOC.Usuario_Por_Rol_Por_Hotel u 
-				where u.Hotel_Id = @hotel_id and
-					  u.Rol_Id = @rol_id and 
-					  u.Usuario_Id = @usuario_id)
-		begin
-			rollback
-			raiserror('El usuario ya tiene ese Rol en el Hotel.',16,1)
-			return
-		end
-	
-		
-		
+
 	declare @fecha_correcta datetime
 	set @fecha_correcta = @fecha_nacimiento
 	declare @datos_id numeric(18,0)
@@ -964,8 +953,14 @@ begin transaction
 			Usuario_pass = @pass
 		where Usuario_Id = @usuario_id
 		
-	Insert into Usuario_Por_Rol_Por_Hotel(Usuario_Id, Rol_Id, Hotel_Id)
+if (select COUNT(u.Usuario_Id)  from NENE_MALLOC.Usuario_Por_Rol_Por_Hotel u 
+				where u.Hotel_Id = @hotel_id and
+					  u.Rol_Id = @rol_id and 
+					  u.Usuario_Id = @usuario_id)=0
+	begin
+		Insert into Usuario_Por_Rol_Por_Hotel(Usuario_Id, Rol_Id, Hotel_Id)
 			values(@usuario_id, @rol_id, @hotel_id)
+	end
 									         
 commit
 GO
