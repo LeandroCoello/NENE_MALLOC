@@ -64,7 +64,6 @@
             this.btnHabitacion.Text = "HABITACION";
             this.btnHabitacion.UseVisualStyleBackColor = true;
             this.btnHabitacion.Click += new System.EventHandler(this.btnHabitacion_Click);
-
             // 
             // btnHotel
             // 
@@ -151,7 +150,7 @@
             this.btnFacPub.Name = "btnFacPub";
             this.btnFacPub.Size = new System.Drawing.Size(109, 51);
             this.btnFacPub.TabIndex = 18;
-            this.btnFacPub.Text = "Facturar Publicaciones";
+            this.btnFacPub.Text = "Emitir Factura";
             this.btnFacPub.UseVisualStyleBackColor = true;
             this.btnFacPub.Click += new System.EventHandler(this.btnFacPub_Click);
             // 

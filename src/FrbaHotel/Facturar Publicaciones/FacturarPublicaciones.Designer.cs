@@ -169,7 +169,7 @@
             this.Controls.Add(this.cBFormaPago);
             this.Controls.Add(this.label1);
             this.Name = "FacturarEstadia";
-            this.Text = "FacturarPublicaciones";
+            this.Text = "FacturarEstadia";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEsta)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewConsu)).EndInit();
             this.ResumeLayout(false);
