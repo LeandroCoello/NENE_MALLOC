@@ -80,15 +80,13 @@ namespace FrbaHotel.Registrar_Consumible
                 {
                     DataTable phid = conexion.consulta("SELECT RPH_Id FROM NENE_MALLOC.Reserva_Por_Habitacion WHERE Reserva_Id = " + txtNroReserva.Text + " AND Habitacion_Id = " + txtNroHab.Text);
                     rphId = phid.Rows[0].ItemArray[0].ToString();
-                    MessageBox.Show(rphId);
-                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    for (int i =0; i< dataGridView1.RowCount-1;i++)
                     {
+                        DataGridViewRow row = dataGridView1.Rows[i];
                         cant = row.Cells[1].Value.ToString();
                         string miniQuery = "SELECT Consumible_Id FROM NENE_MALLOC.Consumible WHERE Consumible_Desc LIKE '%" + row.Cells[0].Value.ToString() + "%'";
-                        MessageBox.Show(miniQuery);
                         consuId = conexion.consulta(miniQuery);
                         string query=" EXEC NENE_MALLOC.alta_consumible_habitacion " + rphId + "," + consuId.Rows[0].ItemArray[0].ToString() + "," + cant+" ";
-                        MessageBox.Show(query);
                         conexion.executeOnly(query);
                     }
                     MessageBox.Show("Registracion exitosa");
