@@ -70,24 +70,31 @@ namespace FrbaHotel.Registrar_Consumible
 
         private void btnConfirma_Click(object sender, EventArgs e)
         {
+            string rphId="";
+            string cant="";
+            DataTable consuId = new DataTable();
             if (txtNroHab.Text == "" || txtNroReserva.Text == "") { MessageBox.Show("Complete todos los campos"); }
             else
             {
-                string rphId;
-                string cant;
-                DataTable phid = conexion.consulta("SELECT RPH_Id FROM NENE_MALLOC.Reserva_Por_Habitacion WHERE Reserva_Id = " + txtNroReserva.Text + " AND Habitacion_Id = " + txtNroHab.Text);
-                rphId = phid.Rows[0].ItemArray[0].ToString();
-                foreach (DataGridViewRow row in dataGridView1.Rows)
+                try
                 {
-                    cant = row.Cells[1].Value.ToString();
-                    DataTable consuId = conexion.consulta("SELECT Consumible_Id FROM NENE_MALLOC.Consumible WHERE Consumible_Desc LIKE '%"+row.Cells[0].Value.ToString()+"%'");
-                    string query = "EXEC NENE_MALLOC.alta_consumible_habitacion " + rphId + "," + consuId.Rows[0].ItemArray[0].ToString() + "," + cant;
-                    conexion.executeOnly(query);
+                    DataTable phid = conexion.consulta("SELECT RPH_Id FROM NENE_MALLOC.Reserva_Por_Habitacion WHERE Reserva_Id = " + txtNroReserva.Text + " AND Habitacion_Id = " + txtNroHab.Text);
+                    rphId = phid.Rows[0].ItemArray[0].ToString();
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        cant = row.Cells[1].Value.ToString();
+                        string miniQuery = "SELECT Consumible_Id FROM NENE_MALLOC.Consumible WHERE Consumible_Desc LIKE '%" + row.Cells["Column1"].Value.ToString() + "%'";
+                        consuId = conexion.consulta(miniQuery);
+                        string query=" EXEC NENE_MALLOC.alta_consumible_habitacion " + rphId + "," + consuId.Rows[0].ItemArray[0].ToString() + "," + cant+" ";
+                        conexion.executeOnly(query);
+                    }
+                    MessageBox.Show("Registracion exitosa");
+                    this.Close();
                 }
-                MessageBox.Show("Registracion exitosa");
-                this.Close();
+                catch (Exception exec) {
+                    MessageBox.Show(exec.Message);
+                }
             }
-
         }
 
     }
