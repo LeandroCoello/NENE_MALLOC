@@ -58,7 +58,7 @@ namespace FrbaHotel.ABM_de_Usuario
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            string query = "UPDATE NENE_MALLOC.Usuario set Usuario_Estado = 1 WHERE Usuario_Id = '"+usuarioId+"'";
+            string query = "UPDATE NENE_MALLOC.Usuario set Usuario_Baja = 1 WHERE Usuario_Id = '"+usuarioId+"'";
             conexion.executeOnly(query);
             MessageBox.Show("Usuario dado de baja con exito");
         }

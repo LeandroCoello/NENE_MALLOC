@@ -763,6 +763,7 @@ begin transaction
 		begin
 			rollback
 			raiserror('El rol está dado de baja',16,1)
+			return
 		end
 		
 	if(not(exists(select f.Func_Id from NENE_MALLOC.Funcionalidad f where @funcionalidad = Func_Desc)))
