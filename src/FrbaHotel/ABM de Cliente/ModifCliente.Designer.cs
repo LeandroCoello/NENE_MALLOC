@@ -35,7 +35,6 @@
             this.txt7 = new System.Windows.Forms.TextBox();
             this.txt6 = new System.Windows.Forms.TextBox();
             this.txt5 = new System.Windows.Forms.TextBox();
-            this.txt4 = new System.Windows.Forms.TextBox();
             this.txt3 = new System.Windows.Forms.TextBox();
             this.txt2 = new System.Windows.Forms.TextBox();
             this.txt1 = new System.Windows.Forms.TextBox();
@@ -53,6 +52,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnGuardarCambios = new System.Windows.Forms.Button();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.tipoDocSelector = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // txt12
@@ -103,13 +103,6 @@
             this.txt5.Name = "txt5";
             this.txt5.Size = new System.Drawing.Size(142, 20);
             this.txt5.TabIndex = 41;
-            // 
-            // txt4
-            // 
-            this.txt4.Location = new System.Drawing.Point(87, 75);
-            this.txt4.Name = "txt4";
-            this.txt4.Size = new System.Drawing.Size(142, 20);
-            this.txt4.TabIndex = 40;
             // 
             // txt3
             // 
@@ -257,11 +250,21 @@
             this.dateTimePicker1.Size = new System.Drawing.Size(142, 20);
             this.dateTimePicker1.TabIndex = 50;
             // 
+            // tipoDocSelector
+            // 
+            this.tipoDocSelector.AccessibleName = "";
+            this.tipoDocSelector.FormattingEnabled = true;
+            this.tipoDocSelector.Location = new System.Drawing.Point(87, 75);
+            this.tipoDocSelector.Name = "tipoDocSelector";
+            this.tipoDocSelector.Size = new System.Drawing.Size(142, 21);
+            this.tipoDocSelector.TabIndex = 51;
+            // 
             // ModifCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(248, 335);
+            this.Controls.Add(this.tipoDocSelector);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.btnGuardarCambios);
             this.Controls.Add(this.txt12);
@@ -271,7 +274,6 @@
             this.Controls.Add(this.txt7);
             this.Controls.Add(this.txt6);
             this.Controls.Add(this.txt5);
-            this.Controls.Add(this.txt4);
             this.Controls.Add(this.txt3);
             this.Controls.Add(this.txt2);
             this.Controls.Add(this.txt1);
@@ -303,7 +305,6 @@
         private System.Windows.Forms.TextBox txt7;
         private System.Windows.Forms.TextBox txt6;
         private System.Windows.Forms.TextBox txt5;
-        private System.Windows.Forms.TextBox txt4;
         private System.Windows.Forms.TextBox txt3;
         private System.Windows.Forms.TextBox txt2;
         private System.Windows.Forms.TextBox txt1;
@@ -321,5 +322,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnGuardarCambios;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.ComboBox tipoDocSelector;
     }
 }

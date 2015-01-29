@@ -18,7 +18,8 @@ namespace FrbaHotel.ABM_de_Cliente
         {
             InitializeComponent();
             cBtipoIdent.Items.Add("DNI");
-            cBtipoIdent.Items.Add("PASAPORTE");
+            cBtipoIdent.Items.Add("Pasaporte");
+            cBtipoIdent.Items.Add("Cedula");
             criterioABM = condicion;
             conexion = conec;
         }

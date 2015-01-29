@@ -27,6 +27,9 @@ namespace FrbaHotel.ABM_de_Cliente
             dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
             this.generarBoxes();
             this.cargarBoxes(listaValores);
+            tipoDocSelector.Items.Add("DNI");
+            tipoDocSelector.Items.Add("Pasaporte");
+            tipoDocSelector.Items.Add("Cedula");
             
         }
         private void cargarBoxes(string[] unaLista)
@@ -44,7 +47,6 @@ namespace FrbaHotel.ABM_de_Cliente
             boxes.Add(txt1);
             boxes.Add(txt2);
             boxes.Add(txt3);
-            boxes.Add(txt4);
             boxes.Add(txt5);
             boxes.Add(txt6);
             boxes.Add(txt7);
@@ -56,7 +58,7 @@ namespace FrbaHotel.ABM_de_Cliente
 
         private void btnGuardarCambios_Click(object sender, EventArgs e)
         {
-            string queryModif = "EXEC NENE_MALLOC.modificacion_cliente '"+txt1.Text+"','"+txt2.Text+"',"+txt3.Text+",'"+txt4.Text+"',"+txt5.Text+",'"+txt6.Text+"','"+txt7.Text+"',"+txt8.Text+","+txt9.Text+",'"+txt10.Text+"','"+dateTimePicker1.Value.ToString("yyyyMMdd")+"','"+txt12.Text+"',"+clienteId;
+            string queryModif = "EXEC NENE_MALLOC.modificacion_cliente '"+txt1.Text+"','"+txt2.Text+"',"+txt3.Text+",'"+ tipoDocSelector.SelectedItem.ToString() +"',"+txt5.Text+",'"+txt6.Text+"','"+txt7.Text+"',"+txt8.Text+","+txt9.Text+",'"+txt10.Text+"','"+dateTimePicker1.Value.ToString("yyyyMMdd")+"','"+txt12.Text+"',"+clienteId;
             try
             {
                 conexion.executeOnly(queryModif);
