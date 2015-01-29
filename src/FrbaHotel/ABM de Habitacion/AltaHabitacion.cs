@@ -20,7 +20,7 @@ namespace FrbaHotel.ABM_de_Habitacion
             txtHotel.Text = id.ToString();
             DataTable tiposHab = conexion.consulta("select Tipo_Hab_Desc from NENE_MALLOC.Tipo_Habitacion");
             foreach(DataRow dr in tiposHab.Rows){
-                cBTipoHabitacion.Items.Add(dr["Habitacion_Tipo"].ToString());
+                cBTipoHabitacion.Items.Add(dr["Tipo_Hab_Desc"].ToString());
             }
         }
 
@@ -32,7 +32,7 @@ namespace FrbaHotel.ABM_de_Habitacion
                 MessageBox.Show("Por favor complete todos los campos");
             }
             else {
-                DataTable codHab = conexion.consulta("SELECT Tipo_Hab_Id from NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Desc = "+ cBTipoHabitacion.SelectedItem.ToString());
+                DataTable codHab = conexion.consulta("SELECT Tipo_Hab_Id from NENE_MALLOC.Tipo_Habitacion WHERE Tipo_Hab_Desc = '"+ cBTipoHabitacion.SelectedItem.ToString()+"'");
                 string queryViolento = "EXEC NENE_MALLOC.alta_habitacion "+txtNroHabi.Text+","+txtPisoHotel.Text+","+txtHotel.Text+","+
                     codHab.Rows[0].ItemArray[0].ToString()+",'"+txtConVista.Text+"','"+txtDesc.Text+"'";
                 try
