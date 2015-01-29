@@ -1592,6 +1592,16 @@ create procedure NENE_MALLOC.alta_consumible_habitacion @rph_id numeric(18,0), @
 as
 begin transaction
 
+if exists(select * from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+			where @rph_id = rph.RPH_Id and
+				  rph.Reserva_Id = r.Reserva_Id and
+				  r.Reserva_Estado = 'Cancelada')
+				  
+	begin
+	rollback
+	raiserror('Reserva Cancelada.',16,1)
+	return
+	end
 
 if (select count(e.Estadia_Id) from NENE_MALLOC.Estadia e
 			where e.Estadia_RPH = @rph_id)=0
