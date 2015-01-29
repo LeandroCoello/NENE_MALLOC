@@ -101,7 +101,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                         levantarBusqueda.ShowDialog();
                         finalizarReserva();
                     }
-                    else if(condi != null){
+                    else if(condi == null){
                         BuscarCliente levantarBusqueda = new BuscarCliente(coneccion, this);
                         this.Hide();
                         levantarBusqueda.ShowDialog();
