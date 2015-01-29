@@ -257,6 +257,7 @@ Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (24,'Check-Out')
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (25,'Registrar Consumibles')
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (26,'Emitir Factura')
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (27,'Listado Estadístico')
+Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (28,'Alta Periodo de Cierre')
 GO
 
 
@@ -295,6 +296,8 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,25)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,27)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,28)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,28)
 
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,1)		
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,2)	
@@ -323,6 +326,7 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,24)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,25)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,27)
+Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,28)
 GO
 
 --REGIMEN
@@ -1297,7 +1301,7 @@ begin transaction
 	if (@fecha_hasta < @fecha_desde)
 		begin
 			rollback
-			raiserror('Fecha de Ingreso mayor Fecha Egreso.',16,1)
+			raiserror('Fecha de Ingreso mayor a Fecha Egreso.',16,1)
 			return
 		end
 	
