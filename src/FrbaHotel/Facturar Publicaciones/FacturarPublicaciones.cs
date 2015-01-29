@@ -11,12 +11,12 @@ using FrbaHotel.Sistema;
 
 namespace FrbaHotel.Facturar_Publicaciones
 {
-    public partial class FacturarPublicaciones : Form
+    public partial class FacturarEstadia : Form
     {
         UsuarioLogueado usuario;
         String fechaSistema = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]).ToString("yyyyMMdd");
         string RPH_ID = "";
-        public FacturarPublicaciones(UsuarioLogueado userLog)
+        public FacturarEstadia(UsuarioLogueado userLog)
         {
             InitializeComponent();
             btnFacturar.Enabled = false;
@@ -76,7 +76,7 @@ namespace FrbaHotel.Facturar_Publicaciones
                 this.btnLimpieza_Click(sender, e);
                 if (cBFormaPago.SelectedIndex.ToString() == "Tarjeta de credito")
                 {
-                    TarjetaDeCredito tarjetaDeCredito = new TarjetaDeCredito(txtClieCod.Text, facturaID);
+                    TarjetaDeCredito tarjetaDeCredito = new TarjetaDeCredito(txtClieCod.Text, facturaID, usuario);
                     this.Hide();
                     tarjetaDeCredito.ShowDialog();
                     this.Show();

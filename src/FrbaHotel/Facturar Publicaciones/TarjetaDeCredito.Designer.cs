@@ -36,8 +36,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.tipoTarjeta = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.duenioTarjeta = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // button1
@@ -109,12 +110,12 @@
             this.label5.TabIndex = 7;
             this.label5.Text = "Dueño:";
             // 
-            // textBox1
+            // duenioTarjeta
             // 
-            this.textBox1.Location = new System.Drawing.Point(135, 102);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 8;
+            this.duenioTarjeta.Location = new System.Drawing.Point(135, 102);
+            this.duenioTarjeta.Name = "duenioTarjeta";
+            this.duenioTarjeta.Size = new System.Drawing.Size(100, 20);
+            this.duenioTarjeta.TabIndex = 8;
             // 
             // label6
             // 
@@ -125,13 +126,21 @@
             this.label6.TabIndex = 9;
             this.label6.Text = "Fecha de vencimiento:";
             // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Location = new System.Drawing.Point(135, 138);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(142, 20);
+            this.dateTimePicker1.TabIndex = 27;
+            // 
             // TarjetaDeCredito
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 266);
+            this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.duenioTarjeta);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.tipoTarjeta);
             this.Controls.Add(this.label4);
@@ -157,7 +166,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox tipoTarjeta;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox duenioTarjeta;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }

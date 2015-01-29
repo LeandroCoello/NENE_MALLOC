@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FrbaHotel.Sistema;
 
 namespace FrbaHotel.Facturar_Publicaciones
 {
@@ -13,7 +15,8 @@ namespace FrbaHotel.Facturar_Publicaciones
     {
         String facturaID;
         String tipoDeTarjeta;
-        public TarjetaDeCredito(String codigoCliente,String facturaIDIn)
+        UsuarioLogueado usuario;
+        public TarjetaDeCredito(String codigoCliente,String facturaIDIn, UsuarioLogueado loged)
         {
 
             InitializeComponent();
@@ -23,6 +26,9 @@ namespace FrbaHotel.Facturar_Publicaciones
             tipoTarjeta.Items.Add("VISA");
             tipoTarjeta.Items.Add("American Express");
             tipoTarjeta.Items.Add("Otro");
+            dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
+            usuario = loged;
+
 
 
 
@@ -37,8 +43,11 @@ namespace FrbaHotel.Facturar_Publicaciones
                 {
                     //Lanzo una ventanita extra que pida una marca de tarjeta nueva
                 }
-                //exec query procedure
+                String queryTarjeta = "exec NENE_MALLOC.agregar_tarjeta" + facturaID + "," + nroTarjeta + ",'" + duenioTarjeta + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + ",'"+ tipoDeTarjeta +"'";
 
+                usuario.getConexion().executeOnly(queryTarjeta);
+
+                this.Close();
             }
             catch (Exception ex)
             {

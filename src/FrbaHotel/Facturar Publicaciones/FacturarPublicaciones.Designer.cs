@@ -1,6 +1,6 @@
 ﻿namespace FrbaHotel.Facturar_Publicaciones
 {
-    partial class FacturarPublicaciones
+    partial class FacturarEstadia
     {
         /// <summary>
         /// Required designer variable.
@@ -151,7 +151,7 @@
             this.btnFacturar.UseVisualStyleBackColor = true;
             this.btnFacturar.Click += new System.EventHandler(this.btnFacturar_Click);
             // 
-            // FacturarPublicaciones
+            // FacturarEstadia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -168,7 +168,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cBFormaPago);
             this.Controls.Add(this.label1);
-            this.Name = "FacturarPublicaciones";
+            this.Name = "FacturarEstadia";
             this.Text = "FacturarPublicaciones";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEsta)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewConsu)).EndInit();

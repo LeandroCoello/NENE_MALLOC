@@ -73,7 +73,7 @@ namespace FrbaHotel.Menu_Principal
 
         private void btnFacPub_Click(object sender, EventArgs e)
         {
-            Facturar_Publicaciones.FacturarPublicaciones levantarFac = new FrbaHotel.Facturar_Publicaciones.FacturarPublicaciones(userLog);
+            Facturar_Publicaciones.FacturarEstadia levantarFac = new FrbaHotel.Facturar_Publicaciones.FacturarEstadia(userLog);
             this.Hide();
             levantarFac.ShowDialog();
             this.Show();
