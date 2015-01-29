@@ -37,7 +37,6 @@
             this.txtCalle = new System.Windows.Forms.TextBox();
             this.txtTelefono = new System.Windows.Forms.TextBox();
             this.txtMail = new System.Windows.Forms.TextBox();
-            this.txtTDoc = new System.Windows.Forms.TextBox();
             this.txtNDoc = new System.Windows.Forms.TextBox();
             this.txtApellido = new System.Windows.Forms.TextBox();
             this.txtNom = new System.Windows.Forms.TextBox();
@@ -60,6 +59,7 @@
             this.cBRolesAAsignar = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.tipoDocSelector = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // txtDepto
@@ -130,13 +130,6 @@
             this.txtMail.Name = "txtMail";
             this.txtMail.Size = new System.Drawing.Size(100, 20);
             this.txtMail.TabIndex = 52;
-            // 
-            // txtTDoc
-            // 
-            this.txtTDoc.Location = new System.Drawing.Point(121, 156);
-            this.txtTDoc.Name = "txtTDoc";
-            this.txtTDoc.Size = new System.Drawing.Size(100, 20);
-            this.txtTDoc.TabIndex = 51;
             // 
             // txtNDoc
             // 
@@ -322,11 +315,21 @@
             this.dateTimePicker1.Size = new System.Drawing.Size(100, 20);
             this.dateTimePicker1.TabIndex = 67;
             // 
+            // tipoDocSelector
+            // 
+            this.tipoDocSelector.AccessibleName = "";
+            this.tipoDocSelector.FormattingEnabled = true;
+            this.tipoDocSelector.Location = new System.Drawing.Point(121, 156);
+            this.tipoDocSelector.Name = "tipoDocSelector";
+            this.tipoDocSelector.Size = new System.Drawing.Size(100, 21);
+            this.tipoDocSelector.TabIndex = 68;
+            // 
             // ModificarUsuario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 451);
+            this.Controls.Add(this.tipoDocSelector);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.cBRolesAAsignar);
             this.Controls.Add(this.label3);
@@ -341,7 +344,6 @@
             this.Controls.Add(this.txtCalle);
             this.Controls.Add(this.txtTelefono);
             this.Controls.Add(this.txtMail);
-            this.Controls.Add(this.txtTDoc);
             this.Controls.Add(this.txtNDoc);
             this.Controls.Add(this.txtApellido);
             this.Controls.Add(this.txtNom);
@@ -377,7 +379,6 @@
         private System.Windows.Forms.TextBox txtCalle;
         private System.Windows.Forms.TextBox txtTelefono;
         private System.Windows.Forms.TextBox txtMail;
-        private System.Windows.Forms.TextBox txtTDoc;
         private System.Windows.Forms.TextBox txtNDoc;
         private System.Windows.Forms.TextBox txtApellido;
         private System.Windows.Forms.TextBox txtNom;
@@ -400,6 +401,7 @@
         private System.Windows.Forms.ComboBox cBRolesAAsignar;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.ComboBox tipoDocSelector;
 
     }
 }

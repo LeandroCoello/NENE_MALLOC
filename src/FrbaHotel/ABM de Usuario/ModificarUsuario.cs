@@ -32,13 +32,15 @@ namespace FrbaHotel.ABM_de_Usuario
             this.generarBoxes();
             this.cargarBoxes(valores);
             dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
+            tipoDocSelector.Items.Add("DNI");
+            tipoDocSelector.Items.Add("Pasaporte");
+            tipoDocSelector.Items.Add("Cedula");
         }
         private void generarBoxes() {
             boxes.Add(txtUser);
             boxes.Add(txtPass);
             boxes.Add(txtNom);
             boxes.Add(txtApellido);
-            boxes.Add(txtTDoc);
             boxes.Add(txtNDoc);
             boxes.Add(txtMail);
             boxes.Add(txtTelefono);
@@ -61,14 +63,14 @@ namespace FrbaHotel.ABM_de_Usuario
 
         private void btnModUser_Click(object sender, EventArgs e)
         {
-            if (boxes.Where(b => string.IsNullOrEmpty(b.Text)).Any() || string.IsNullOrEmpty(txtHotelTrabaja.Text) || cBRolesAAsignar.SelectedIndex == -1)
+            if (boxes.Where(b => string.IsNullOrEmpty(b.Text)).Any() || string.IsNullOrEmpty(txtHotelTrabaja.Text) || cBRolesAAsignar.SelectedIndex == -1 || tipoDocSelector.SelectedIndex == -1)
             {
                 MessageBox.Show("Complete todo los campos");
             }
             else
             {
                 string query = "EXEC NENE_MALLOC.modificacion_usuario '" + txtUser.Text + "','" + txtPass.Text + "','" + txtNom.Text + "','" + txtApellido.Text +
-                    "'," + txtTelefono.Text + ",'" + txtTDoc.Text + "'," + txtNDoc.Text + ",'" + txtMail.Text + "','" + txtCalle.Text + "'," + txtNcalle.Text + "," + txtPiso.Text
+                    "'," + txtTelefono.Text + ",'" + tipoDocSelector.SelectedItem.ToString() + "'," + txtNDoc.Text + ",'" + txtMail.Text + "','" + txtCalle.Text + "'," + txtNcalle.Text + "," + txtPiso.Text
                     + ",'" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "'," + usuarioId + "," +  txtHotelTrabaja.Text +", '"+cBRolesAAsignar.SelectedItem.ToString()+"'";
                 try
                 {

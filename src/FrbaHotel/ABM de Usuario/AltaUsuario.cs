@@ -57,7 +57,7 @@ namespace FrbaHotel.ABM_de_Usuario
             {
                 string passFinal = inicio.SHA256Encripta(txtPass.Text);
                 string queryAlta = "exec NENE_MALLOC.Alta_Usuario '" + txtUser.Text + "','" + passFinal + "','" + cBRolesAAsignar.SelectedItem.ToString() + "','" +
-                    txtNom.Text + "','" + txtApellido.Text + "','" + txtTelefono.Text + "','" + tipoDocSelector.SelectedIndex.ToString() + "','" + txtNDoc.Text + "','" + txtMail.Text + "','"
+                    txtNom.Text + "','" + txtApellido.Text + "','" + txtTelefono.Text + "','" + tipoDocSelector.SelectedItem.ToString() + "','" + txtNDoc.Text + "','" + txtMail.Text + "','"
                     + txtCalle.Text + "','" + txtNcalle.Text + "','" + txtPiso.Text + "','" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "','" + txtHotelTrabaja.Text + "'";
                 try
                 {
