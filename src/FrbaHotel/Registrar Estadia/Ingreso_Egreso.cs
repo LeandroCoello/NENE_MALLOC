@@ -43,7 +43,7 @@ namespace FrbaHotel.Registrar_Estadia
                 dataGridView1.DataSource = conexion.consulta(query);
             }
             else {
-                string query = "SELECT R.Reserva_Cliente,R.Reserva_CantNoches,H.Habitacion_Num,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Tipo,R.Reserva_FechaIng,RPH.RPH_Id FROM NENE_MALLOC.Reserva_Por_Habitacion RPH, NENE_MALLOC.Habitacion H,NENE_MALLOC.Reserva R WHERE H.Habitacion_Id = RPH.Habitacion_Id AND R.Reserva_Id = RPH.Reserva_Id AND RPH.Reserva_Id =" + txtNroReser.Text + " AND R.Reserva_Estado = 'Efectivizada' AND R.Reserva_Estado != 'Cancelada'";
+                string query = "SELECT R.Reserva_Cliente,R.Reserva_CantNoches,H.Habitacion_Num,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Tipo,R.Reserva_FechaIng,RPH.RPH_Id FROM NENE_MALLOC.Reserva_Por_Habitacion RPH, NENE_MALLOC.Habitacion H,NENE_MALLOC.Reserva R, NENE_MALLOC.Estadia E WHERE H.Habitacion_Id = RPH.Habitacion_Id AND R.Reserva_Id = RPH.Reserva_Id AND RPH.Reserva_Id =" + txtNroReser.Text + " AND R.Reserva_Estado = 'Efectivizada' AND E.Estadia_RPH = RPH.RPH_Id AND E.Estadia_Fecha_Salida is null";
                 dataGridView1.DataSource = conexion.consulta(query); 
             }
             if (dataGridView1.DataSource == null) {

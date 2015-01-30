@@ -69,7 +69,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                     setClienteIdyRegimenId();
                     txtRegimenActual.Text = dataGridView1.Rows[0].Cells["Reserva_Regimen"].Value.ToString();
                     dataGridView1.Columns.Remove("Reserva_Regimen");
-                    string habitacionesDisp = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc FROM NENE_MALLOC.Habitacion H WHERE H.Habitacion_Ocupada = 0 AND H.Habitacion_Cerrada = 0 AND H.Habitacion_Hotel = " + hotelID;
+                    string habitacionesDisp = "SELECT H.Habitacion_Id,H.Habitacion_Num,H.Habitacion_Piso,H.Habitacion_Hotel,H.Habitacion_Tipo,H.Habitacion_Vista,H.Habitacion_Desc FROM NENE_MALLOC.Habitacion H WHERE H.Habitacion_Ocupada = 0 AND H.Habitacion_Cerrada = 0 AND H.Habitacion_Hotel = " + hotelID + " AND H.Habitacion_Id NOT IN (SELECT RPH.Habitacion_Id FROM NENE_MALLOC.Reserva_Por_Habitacion RPH where RPH.Reserva_Id=" + txtCodReser.Text + ")";
                     dataGridView2.DataSource = conexion.consulta(habitacionesDisp);
                     regimenes = conexion.consulta("SELECT R.Regimen_Id,R.Regimen_Desc,R.Regimen_Precio FROM NENE_MALLOC.Regimen R,NENE_MALLOC.Regimen_Por_Hotel RH WHERE R.Regimen_Id = RH.Regimen_Id AND R.Regimen_Inactivo = 0 AND RH.Hotel_Id = " + hotelID);
                     fechas = conexion.consulta("SELECT R.Reserva_FechaIng FROM NENE_MALLOC.Reserva R WHERE R.Reserva_Id =" + txtCodReser.Text);
@@ -88,7 +88,6 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             if (dataGridView1.SelectedRows.Count >= 1) {
                 foreach (DataGridViewRow dr in dataGridView1.SelectedRows) {
                     string deleteQuery = "DELETE FROM NENE_MALLOC.Reserva_Por_Habitacion WHERE Reserva_Id ="+txtCodReser.Text+" AND Habitacion_Id =" + dr.Cells["Habitacion_Id"].Value.ToString();
-                    MessageBox.Show(deleteQuery);
                     dataGridView1.Rows.RemoveAt(dr.Index);
                     conexion.executeOnly(deleteQuery);
                 }

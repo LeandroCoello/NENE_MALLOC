@@ -166,6 +166,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             }
         }
         private void limpiarTODO() {
+            precio = 0;
             dataGridView1.DataSource = null;
             dataGridView1.Refresh();
             dGVRegimen.Refresh();
