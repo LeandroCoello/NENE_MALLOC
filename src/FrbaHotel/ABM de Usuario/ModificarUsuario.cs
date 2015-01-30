@@ -16,6 +16,7 @@ namespace FrbaHotel.ABM_de_Usuario
         Administrador admin;
         SQLConnector conexion;
         List<TextBox> boxes = new List<TextBox>();
+        Inicio inicio;
         string usuarioId;
         string datosPersId;
         public ModificarUsuario(string[] valores,SQLConnector conec)
@@ -34,6 +35,7 @@ namespace FrbaHotel.ABM_de_Usuario
             this.generarBoxes();
             this.cargarBoxes(valores);
             dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
+            inicio = new Inicio(conexion);
             tipoDocSelector.Items.Add("DNI");
             tipoDocSelector.Items.Add("Pasaporte");
             tipoDocSelector.Items.Add("Cedula");
@@ -61,6 +63,8 @@ namespace FrbaHotel.ABM_de_Usuario
                 i++;
             }
             dateTimePicker1.Value = Convert.ToDateTime(listaVal[i]);
+            boxes.Remove(txtPass);
+            txtPass.Text = "";
         }
 
         private void btnModUser_Click(object sender, EventArgs e)
@@ -71,7 +75,16 @@ namespace FrbaHotel.ABM_de_Usuario
             }
             else
             {
-                string query = "EXEC NENE_MALLOC.modificacion_usuario '" + txtUser.Text + "','" + txtPass.Text + "','" + txtNom.Text + "','" + txtApellido.Text +
+                string pass;
+                if (txtPass.Text.Equals(""))
+                {
+                    pass = "NULL";
+                }
+                else
+                {
+                    pass = inicio.SHA256Encripta(txtPass.Text);
+                }
+                string query = "EXEC NENE_MALLOC.modificacion_usuario '" + txtUser.Text + "','" + pass + "','" + txtNom.Text + "','" + txtApellido.Text +
                     "'," + txtTelefono.Text + ",'" + tipoDocSelector.SelectedItem.ToString() + "'," + txtNDoc.Text + ",'" + txtMail.Text + "','" + txtCalle.Text + "'," + txtNcalle.Text + "," + txtPiso.Text
                     + ",'" + txtDepto.Text + "','" + dateTimePicker1.Value.ToString("yyyyMMdd") + "'," + usuarioId + "," +  txtHotelTrabaja.Text +", '"+cBRolesAAsignar.SelectedItem.ToString()+"'";
                 try
