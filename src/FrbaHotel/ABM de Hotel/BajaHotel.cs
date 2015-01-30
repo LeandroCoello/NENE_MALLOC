@@ -49,7 +49,9 @@ namespace FrbaHotel.ABM_de_Hotel
         {
             string query = "UPDATE NENE_MALLOC.Hotel set Hotel_Cerrado = 1 WHERE Hotel_Id ="+hotelId;
             conexion.executeOnly(query);
-            MessageBox.Show("Hotel dado de baja");
+            MessageBox.Show("A continuación ingrese el periodo de cierre del hotel.");
+            periodoHotel levantarCierre = new periodoHotel(hotelId,conexion);
+            levantarCierre.ShowDialog();
             this.Close();
         }
     }

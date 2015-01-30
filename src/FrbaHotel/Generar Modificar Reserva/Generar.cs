@@ -20,7 +20,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         Decimal precio = 0;
         string regimenId;
         string clienteId;
-        string condi=null;
+        string condi = "guest";
 
         public Generar(SQLConnector conec,String condicion)
         {
@@ -34,6 +34,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
             usuario = userLog;
             coneccion = userLog.getConexion();
             coneccion = userLog.getConexion();
+            condi = userLog.getRolAsignado();
             cBHoteles.Items.Add(usuario.getHotelAsignado());
             cBHoteles.SelectedIndex = 0;
             cBHoteles.Enabled = false;
@@ -94,15 +95,9 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 }
                 if (confirmarReserva(precio) == DialogResult.Yes)
                 {
-                    if (clienteEnSistema() == DialogResult.Yes && condi == null)
+                    if (clienteEnSistema() == DialogResult.Yes)
                     {
                         BuscarCliente levantarBusqueda = new BuscarCliente(usuario, this);
-                        this.Hide();
-                        levantarBusqueda.ShowDialog();
-                        finalizarReserva();
-                    }
-                    else if(condi != null){
-                        BuscarCliente levantarBusqueda = new BuscarCliente(coneccion, this);
                         this.Hide();
                         levantarBusqueda.ShowDialog();
                         finalizarReserva();
