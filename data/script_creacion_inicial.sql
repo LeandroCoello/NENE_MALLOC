@@ -950,9 +950,16 @@ begin transaction
 		where Datos_Id = @datos_id
 	
 	Update NENE_MALLOC.Usuario
-		set Usuario_name = @username,
-			Usuario_pass = @pass
+		set Usuario_name = @username
 		where Usuario_Id = @usuario_id
+		
+if(@pass != 'NULL')
+	begin
+		Update NENE_MALLOC.Usuario
+		set Usuario_pass = @pass
+		where Usuario_Id = @usuario_id
+	end
+
 		
 if (select COUNT(u.Usuario_Id)  from NENE_MALLOC.Usuario_Por_Rol_Por_Hotel u 
 				where u.Hotel_Id = @hotel_id and
@@ -1338,14 +1345,14 @@ as
 begin transaction
 
 
-if exists(select from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id and r.Reserva_Estado = 'Cancelada')
+if exists(select * from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id and r.Reserva_Estado = 'Cancelada')
 	begin
 		rollback
 		raiserror('No se puede modificar una reserva cancelada.',16,1)
 		return
 	end
 	
-if exists(select from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id and r.Reserva_Estado = 'Efectivizada')
+if exists(select * from NENE_MALLOC.Reserva r where r.Reserva_Id = @reserva_id and r.Reserva_Estado = 'Efectivizada')
 	begin
 		rollback
 		raiserror('No se puede modificar una reserva efectivizada.',16,1)
