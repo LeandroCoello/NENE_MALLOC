@@ -95,14 +95,22 @@ namespace FrbaHotel.Generar_Modificar_Reserva
                 }
                 if (confirmarReserva(precio) == DialogResult.Yes)
                 {
-                    if (clienteEnSistema() == DialogResult.Yes)
+                    if (clienteEnSistema() == DialogResult.Yes && usuario == null)
                     {
-                        BuscarCliente levantarBusqueda = new BuscarCliente(usuario, this);
+                        BuscarCliente levantarBusqueda = new BuscarCliente(coneccion, this);
                         this.Hide();
                         levantarBusqueda.ShowDialog();
                         finalizarReserva();
                     }
-                    else {
+                    else if (usuario != null) {
+                        BuscarCliente levantarBusqueda = new BuscarCliente(usuario, this);
+                        this.Hide();
+                        levantarBusqueda.ShowDialog();
+                        finalizarReserva();
+                    
+                    }
+                    else
+                    {
                         FrbaHotel.ABM_de_Cliente.AltaCliente levantarAlta = new FrbaHotel.ABM_de_Cliente.AltaCliente(coneccion);
                         this.Hide();
                         levantarAlta.ShowDialog();

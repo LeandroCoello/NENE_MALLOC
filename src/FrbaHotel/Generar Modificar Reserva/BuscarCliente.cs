@@ -22,7 +22,7 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         {
             InitializeComponent();
             usuario = userLog;
-            conec = userLog.getConexion();
+            conec = usuario.getConexion();
             cBTipoDoc.Items.Add("DNI");
             cBTipoDoc.Items.Add("Pasaporte");
             cBTipoDoc.Items.Add("Cedula");
