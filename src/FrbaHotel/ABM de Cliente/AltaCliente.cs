@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using FrbaHotel.Sistema;
+using FrbaHotel.Generar_Modificar_Reserva;
 
 namespace FrbaHotel.ABM_de_Cliente
 {
@@ -15,9 +16,21 @@ namespace FrbaHotel.ABM_de_Cliente
     {
         List<TextBox> txtBoxes = new List<TextBox>();
         SQLConnector conexion;
+        Generar geneF = null;
         public AltaCliente(SQLConnector conec)
         {
             InitializeComponent();
+            inicializar();
+            conexion = conec;
+        }
+        public AltaCliente(SQLConnector conec,Generar_Modificar_Reserva.Generar genForm)
+        {
+            InitializeComponent();
+            inicializar();
+            conexion = conec;
+            geneF = genForm;
+        }
+        private void inicializar() {
             txtBoxes.Add(txtNom);
             txtBoxes.Add(txtApellido);
             tipoDocSelector.Items.Add("DNI");
@@ -29,8 +42,6 @@ namespace FrbaHotel.ABM_de_Cliente
             txtBoxes.Add(txtNroCalle);
             txtBoxes.Add(txtNacionalidad);
             dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
-            conexion = conec;
-            
         }
         private void btnAceptar_Click(object sender, EventArgs e)
         {
@@ -55,11 +66,21 @@ namespace FrbaHotel.ABM_de_Cliente
             {
                 DataTable clienteId = conexion.consulta(queryCliente);
                 MessageBox.Show("Cliente registrado con exito ID:"+ clienteId.Rows[0].ItemArray[0].ToString());
+                cargarId(clienteId.Rows[0].ItemArray[0].ToString());
                 this.Close();
             }
             catch(Exception excep) 
             {
                 MessageBox.Show(excep.Message);
+            }
+        }
+        public void cargarId(string id)
+        {
+            if (!(geneF == null))
+            {
+                geneF.setClienteId(id);
+                this.Close();
+                geneF.Show();
             }
         }
     }
