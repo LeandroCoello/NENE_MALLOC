@@ -31,12 +31,18 @@ namespace FrbaHotel.ABM_de_Hotel
             {
                 MessageBox.Show("Complete todos los campos");
             }
-            else { 
-                string queryEXEC = "exec NENE_MALLOC.alta_periodo_cerre "+idHotel+", "+fechaSist.ToString("yyyyMMdd")+","
-                    +dateTimePicker1.Value.ToString("yyyyMMDD"+","+txtMotivo.Text);
-                conec.executeOnly(queryEXEC);
-                MessageBox.Show("Baja de hotel hecha con exito");
-                this.Close();
+            else {
+                try
+                {
+                    string queryEXEC = "exec NENE_MALLOC.alta_periodo_cierre " + idHotel + ", " + fechaSist.ToString("yyyyMMdd") + ","
+                        + dateTimePicker1.Value.ToString("yyyyMMdd") + "," + "'" + txtMotivo.Text + "'";
+                    conec.executeOnly(queryEXEC);
+                    MessageBox.Show("Baja de hotel hecha con exito");
+                    this.Close();
+                }
+                catch (Exception excep) {
+                    MessageBox.Show(excep.Message);
+                }
             }
         }
     }
