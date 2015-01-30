@@ -848,6 +848,13 @@ begin transaction
 			return
 		end
 		
+	if (not(exists (select h.Hotel_Id from NENE_MALLOC.Hotel h where h.Hotel_Id = @hotel)))
+	
+		begin
+			rollback
+			raiserror('El Hotel no existe.',16,1)
+			return
+		end	
 		
 	declare @fecha_correcta datetime
 	set @fecha_correcta = @fecha_nacimiento
@@ -919,6 +926,13 @@ begin transaction
 			return
 		end
 		
+	if (not(exists (select h.Hotel_Id from NENE_MALLOC.Hotel h where h.Hotel_Id = @hotel_id)))
+	
+		begin
+			rollback
+			raiserror('El Hotel no existe.',16,1)
+			return
+		end	
 		
 	declare @rol_id numeric(18,0)
 	set @rol_id = (select Rol_Id from NENE_MALLOC.Rol where Rol_Desc = @rol_desc)
