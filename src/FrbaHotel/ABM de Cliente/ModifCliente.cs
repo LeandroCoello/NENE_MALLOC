@@ -24,6 +24,7 @@ namespace FrbaHotel.ABM_de_Cliente
             conexion = conec;
             clienteId = listaValores[0];
             datosId = listaValores[1];
+            tipoDocSelector.SelectedItem = listaValores[2];
             dateTimePicker1.Value = Convert.ToDateTime(ConfigurationSettings.AppSettings["fecha"]);
             this.generarBoxes();
             this.cargarBoxes(listaValores);
@@ -34,7 +35,7 @@ namespace FrbaHotel.ABM_de_Cliente
         }
         private void cargarBoxes(string[] unaLista)
         {
-            int i = 2;        
+            int i = 3;        
             foreach(var txtB in boxes)
             {
                 txtB.Text = unaLista[i];

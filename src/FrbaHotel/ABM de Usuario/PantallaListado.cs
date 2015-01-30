@@ -34,7 +34,7 @@ namespace FrbaHotel.ABM_de_Usuario
 
         private void btnBusqueda_Click(object sender, EventArgs e)
         {
-            string queryFinal = "SELECT U.Usuario_Id,U.Usuario_datos, R.Rol_Desc,U.Usuario_name,U.Usuario_pass,DP.Datos_Nombre,DP.Datos_Apellido,DP.Datos_Tipo_Ident,DP.Datos_Nro_Ident,DP.Datos_Mail,DP.Datos_Telefono,DP.Datos_Dom_Calle,DP.Datos_Dom_Nro_Calle,DP.Datos_Dom_Piso,DP.Datos_Dom_Depto,UP.Hotel_Id,DP.Datos_Fecha_Nac  "
+            string queryFinal = "SELECT U.Usuario_Id,U.Usuario_datos,R.Rol_Desc,DP.Datos_Tipo_Ident,U.Usuario_name,U.Usuario_pass,DP.Datos_Nombre,DP.Datos_Apellido,DP.Datos_Nro_Ident,DP.Datos_Mail,DP.Datos_Telefono,DP.Datos_Dom_Calle,DP.Datos_Dom_Nro_Calle,DP.Datos_Dom_Piso,DP.Datos_Dom_Depto,UP.Hotel_Id,DP.Datos_Fecha_Nac  "
                             + "FROM NENE_MALLOC.Usuario U ,NENE_MALLOC.Datos_Personales DP,NENE_MALLOC.Usuario_Por_Rol_Por_Hotel UP, NENE_MALLOC.Rol R WHERE U.Usuario_datos = DP.Datos_Id AND UP.Usuario_Id = U.Usuario_Id AND R.Rol_Id = UP.Rol_Id ";
             if (!string.IsNullOrEmpty(txtNom.Text)) {
                 queryFinal += "AND U.Usuario_name LIKE '%" + txtNom.Text + "%'";
