@@ -1623,8 +1623,10 @@ if exists(select * from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacio
 	return
 	end
 
-if (select count(e.Estadia_Id) from NENE_MALLOC.Estadia e
-			where e.Estadia_RPH = @rph_id)=0
+if exists(select r.Reserva_Id from NENE_MALLOC.Reserva r, NENE_MALLOC.Reserva_Por_Habitacion rph
+			where rph.RPH_Id = @rph_id and
+				  rph.Reserva_Id = r.Reserva_Id and
+				  r.Reserva_Estado != 'Efectivizada')
 				  
 	begin
 	rollback
