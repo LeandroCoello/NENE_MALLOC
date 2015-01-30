@@ -259,7 +259,6 @@ Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (26,'Emitir Fact
 Insert into NENE_MALLOC.Funcionalidad(Func_Id,Func_Desc) values (27,'Listado Estadístico')
 GO
 
-
 --FUNCIONALIDAD POR ROL
 
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,1)		
@@ -290,11 +289,8 @@ Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,21)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,22)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,23)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,24)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,25)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,25)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,26)
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (2,26)
-Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (1,27)
 
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,1)		
 Insert into NENE_MALLOC.Func_Por_Rol(Rol_Id, Func_Id) values (3,2)	
@@ -1257,7 +1253,22 @@ create procedure NENE_MALLOC.modificacion_habitacion @numero numeric(18,0), @pis
 													 @habitacion_id numeric(18,0)
 as
 begin transaction
-
+	
+	if (not(exists (select h.Hotel_Id from NENE_MALLOC.Hotel h where h.Hotel_Id = @hotel)))
+	
+		begin
+			rollback
+			raiserror('El Hotel no existe.',16,1)
+			return
+		end
+		
+	if (not(exists (select t.Tipo_Hab_Id from NENE_MALLOC.Tipo_Habitacion t where t.Tipo_Hab_Id = @tipo)))
+	
+		begin
+			rollback
+			raiserror('El Tipo no existe.',16,1)
+			return
+		end
 	if exists(select h.Habitacion_Id from NENE_MALLOC.Habitacion h where h.Habitacion_Num = @numero and
 	                                                                     h.Habitacion_Piso = @piso and
 	                                                                     h.Habitacion_Hotel = @hotel and

@@ -23,14 +23,14 @@ namespace FrbaHotel.ABM_de_Cliente
             InitializeComponent();
             desactivarBotones();
             coneccion = conexion;
-            if (!lista.Contains("Alta de Cliente")) {
+            if (lista.Contains("Alta de Cliente")) {
                 btnAlta.Enabled = true;
             }
-            if (!lista.Contains("Baja de Cliente"))
+            if (lista.Contains("Baja de Cliente"))
             {
                 btnBaja.Enabled = true;
             }
-            if (!lista.Contains("Modificacion de Cliente"))
+            if (lista.Contains("Modificacion de Cliente"))
             {
                 btnModificar.Enabled = true;
             }
