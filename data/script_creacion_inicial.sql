@@ -1761,10 +1761,8 @@ set @fecha_correcta = @tarjeta_fecha_venc
 declare @tarjeta numeric(16,0)
 
 if exists(select d.Datos_Tarjeta_Id from NENE_MALLOC.Datos_Tarjeta d where 
-			(d.Datos_Tarjeta_Nro = @tarjeta_nro or
-			d.Datos_Duenio_Tarjeta = @duenio) and
-			(d.Datos_Tarjeta_Nro != @tarjeta_nro or
-			d.Datos_Duenio_Tarjeta != @duenio or
+			d.Datos_Tarjeta_Nro = @tarjeta_nro and
+			(d.Datos_Duenio_Tarjeta != @duenio or
 			d.Datos_Tarjeta_Fecha_Venc != @fecha_correcta or
 			d.Datos_Tipo_Tarjeta != @tipo_tarjeta))
 	begin
