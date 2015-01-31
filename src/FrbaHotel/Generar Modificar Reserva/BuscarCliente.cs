@@ -55,6 +55,10 @@ namespace FrbaHotel.Generar_Modificar_Reserva
         private void btnBusquedaClie_Click(object sender, EventArgs e)
         {
             string query = "SELECT * FROM NENE_MALLOC.Cliente C,NENE_MALLOC.Datos_Personales DP WHERE C.Cliente_Datos = DP.Datos_Id";
+            if (ingreso != null)
+            {
+                query += " AND C.Cliente_Id != " + ingreso.getClienteInicial() + "";
+            }
             if (txtMail.Text != "")
             {
              query +=   " AND DP.Datos_Mail LIKE '%" + txtMail.Text + "%'";

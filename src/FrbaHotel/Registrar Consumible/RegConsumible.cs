@@ -24,10 +24,20 @@ namespace FrbaHotel.Registrar_Consumible
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            AgregarConsu levantar = new AgregarConsu(this,conexion);
-            this.Hide();
-            levantar.ShowDialog();
-            this.Show();
+            try
+            {
+                conexion.consulta("if not exists (SELECT Reserva_Id FROM NENE_MALLOC.Reserva_Por_Habitacion " +
+                "WHERE Reserva_Id =" + txtNroReserva.Text +
+                " AND Habitacion_Id =" + txtNroHab.Text + ") begin raiserror('Reserva no encontrada',16,1) end ");
+                AgregarConsu levantar = new AgregarConsu(this, conexion);
+                this.Hide();
+                levantar.ShowDialog();
+                this.Show();
+            }
+            catch (Exception exec)
+            {
+                MessageBox.Show(exec.Message);
+            }
         }
         public void agregarAlGrid(string descripcion, string cantidad) 
         {

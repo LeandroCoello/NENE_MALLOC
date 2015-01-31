@@ -62,7 +62,7 @@ namespace FrbaHotel.ABM_de_Cliente
                 agregarCondicion = " AND D.Datos_Mail LIKE '%" + txtMail.Text + "%'";
                 queryFinal += agregarCondicion;
             }
-            if(!string.IsNullOrEmpty(cBtipoIdent.SelectedText.ToString()))
+            if(!string.IsNullOrEmpty(cBtipoIdent.SelectedItem.ToString()))
             {
                 agregarCondicion = " AND D.Datos_Tipo_Ident ='" + cBtipoIdent.SelectedItem.ToString()+"'";
                 queryFinal += agregarCondicion;

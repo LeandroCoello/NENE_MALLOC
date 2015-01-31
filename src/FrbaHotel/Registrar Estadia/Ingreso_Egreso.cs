@@ -97,7 +97,7 @@ namespace FrbaHotel.Registrar_Estadia
         private void cargarPasajeros(double cantidad,string clienteInicial) {
             setClienteID(clienteInicial);
             MessageBox.Show("A continuacion registre a los huespedes restantes.");
-            for (double i = 1; i < cantidad; i++) {
+            for (double i = 2; i < cantidad; i++) {
                 Generar_Modificar_Reserva.Generar generar = new FrbaHotel.Generar_Modificar_Reserva.Generar(usuario);
                 DialogResult resultado = generar.clienteEnSistema();
                 if (resultado == DialogResult.Yes) {
@@ -120,6 +120,9 @@ namespace FrbaHotel.Registrar_Estadia
         public void setClienteID(string id) {
             string query = "INSERT INTO NENE_MALLOC.Huesped_Por_Habitacion VALUES (" +rphId+","+id+")";
             conexion.executeOnly(query);
+        }
+        public string getClienteInicial() {
+            return clienteInicial;
         }
     }
 }
